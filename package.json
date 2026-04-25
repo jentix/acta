@@ -1,0 +1,21 @@
+{
+  "name": "adr-book",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.26.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "check": "pnpm -r typecheck",
+    "cli": "node packages/cli/dist/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "@adr-book/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "adr-book": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --pretty false",
+    "test": "vitest run",
+    "adr-book": "node dist/index.js"
+  },
+  "dependencies": {
+    "@adr-book/core": "workspace:*",
+    "@adr-book/renderer": "workspace:*",
+    "commander": "^14.0.0"
+  }
+}

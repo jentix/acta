@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "rootDir": ".",
+    "tsBuildInfoFile": "dist/.tsbuildinfo"
+  },
+  "references": [{ "path": "../../packages/core" }, { "path": "../../packages/renderer" }],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"]
+}

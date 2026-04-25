@@ -1,0 +1,7 @@
+{
+  "title": "ADR Book",
+  "decisionsDir": "docs/decisions",
+  "specsDir": "docs/specs",
+  "templatesDir": "docs/templates",
+  "outputDir": "dist"
+}

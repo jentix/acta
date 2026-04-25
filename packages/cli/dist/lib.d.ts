@@ -1,0 +1,10 @@
+import { type AdrBookConfig, type DocumentKind, type RepositoryIndex } from "@adr-book/core";
+export declare function initWorkspace(cwd: string): string[];
+export declare function createNewDocument(cwd: string, kind: DocumentKind, title: string, owner?: string): string;
+export declare function formatDocumentTable(index: RepositoryIndex): string;
+export declare function formatDocumentDetails(index: RepositoryIndex, id: string): string;
+export declare function formatIssues(index: RepositoryIndex): string;
+export declare function graphAsMermaid(index: RepositoryIndex): string;
+export declare function buildArtifacts(cwd: string): Promise<string[]>;
+export declare function loadIndex(cwd: string): RepositoryIndex;
+export declare function getNextDocumentId(cwd: string, config: AdrBookConfig, kind: DocumentKind): string;
