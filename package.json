@@ -1,0 +1,26 @@
+{
+  "name": "acta",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.10.0",
+  "engines": {
+    "node": ">=22.12 <26"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "biome lint .",
+    "format:check": "biome format .",
+    "typecheck": "turbo run typecheck"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/node": "^22.15.3",
+    "tsup": "^8.4.0",
+    "tsx": "^4.19.4",
+    "turbo": "^2.5.2",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.2"
+  }
+}
