@@ -1,4 +1,4 @@
-# ADR Book — Optimized MVP Plan
+# Acta — Optimized MVP Plan
 
 > TypeScript-first docs-as-code инструмент для управления ADR и spec-документами в репозитории. CLI + статический web-viewer с графом связей и поиском.
 
@@ -6,7 +6,7 @@
 
 ## Контекст
 
-ADR Book хранит архитектурные решения (ADR) и живые технические спецификации (spec) как Markdown-файлы рядом с кодом, добавляет строгую модель данных, typed links между документами, валидацию и удобный read-only веб-интерфейс. Цель — чтобы команда **и** coding-агенты могли быстро понять, какие решения приняты, почему, какие актуальны, и как они связаны со спеками.
+Acta хранит архитектурные решения (ADR) и живые технические спецификации (spec) как Markdown-файлы рядом с кодом, добавляет строгую модель данных, typed links между документами, валидацию и удобный read-only веб-интерфейс. Цель — чтобы команда **и** coding-агенты могли быстро понять, какие решения приняты, почему, какие актуальны, и как они связаны со спеками.
 
 MVP — это **надёжный слой поверх Markdown**, не «wiki-платформа». Документы остаются source of truth, всё инструментирование строится вокруг них.
 
@@ -51,7 +51,7 @@ MVP — это **надёжный слой поверх Markdown**, не «wiki-
 | Web viewer | **Astro 5** + Content Collections + React islands | Встроенная Zod-валидация frontmatter, статика по умолчанию, минимальный JS |
 | Graph UI | React Flow | Стандарт для interactive node-edge UI |
 | Search | Orama | TS-native BM25 + fuzzy, работает в браузере и Node |
-| Config | `adr-book.config.ts` (typed) | `defineConfig` с автокомплитом |
+| Config | `acta.config.ts` (typed) | `defineConfig` с автокомплитом |
 | Pre-commit | lefthook | Быстрее husky, написан на Go |
 
 ### Почему именно эти решения (отличия от draft-плана)
@@ -62,15 +62,15 @@ MVP — это **надёжный слой поверх Markdown**, не «wiki-
 4. **Orama вместо «in-memory JSON или phase-2 Tantivy»** — для реалистичных репо (до 10k документов) Orama покрывает всё. Tantivy/napi-rs становится нужен только при экстремальных объёмах.
 5. **pnpm + Turborepo** — индустриальный стандарт для TS-монорепо в 2026.
 6. **Biome вместо ESLint + Prettier** — один инструмент, в разы быстрее.
-7. **Incremental builds + content hashing** — кеш в `.adr-book/cache/`, быстрый `validate` в pre-commit.
-8. **`adr-book dev` watch mode** — live reload во время написания документов.
+7. **Incremental builds + content hashing** — кеш в `.acta/cache/`, быстрый `validate` в pre-commit.
+8. **`acta dev` watch mode** — live reload во время написания документов.
 
 ---
 
 ## Архитектура монорепо
 
 ```
-adr-book/
+acta/
 ├── apps/
 │   └── web/                      # Astro app (docs viewer)
 ├── packages/
@@ -82,7 +82,7 @@ adr-book/
 │   ├── decisions/                # сами ADR этого репо (dogfooding)
 │   ├── specs/
 │   └── templates/
-├── adr-book.config.ts
+├── acta.config.ts
 ├── pnpm-workspace.yaml
 ├── turbo.json
 ├── biome.json
@@ -103,7 +103,7 @@ adr-book/
 
 | Команда | Что делает |
 |---------|------------|
-| `init` | Scaffold (folders + `adr-book.config.ts` + templates + lefthook + GHA) |
+| `init` | Scaffold (folders + `acta.config.ts` + templates + lefthook + GHA) |
 | `new <adr\|spec>` | Подбирает следующий id, создаёт файл из шаблона, нормализует slug |
 | `list [--kind] [--status] [--tag]` | Таблица id / kind / status / title / tags |
 | `show <id>` | Метаданные + summary + links + warnings, через Shiki+marked-terminal |
@@ -115,7 +115,7 @@ adr-book/
 
 ### apps/web (Astro)
 
-- Content Collections используют **ту же Zod-схему что и core** (импорт из `@adr-book/core/schema`) — single source of truth
+- Content Collections используют **ту же Zod-схему что и core** (импорт из `@acta/core/schema`) — single source of truth
 - Routes:
   - `/` — dashboard (counts, recent, warnings)
   - `/documents` — list + filters
@@ -204,7 +204,7 @@ title: Use Markdown documents with YAML frontmatter
 status: accepted
 date: 2026-04-25
 tags: [docs, architecture]
-component: [adr-book-core]
+component: [acta-core]
 owners: [Boris]
 summary: Store ADRs and specs as Markdown files with machine-readable metadata.
 links:
@@ -228,11 +228,11 @@ links:
 ---
 id: SPEC-0001
 kind: spec
-title: ADR Book document model
+title: Acta document model
 status: active
 date: 2026-04-25
 tags: [model, docs]
-component: [adr-book-core]
+component: [acta-core]
 owners: [Boris]
 summary: Defines document model, statuses, and relationships.
 links:
@@ -256,7 +256,7 @@ links:
 - pnpm + Turbo + Biome + Vitest setup
 - Workspace skeleton + базовые `tsconfig`
 - CI шаблон (GitHub Actions: lint, test, build)
-- `docs/decisions/ADR-0001` про сам стек ADR Book (dogfooding с первого дня)
+- `docs/decisions/ADR-0001` про сам стек Acta (dogfooding с первого дня)
 
 ### Phase 1 — Core (≈ 3–5 дней)
 
@@ -285,15 +285,15 @@ links:
 
 ### Phase 4 — Polish & ship (≈ 1–2 дня)
 
-- `adr-book dev` (proxy к Astro dev server + watcher)
-- `adr-book build` для static output
+- `acta dev` (proxy к Astro dev server + watcher)
+- `acta build` для static output
 - README, docs, npm publish
 - Demo repo
 
 ### Phase 5+ (после MVP)
 
 - **MCP server** для coding agents — стандартный протокол выдачи ADR/spec корпуса LLM-агентам. Tool-calls: `searchDocs`, `getDocument`, `getGraph`, `validateRefs`. Тривиально поверх существующего core.
-- **`adr-book import`** — миграция из adr-tools / log4brains
+- **`acta import`** — миграция из adr-tools / log4brains
 - **Ink TUI** — если будет спрос на terminal browsing
 - **Rust + napi-rs + Tantivy** — только если Orama упрётся в потолок (вряд ли в обозримом будущем)
 
@@ -303,15 +303,15 @@ links:
 
 1. `pnpm install && pnpm turbo build` — успешный билд монорепо
 2. `pnpm test` — Vitest зелёный (core, cli)
-3. `pnpm --filter @adr-book/cli build && node packages/cli/dist/index.js init demo-repo/` — scaffold работает
-4. `cd demo-repo && adr-book new adr "Use Astro for web viewer"` — создаёт корректный файл
-5. `adr-book validate` — проходит на свежем repo, ловит supersede-cycle если ввести руками
-6. `adr-book dev` — Astro dev server поднимается, документ виден, граф рендерится
-7. `adr-book build` — static output работает (`dist/index.html` открывается)
-8. **Dogfooding**: реальный `docs/decisions/` adr-book репо валидируется и публикуется через GHA на Pages
+3. `pnpm --filter @acta/cli build && node packages/cli/dist/index.js init demo-repo/` — scaffold работает
+4. `cd demo-repo && acta new adr "Use Astro for web viewer"` — создаёт корректный файл
+5. `acta validate` — проходит на свежем repo, ловит supersede-cycle если ввести руками
+6. `acta dev` — Astro dev server поднимается, документ виден, граф рендерится
+7. `acta build` — static output работает (`dist/index.html` открывается)
+8. **Dogfooding**: реальный `docs/decisions/` acta репо валидируется и публикуется через GHA на Pages
 
 ---
 
 ## Следующий шаг
 
-Перейти к **Phase 0 — Bootstrap**: инициализировать pnpm workspace, поставить Turbo/Biome/Vitest, накидать `tsconfig.base.json`, создать пакеты-скелеты `packages/core` и `packages/cli`, настроить GitHub Actions, написать `ADR-0001` про сам стек ADR Book.
+Перейти к **Phase 0 — Bootstrap**: инициализировать pnpm workspace, поставить Turbo/Biome/Vitest, накидать `tsconfig.base.json`, создать пакеты-скелеты `packages/core` и `packages/cli`, настроить GitHub Actions, написать `ADR-0001` про сам стек Acta.
