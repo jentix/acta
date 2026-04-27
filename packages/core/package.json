@@ -7,13 +7,17 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "import": "./dist/config.js"
     }
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts",
+    "build": "tsup src/index.ts src/config.ts --format esm --dts",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json"
   },
@@ -21,5 +25,9 @@
     "tsup": "^8.4.0",
     "typescript": "^5.9.3",
     "vitest": "^4.1.5"
+  },
+  "dependencies": {
+    "yaml": "^2.8.3",
+    "zod": "^4.3.6"
   }
 }

@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@acta/core':
+        specifier: workspace:*
+        version: link:packages/core
       '@biomejs/biome':
         specifier: 2.4.13
         version: 2.4.13
@@ -16,7 +19,7 @@ importers:
         version: 22.19.17
       tsup:
         specifier: ^8.4.0
-        version: 8.5.1(postcss@8.5.11)(tsx@4.21.0)(typescript@5.9.3)
+        version: 8.5.1(postcss@8.5.11)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.3)
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
@@ -28,19 +31,19 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^4.1.5
-        version: 4.1.5(@types/node@22.19.17)(vite@7.3.2(@types/node@22.19.17)(tsx@4.21.0))
+        version: 4.1.5(@types/node@22.19.17)(vite@7.3.2(@types/node@22.19.17)(tsx@4.21.0)(yaml@2.8.3))
 
   apps/web:
     devDependencies:
       tsup:
         specifier: ^8.4.0
-        version: 8.5.1(postcss@8.5.11)(tsx@4.21.0)(typescript@5.9.3)
+        version: 8.5.1(postcss@8.5.11)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.3)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
       vitest:
         specifier: ^4.1.5
-        version: 4.1.5(@types/node@22.19.17)(vite@7.3.2(@types/node@22.19.17)(tsx@4.21.0))
+        version: 4.1.5(@types/node@22.19.17)(vite@7.3.2(@types/node@22.19.17)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/cli:
     dependencies:
@@ -50,37 +53,44 @@ importers:
     devDependencies:
       tsup:
         specifier: ^8.4.0
-        version: 8.5.1(postcss@8.5.11)(tsx@4.21.0)(typescript@5.9.3)
+        version: 8.5.1(postcss@8.5.11)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.3)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
       vitest:
         specifier: ^4.1.5
-        version: 4.1.5(@types/node@22.19.17)(vite@7.3.2(@types/node@22.19.17)(tsx@4.21.0))
+        version: 4.1.5(@types/node@22.19.17)(vite@7.3.2(@types/node@22.19.17)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/core:
+    dependencies:
+      yaml:
+        specifier: ^2.8.3
+        version: 2.8.3
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       tsup:
         specifier: ^8.4.0
-        version: 8.5.1(postcss@8.5.11)(tsx@4.21.0)(typescript@5.9.3)
+        version: 8.5.1(postcss@8.5.11)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.3)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
       vitest:
         specifier: ^4.1.5
-        version: 4.1.5(@types/node@22.19.17)(vite@7.3.2(@types/node@22.19.17)(tsx@4.21.0))
+        version: 4.1.5(@types/node@22.19.17)(vite@7.3.2(@types/node@22.19.17)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/renderer:
     devDependencies:
       tsup:
         specifier: ^8.4.0
-        version: 8.5.1(postcss@8.5.11)(tsx@4.21.0)(typescript@5.9.3)
+        version: 8.5.1(postcss@8.5.11)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.3)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
       vitest:
         specifier: ^4.1.5
-        version: 4.1.5(@types/node@22.19.17)(vite@7.3.2(@types/node@22.19.17)(tsx@4.21.0))
+        version: 4.1.5(@types/node@22.19.17)(vite@7.3.2(@types/node@22.19.17)(tsx@4.21.0)(yaml@2.8.3))
 
 packages:
 
@@ -866,6 +876,14 @@ packages:
     engines: {node: '>=8'}
     hasBin: true
 
+  yaml@2.8.3:
+    resolution: {integrity: sha512-AvbaCLOO2Otw/lW5bmh9d/WEdcDFdQp2Z2ZUH3pX9U2ihyUY0nvLv7J6TrWowklRGPYbB/IuIMfYgxaCPg5Bpg==}
+    engines: {node: '>= 14.6'}
+    hasBin: true
+
+  zod@4.3.6:
+    resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
+
 snapshots:
 
   '@biomejs/biome@2.4.13':
@@ -1112,13 +1130,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.0
 
-  '@vitest/mocker@4.1.5(vite@7.3.2(@types/node@22.19.17)(tsx@4.21.0))':
+  '@vitest/mocker@4.1.5(vite@7.3.2(@types/node@22.19.17)(tsx@4.21.0)(yaml@2.8.3))':
     dependencies:
       '@vitest/spy': 4.1.5
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.3.2(@types/node@22.19.17)(tsx@4.21.0)
+      vite: 7.3.2(@types/node@22.19.17)(tsx@4.21.0)(yaml@2.8.3)
 
   '@vitest/pretty-format@4.1.5':
     dependencies:
@@ -1276,12 +1294,13 @@ snapshots:
       mlly: 1.8.2
       pathe: 2.0.3
 
-  postcss-load-config@6.0.1(postcss@8.5.11)(tsx@4.21.0):
+  postcss-load-config@6.0.1(postcss@8.5.11)(tsx@4.21.0)(yaml@2.8.3):
     dependencies:
       lilconfig: 3.1.3
     optionalDependencies:
       postcss: 8.5.11
       tsx: 4.21.0
+      yaml: 2.8.3
 
   postcss@8.5.11:
     dependencies:
@@ -1371,7 +1390,7 @@ snapshots:
 
   ts-interface-checker@0.1.13: {}
 
-  tsup@8.5.1(postcss@8.5.11)(tsx@4.21.0)(typescript@5.9.3):
+  tsup@8.5.1(postcss@8.5.11)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.3):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.27.7)
       cac: 6.7.14
@@ -1382,7 +1401,7 @@ snapshots:
       fix-dts-default-cjs-exports: 1.0.1
       joycon: 3.1.1
       picocolors: 1.1.1
-      postcss-load-config: 6.0.1(postcss@8.5.11)(tsx@4.21.0)
+      postcss-load-config: 6.0.1(postcss@8.5.11)(tsx@4.21.0)(yaml@2.8.3)
       resolve-from: 5.0.0
       rollup: 4.60.2
       source-map: 0.7.6
@@ -1421,7 +1440,7 @@ snapshots:
 
   undici-types@6.21.0: {}
 
-  vite@7.3.2(@types/node@22.19.17)(tsx@4.21.0):
+  vite@7.3.2(@types/node@22.19.17)(tsx@4.21.0)(yaml@2.8.3):
     dependencies:
       esbuild: 0.27.7
       fdir: 6.5.0(picomatch@4.0.4)
@@ -1433,11 +1452,12 @@ snapshots:
       '@types/node': 22.19.17
       fsevents: 2.3.3
       tsx: 4.21.0
+      yaml: 2.8.3
 
-  vitest@4.1.5(@types/node@22.19.17)(vite@7.3.2(@types/node@22.19.17)(tsx@4.21.0)):
+  vitest@4.1.5(@types/node@22.19.17)(vite@7.3.2(@types/node@22.19.17)(tsx@4.21.0)(yaml@2.8.3)):
     dependencies:
       '@vitest/expect': 4.1.5
-      '@vitest/mocker': 4.1.5(vite@7.3.2(@types/node@22.19.17)(tsx@4.21.0))
+      '@vitest/mocker': 4.1.5(vite@7.3.2(@types/node@22.19.17)(tsx@4.21.0)(yaml@2.8.3))
       '@vitest/pretty-format': 4.1.5
       '@vitest/runner': 4.1.5
       '@vitest/snapshot': 4.1.5
@@ -1454,7 +1474,7 @@ snapshots:
       tinyexec: 1.1.1
       tinyglobby: 0.2.16
       tinyrainbow: 3.1.0
-      vite: 7.3.2(@types/node@22.19.17)(tsx@4.21.0)
+      vite: 7.3.2(@types/node@22.19.17)(tsx@4.21.0)(yaml@2.8.3)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.19.17
@@ -1465,3 +1485,7 @@ snapshots:
     dependencies:
       siginfo: 2.0.0
       stackback: 0.0.2
+
+  yaml@2.8.3: {}
+
+  zod@4.3.6: {}
