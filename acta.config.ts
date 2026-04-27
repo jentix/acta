@@ -1,4 +1,6 @@
-export default {
+import { defineConfig } from "@acta/core/config";
+
+export default defineConfig({
   docs: {
     adrDir: "docs/decisions",
     specDir: "docs/specs",
@@ -13,4 +15,4 @@ export default {
     outDir: ".acta/dist",
     cacheDir: ".acta/cache",
   },
-} as const;
+});
