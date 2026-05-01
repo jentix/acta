@@ -21,9 +21,13 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@acta/core": "workspace:*"
+    "@acta/core": "workspace:*",
+    "citty": "^0.2.2",
+    "kleur": "^4.1.5",
+    "yaml": "^2.8.3"
   },
   "devDependencies": {
+    "execa": "^9.6.1",
     "tsup": "^8.4.0",
     "typescript": "^5.9.3",
     "vitest": "^4.1.5"
