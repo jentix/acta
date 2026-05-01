@@ -121,7 +121,7 @@ export async function loadConfig(configPath = "acta.config.ts"): Promise<Resolve
     throw new Error(`Acta config not found: ${resolvedPath}`);
   }
 
-  const imported = (await import(pathToFileURL(resolvedPath).href)) as {
+  const imported = (await import(/* @vite-ignore */ pathToFileURL(resolvedPath).href)) as {
     default?: ActaConfigInput;
   };
 

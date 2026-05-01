@@ -1,0 +1,51 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { buildDocumentHref } from "../lib/documents.js";
+import { loadActaWebData } from "../lib/project.js";
+
+const { project, validation } = await loadActaWebData();
+const documentsById = new Map(project.documents.map((document) => [document.id, document]));
+---
+
+<BaseLayout title="Acta validation" description="Acta validation results">
+  <section class="page-header">
+    <div>
+      <p class="eyebrow">Repository health</p>
+      <h1>Validation</h1>
+      <p class="muted">
+        {validation.errorCount} errors, {validation.warningCount} warnings
+      </p>
+    </div>
+    <a class={`validation-pill ${validation.valid ? "is-valid" : "is-invalid"}`} href="/validation/">
+      {validation.valid ? "Valid" : "Needs attention"}
+    </a>
+  </section>
+
+  {
+    validation.issues.length === 0 ? (
+      <p class="empty-state">No validation issues.</p>
+    ) : (
+      <section class="issue-list">
+        {validation.issues.map((issue) => {
+          const document = issue.documentId ? documentsById.get(issue.documentId) : undefined;
+          return (
+            <article class={`issue severity-${issue.severity}`}>
+              <div>
+                <strong>{issue.severity}</strong>
+                <span>{issue.ruleId}</span>
+              </div>
+              <p>{issue.message}</p>
+              {document ? (
+                <a href={buildDocumentHref(document.id)}>
+                  {document.id} · {document.title}
+                </a>
+              ) : (
+                issue.path && <span class="muted">{issue.path}</span>
+              )}
+            </article>
+          );
+        })}
+      </section>
+    )
+  }
+</BaseLayout>

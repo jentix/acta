@@ -9,12 +9,15 @@
   },
   "scripts": {
     "build": "turbo run build",
+    "build:web": "pnpm --filter @acta/web build",
+    "dev:web": "pnpm --filter @acta/web dev",
     "test": "turbo run test",
     "lint": "biome lint .",
     "format:check": "biome format .",
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
+    "@acta/cli": "workspace:*",
     "@acta/core": "workspace:*",
     "@biomejs/biome": "2.4.13",
     "@types/node": "^22.15.3",
