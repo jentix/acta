@@ -2,7 +2,7 @@
 
 Acta is a TypeScript-first docs-as-code tool for managing ADR and spec documents in a Git repository.
 
-Phase 1 implements the core data pipeline in `@acta/core`:
+Acta currently includes the core data pipeline, CLI, and static web viewer:
 
 - typed Zod schemas for ADR and spec frontmatter
 - config loading through `defineConfig`
@@ -10,18 +10,19 @@ Phase 1 implements the core data pipeline in `@acta/core`:
 - repository scanning for `docs/decisions` and `docs/specs`
 - normalized document models with typed links and backlinks
 - validation for IDs, links, sections, supersession and references
-- UI-agnostic graph generation
-- JSON artifacts for CLI, web, CI and future MCP consumers
+- UI-agnostic graph generation and JSON artifacts
+- CLI commands for init, new, list, show, validate, graph, build and renumber
+- Astro static web viewer for browsing documents and validation results
 
-CLI commands and the static web viewer are still planned for later phases.
+The web viewer is read-only. Markdown remains the source of truth and the viewer loads documents through `@acta/core`.
 
 ## Workspace
 
 ```txt
-apps/web          Future static web viewer
+ apps/web          Astro static web viewer
 packages/core     Schemas, parser, validator, graph, search index and artifacts
-packages/cli      Future CLI package with the acta binary
-packages/renderer Future Markdown and terminal/html rendering helpers
+packages/cli      CLI package with the acta binary
+packages/renderer Markdown-to-HTML rendering helpers
 docs/             Dogfooding ADR/spec documents and templates
 ```
 
@@ -87,4 +88,7 @@ pnpm format:check
 pnpm typecheck
 pnpm build
 pnpm test
+pnpm dev:web
+pnpm --filter @acta/web build
+pnpm --filter @acta/web preview
 ```

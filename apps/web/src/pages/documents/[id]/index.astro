@@ -1,0 +1,158 @@
+---
+import { renderMarkdown } from "@acta/renderer";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import {
+  buildDocumentHref,
+  getDocumentById,
+  getIssuesForDocument,
+  hasBacklinks,
+  hasInternalLinks,
+  internalLinkKeys,
+} from "@lib/documents.js";
+import { loadActaWebData } from "@lib/project.js";
+
+export async function getStaticPaths() {
+  const { project, validation } = await loadActaWebData();
+
+  return Promise.all(
+    project.documents.map(async (document) => ({
+      params: { id: document.id },
+      props: {
+        document,
+        documents: project.documents,
+        issues: getIssuesForDocument(validation.issues, document),
+        rendered: await renderMarkdown(document.body),
+      },
+    })),
+  );
+}
+
+const { document, documents, issues, rendered } = Astro.props;
+---
+
+<BaseLayout title={`${document.id} · ${document.title}`} description={document.summary}>
+  <section class="page-header document-header">
+    <div>
+      <p class="eyebrow">{document.kind.toUpperCase()} · {document.status}</p>
+      <h1>{document.title}</h1>
+      <p class="muted">{document.id} · {document.date}</p>
+    </div>
+    <a class="button" href="/">Back to documents</a>
+  </section>
+
+  <div class="document-grid">
+    <aside class="metadata-panel">
+      {document.summary && <p class="summary">{document.summary}</p>}
+      <dl>
+        <div>
+          <dt>File</dt>
+          <dd>{document.file.relativePath}</dd>
+        </div>
+        <div>
+          <dt>Owners</dt>
+          <dd>{document.owners.length > 0 ? document.owners.join(", ") : "None"}</dd>
+        </div>
+        <div>
+          <dt>Tags</dt>
+          <dd>{document.tags.length > 0 ? document.tags.join(", ") : "None"}</dd>
+        </div>
+        <div>
+          <dt>Components</dt>
+          <dd>{document.component.length > 0 ? document.component.join(", ") : "None"}</dd>
+        </div>
+      </dl>
+
+      {
+        issues.length > 0 && (
+          <section class="issue-list compact">
+            <h2>Validation</h2>
+            {issues.map((issue) => (
+              <p class={`issue severity-${issue.severity}`}>
+                <strong>{issue.severity}</strong> {issue.message}
+              </p>
+            ))}
+          </section>
+        )
+      }
+    </aside>
+
+    <article class="markdown" set:html={rendered.html} />
+  </div>
+
+  <section class="relations">
+    <div>
+      <h2>Links</h2>
+      {
+        hasInternalLinks(document) ? (
+          internalLinkKeys.map(
+            (key) =>
+              document.links[key].length > 0 && (
+                <div class="relation-group">
+                  <h3>{key}</h3>
+                  <div class="chip-list">
+                    {document.links[key].map((id) => {
+                      const target = getDocumentById(documents, id);
+                      return (
+                        <a href={buildDocumentHref(id)} class="chip">
+                          {id}
+                          {target ? ` · ${target.title}` : ""}
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+              ),
+          )
+        ) : (
+          <p class="muted">No outgoing internal links.</p>
+        )
+      }
+    </div>
+
+    <div>
+      <h2>Backlinks</h2>
+      {
+        hasBacklinks(document) ? (
+          internalLinkKeys.map(
+            (key) =>
+              document.backlinks[key].length > 0 && (
+                <div class="relation-group">
+                  <h3>{key}</h3>
+                  <div class="chip-list">
+                    {document.backlinks[key].map((id) => {
+                      const source = getDocumentById(documents, id);
+                      return (
+                        <a href={buildDocumentHref(id)} class="chip">
+                          {id}
+                          {source ? ` · ${source.title}` : ""}
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+              ),
+          )
+        ) : (
+          <p class="muted">No backlinks.</p>
+        )
+      }
+    </div>
+  </section>
+
+  {
+    document.links.references.length > 0 && (
+      <section class="relations single">
+        <div>
+          <h2>External references</h2>
+          <div class="chip-list">
+            {document.links.references.map((reference) => (
+              <a class="chip" href={reference}>
+                {reference}
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>

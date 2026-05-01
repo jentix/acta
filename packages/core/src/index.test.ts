@@ -212,6 +212,7 @@ describe("@acta/core", () => {
       "SPEC-0001",
       "SPEC-0002",
       "SPEC-0003",
+      "SPEC-0004",
     ]);
     expect(validation.errors).toEqual([]);
   });

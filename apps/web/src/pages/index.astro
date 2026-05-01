@@ -1,0 +1,161 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  buildDocumentHref,
+  collectFilterOptions,
+  getDocumentSearchText,
+} from "@lib/documents.js";
+import { loadActaWebData } from "@lib/project.js";
+
+const { project, validation } = await loadActaWebData();
+const documents = project.documents;
+const filterOptions = collectFilterOptions(documents);
+const adrCount = documents.filter((document) => document.kind === "adr").length;
+const specCount = documents.filter((document) => document.kind === "spec").length;
+---
+
+<BaseLayout title="Acta documents" description="Browse Acta ADR and spec documents">
+  <section class="page-header">
+    <div>
+      <p class="eyebrow">Repository viewer</p>
+      <h1>Documents</h1>
+      <p class="muted">
+        {documents.length} documents, {adrCount} ADRs, {specCount} specs
+      </p>
+    </div>
+    <a class={`validation-pill ${validation.valid ? "is-valid" : "is-invalid"}`} href="/validation/">
+      {validation.errorCount} errors · {validation.warningCount} warnings
+    </a>
+  </section>
+
+  <section class="toolbar" aria-label="Document filters">
+    <label>
+      <span>Search</span>
+      <input id="search" type="search" placeholder="Title, tag, owner, section..." />
+    </label>
+    <label>
+      <span>Kind</span>
+      <select id="kind">
+        <option value="">All</option>
+        {filterOptions.kinds.map((kind) => <option value={kind}>{kind.toUpperCase()}</option>)}
+      </select>
+    </label>
+    <label>
+      <span>Status</span>
+      <select id="status">
+        <option value="">All</option>
+        {filterOptions.statuses.map((status) => <option value={status}>{status}</option>)}
+      </select>
+    </label>
+    <label>
+      <span>Tag</span>
+      <select id="tag">
+        <option value="">All</option>
+        {filterOptions.tags.map((tag) => <option value={tag}>{tag}</option>)}
+      </select>
+    </label>
+    <label>
+      <span>Component</span>
+      <select id="component">
+        <option value="">All</option>
+        {
+          filterOptions.components.map((component) => (
+            <option value={component}>{component}</option>
+          ))
+        }
+      </select>
+    </label>
+  </section>
+
+  <section class="document-list" id="document-list" aria-live="polite">
+    {
+      documents.map((document) => (
+        <article
+          class="document-row"
+          data-kind={document.kind}
+          data-status={document.status}
+          data-tags={document.tags.join(" ")}
+          data-components={document.component.join(" ")}
+          data-search={getDocumentSearchText(document)}
+        >
+          <div class="row-main">
+            <a class="document-title" href={buildDocumentHref(document.id)}>
+              <span class="document-id">{document.id}</span>
+              {document.title}
+            </a>
+            {document.summary && <p>{document.summary}</p>}
+          </div>
+          <div class="row-meta">
+            <span class={`badge kind-${document.kind}`}>{document.kind}</span>
+            <span class={`badge status-${document.status}`}>{document.status}</span>
+            <span class="muted">{document.date}</span>
+          </div>
+        </article>
+      ))
+    }
+    <p class="empty-state" id="empty-state" hidden>No matching documents.</p>
+  </section>
+
+  <script>
+    const searchInput = document.querySelector<HTMLInputElement>("#search");
+    const kindSelect = document.querySelector<HTMLSelectElement>("#kind");
+    const statusSelect = document.querySelector<HTMLSelectElement>("#status");
+    const tagSelect = document.querySelector<HTMLSelectElement>("#tag");
+    const componentSelect = document.querySelector<HTMLSelectElement>("#component");
+    const rows = Array.from(document.querySelectorAll<HTMLElement>(".document-row"));
+    const emptyState = document.querySelector<HTMLElement>("#empty-state");
+
+    if (
+      !searchInput ||
+      !kindSelect ||
+      !statusSelect ||
+      !tagSelect ||
+      !componentSelect ||
+      !emptyState
+    ) {
+      throw new Error("Document filter controls failed to initialize.");
+    }
+
+    const search = searchInput as HTMLInputElement;
+    const kindFilter = kindSelect as HTMLSelectElement;
+    const statusFilter = statusSelect as HTMLSelectElement;
+    const tagFilter = tagSelect as HTMLSelectElement;
+    const componentFilter = componentSelect as HTMLSelectElement;
+    const empty = emptyState as HTMLElement;
+    const controls = [search, kindFilter, statusFilter, tagFilter, componentFilter];
+
+    function normalize(value: string) {
+      return String(value || "").toLowerCase().trim();
+    }
+
+    function updateFilters() {
+      const query = normalize(search.value);
+      const kind = kindFilter.value;
+      const status = statusFilter.value;
+      const tag = tagFilter.value;
+      const component = componentFilter.value;
+      let visibleCount = 0;
+
+      for (const row of rows) {
+        const matches =
+          (!query || (row.dataset.search ?? "").includes(query)) &&
+          (!kind || row.dataset.kind === kind) &&
+          (!status || row.dataset.status === status) &&
+          (!tag || (row.dataset.tags ?? "").split(" ").includes(tag)) &&
+          (!component || (row.dataset.components ?? "").split(" ").includes(component));
+
+        row.hidden = !matches;
+        if (matches) {
+          visibleCount += 1;
+        }
+      }
+
+      empty.hidden = visibleCount > 0;
+    }
+
+    for (const control of controls) {
+      control.addEventListener("input", updateFilters);
+      control.addEventListener("change", updateFilters);
+    }
+  </script>
+</BaseLayout>

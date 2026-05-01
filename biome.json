@@ -6,7 +6,15 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!**/node_modules", "!**/dist", "!**/coverage", "!**/.acta", "!**/.turbo"]
+    "includes": [
+      "**",
+      "!**/*.astro",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/coverage",
+      "!**/.acta",
+      "!**/.turbo"
+    ]
   },
   "formatter": {
     "enabled": true,

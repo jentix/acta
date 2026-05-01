@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import { realpathSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { defineCommand, runMain } from "citty";
 import { buildCommand } from "./commands/build.js";
 import { graphCommand } from "./commands/graph.js";
@@ -37,8 +39,16 @@ export function getCliBootstrapInfo() {
   };
 }
 
-// Only run when executed directly (not when imported in tests)
-import { pathToFileURL } from "node:url";
-if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
+function isDirectExecution(): boolean {
+  if (!process.argv[1]) {
+    return false;
+  }
+
+  return realpathSync(process.argv[1]) === fileURLToPath(import.meta.url);
+}
+
+// Only run when executed directly (not when imported in tests).
+// pnpm executes package bins through a symlink under node_modules/.bin.
+if (isDirectExecution()) {
   await runMain(main);
 }
