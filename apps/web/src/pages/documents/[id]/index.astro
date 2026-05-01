@@ -8,8 +8,8 @@ import {
   hasBacklinks,
   hasInternalLinks,
   internalLinkKeys,
-} from "../../../lib/documents.js";
-import { loadActaWebData } from "../../../lib/project.js";
+} from "@lib/documents.js";
+import { loadActaWebData } from "@lib/project.js";
 
 export async function getStaticPaths() {
   const { project, validation } = await loadActaWebData();

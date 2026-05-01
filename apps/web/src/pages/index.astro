@@ -4,8 +4,8 @@ import {
   buildDocumentHref,
   collectFilterOptions,
   getDocumentSearchText,
-} from "../lib/documents.js";
-import { loadActaWebData } from "../lib/project.js";
+} from "@lib/documents.js";
+import { loadActaWebData } from "@lib/project.js";
 
 const { project, validation } = await loadActaWebData();
 const documents = project.documents;

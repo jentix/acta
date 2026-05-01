@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { buildDocumentHref } from "../lib/documents.js";
-import { loadActaWebData } from "../lib/project.js";
+import { buildDocumentHref } from "@lib/documents.js";
+import { loadActaWebData } from "@lib/project.js";
 
 const { project, validation } = await loadActaWebData();
 const documentsById = new Map(project.documents.map((document) => [document.id, document]));
