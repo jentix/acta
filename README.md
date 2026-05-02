@@ -10,9 +10,9 @@ Acta currently includes the core data pipeline, CLI, and static web viewer:
 - repository scanning for `docs/decisions` and `docs/specs`
 - normalized document models with typed links and backlinks
 - validation for IDs, links, sections, supersession and references
-- UI-agnostic graph generation and JSON artifacts
+- UI-agnostic graph generation, dependency ordering and JSON artifacts
 - CLI commands for init, new, list, show, validate, graph, build and renumber
-- Astro static web viewer for browsing documents and validation results
+- Astro static web viewer for browsing documents, graph relationships and validation results
 
 The web viewer is read-only. Markdown remains the source of truth and the viewer loads documents through `@acta/core`.
 
@@ -59,7 +59,8 @@ export default defineConfig({
 - `loadProject`
 - `validateProject`
 - `buildArtifacts`
-- document, config, validation, graph and artifact types
+- dependency ordering helpers
+- document, config, validation, graph, ordering and artifact types
 
 ## Artifacts
 
@@ -73,6 +74,7 @@ export default defineConfig({
     ├── documents.json
     ├── graph.json
     ├── manifest.json
+    ├── ordering.json
     ├── search-index.json
     └── validation.json
 ```

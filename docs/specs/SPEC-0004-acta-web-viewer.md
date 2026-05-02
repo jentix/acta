@@ -9,7 +9,7 @@ component: [acta-web, acta-renderer]
 owners: [Boris]
 summary: Defines the read-only Astro web viewer for browsing Acta ADR and spec documents.
 links:
-  related: []
+  related: [SPEC-0005]
   supersedes: []
   replacedBy: []
   decidedBy: [ADR-0003]
