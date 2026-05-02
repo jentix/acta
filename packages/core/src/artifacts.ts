@@ -88,6 +88,7 @@ export async function buildArtifacts(
   await mkdir(project.config.resolvedBuild.cacheDir, { recursive: true });
   await writeJson(join(project.config.resolvedBuild.outDir, "documents.json"), project.documents);
   await writeJson(join(project.config.resolvedBuild.outDir, "graph.json"), project.graph);
+  await writeJson(join(project.config.resolvedBuild.outDir, "ordering.json"), project.ordering);
   await writeJson(join(project.config.resolvedBuild.outDir, "search-index.json"), searchIndex);
   await writeJson(join(project.config.resolvedBuild.outDir, "validation.json"), validation);
   await writeJson(join(project.config.resolvedBuild.outDir, "manifest.json"), manifest);

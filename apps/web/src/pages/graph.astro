@@ -1,0 +1,307 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { buildDocumentHref, collectFilterOptions } from "@lib/documents.js";
+import { loadActaWebData } from "@lib/project.js";
+
+const { project } = await loadActaWebData();
+const documents = project.documents;
+const filterOptions = collectFilterOptions(documents);
+const layerMap = new Map(
+  project.ordering.layers.flatMap((layer) =>
+    layer.documentIds.map((documentId) => [documentId, layer.index] as const),
+  ),
+);
+const maxLayer = Math.max(0, ...project.ordering.layers.map((layer) => layer.index));
+const nodeWidth = 210;
+const nodeHeight = 70;
+const layerGap = 130;
+const rowGap = 34;
+const margin = 36;
+const layers = Array.from({ length: maxLayer + 1 }, (_, index) =>
+  documents
+    .filter((document) => (layerMap.get(document.id) ?? 0) === index)
+    .sort((left, right) => {
+      const leftOrder = project.ordering.documentIds.indexOf(left.id);
+      const rightOrder = project.ordering.documentIds.indexOf(right.id);
+      return leftOrder - rightOrder;
+    }),
+);
+const graphNodes = layers.flatMap((layerDocuments, layerIndex) =>
+  layerDocuments.map((document, rowIndex) => ({
+    document,
+    x: margin + layerIndex * (nodeWidth + layerGap),
+    y: margin + rowIndex * (nodeHeight + rowGap),
+  })),
+);
+const positions = new Map(graphNodes.map((node) => [node.document.id, node]));
+const layerHeights = layers.map((layerDocuments) =>
+  Math.max(nodeHeight, layerDocuments.length * nodeHeight + Math.max(0, layerDocuments.length - 1) * rowGap),
+);
+const svgWidth = margin * 2 + (maxLayer + 1) * nodeWidth + maxLayer * layerGap;
+const svgHeight = margin * 2 + Math.max(nodeHeight, ...layerHeights);
+const graphEdges = project.graph.edges
+  .map((edge) => {
+    const source = positions.get(edge.source);
+    const target = positions.get(edge.target);
+    return source && target ? { ...edge, sourceNode: source, targetNode: target } : undefined;
+  })
+  .filter((edge) => edge !== undefined);
+
+function truncate(value: string, maxLength: number): string {
+  return value.length > maxLength ? `${value.slice(0, maxLength - 1)}...` : value;
+}
+---
+
+<BaseLayout title="Acta graph" description="Explore Acta document relationships">
+  <section class="page-header">
+    <div>
+      <p class="eyebrow">Repository viewer</p>
+      <h1>Graph</h1>
+      <p class="muted">
+        {project.graph.nodes.length} nodes, {project.graph.edges.length} relationships
+      </p>
+    </div>
+    <button class="button" id="graph-reset" type="button">Reset view</button>
+  </section>
+
+  <section class="graph-toolbar" aria-label="Graph filters">
+    <label>
+      <span>Kind</span>
+      <select id="graph-kind">
+        <option value="">All</option>
+        {filterOptions.kinds.map((kind) => <option value={kind}>{kind.toUpperCase()}</option>)}
+      </select>
+    </label>
+    <label>
+      <span>Status</span>
+      <select id="graph-status">
+        <option value="">All</option>
+        {filterOptions.statuses.map((status) => <option value={status}>{status}</option>)}
+      </select>
+    </label>
+  </section>
+
+  <section class="graph-shell" aria-label="Document relationship graph">
+    <svg
+      id="document-graph"
+      class="document-graph"
+      viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+      role="img"
+      aria-label="Acta document graph"
+    >
+      <defs>
+        <marker id="graph-arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L9,3 z"></path>
+        </marker>
+      </defs>
+      <rect class="graph-background" width={svgWidth} height={svgHeight}></rect>
+      <g id="graph-viewport">
+        {
+          graphEdges.map((edge) => (
+            <path
+              class={`graph-edge edge-${edge.type}`}
+              data-source={edge.source}
+              data-target={edge.target}
+              data-type={edge.type}
+              d={`M ${edge.sourceNode.x + nodeWidth} ${edge.sourceNode.y + nodeHeight / 2} C ${
+                edge.sourceNode.x + nodeWidth + layerGap / 2
+              } ${edge.sourceNode.y + nodeHeight / 2}, ${
+                edge.targetNode.x - layerGap / 2
+              } ${edge.targetNode.y + nodeHeight / 2}, ${edge.targetNode.x} ${
+                edge.targetNode.y + nodeHeight / 2
+              }`}
+            />
+          ))
+        }
+        {
+          graphNodes.map(({ document, x, y }) => (
+            <a
+              class="graph-node-link"
+              href={buildDocumentHref(document.id)}
+              data-id={document.id}
+              data-kind={document.kind}
+              data-status={document.status}
+            >
+              <g class={`graph-node node-${document.kind}`}>
+                <rect x={x} y={y} width={nodeWidth} height={nodeHeight} rx="8"></rect>
+                <text x={x + 14} y={y + 24} class="graph-node-id">{document.id}</text>
+                <text x={x + 14} y={y + 48} class="graph-node-title">
+                  {truncate(document.title, 28)}
+                </text>
+              </g>
+            </a>
+          ))
+        }
+      </g>
+    </svg>
+  </section>
+
+  <section class="graph-legend" aria-label="Graph legend">
+    <span><i class="legend-line solid"></i>Dependency</span>
+    <span><i class="legend-line related"></i>Related</span>
+    <span><i class="legend-line supersession"></i>Supersession</span>
+  </section>
+
+  <script>
+    const svg = document.querySelector<SVGSVGElement>("#document-graph");
+    const viewport = document.querySelector<SVGGElement>("#graph-viewport");
+    const resetButton = document.querySelector<HTMLButtonElement>("#graph-reset");
+    const kindSelect = document.querySelector<HTMLSelectElement>("#graph-kind");
+    const statusSelect = document.querySelector<HTMLSelectElement>("#graph-status");
+    const nodeLinks = Array.from(document.querySelectorAll<SVGAElement>(".graph-node-link"));
+    const edges = Array.from(document.querySelectorAll<SVGPathElement>(".graph-edge"));
+
+    if (!svg || !viewport || !resetButton || !kindSelect || !statusSelect) {
+      throw new Error("Graph controls failed to initialize.");
+    }
+
+    const graph = svg as SVGSVGElement;
+    const graphViewport = viewport as SVGGElement;
+    const graphReset = resetButton as HTMLButtonElement;
+    const kindFilter = kindSelect as HTMLSelectElement;
+    const statusFilter = statusSelect as HTMLSelectElement;
+    let scale = 1;
+    let translateX = 0;
+    let translateY = 0;
+    let dragStart:
+      | {
+          pointerId: number;
+          x: number;
+          y: number;
+          translateX: number;
+          translateY: number;
+        }
+      | undefined;
+    let selectedId = "";
+
+    function applyTransform() {
+      graphViewport.setAttribute(
+        "transform",
+        `translate(${translateX} ${translateY}) scale(${scale})`,
+      );
+    }
+
+    function connectedIds(id: string) {
+      const ids = new Set([id]);
+      for (const edge of edges) {
+        if (edge.dataset.source === id) {
+          ids.add(edge.dataset.target ?? "");
+        }
+        if (edge.dataset.target === id) {
+          ids.add(edge.dataset.source ?? "");
+        }
+      }
+      ids.delete("");
+      return ids;
+    }
+
+    function setActiveNode(id: string) {
+      selectedId = id;
+      const connected = id ? connectedIds(id) : new Set<string>();
+      graph.classList.toggle("has-active-node", Boolean(id));
+
+      for (const node of nodeLinks) {
+        const nodeId = node.dataset.id ?? "";
+        node.classList.toggle("is-active", nodeId === id);
+        node.classList.toggle("is-connected", connected.has(nodeId) && nodeId !== id);
+      }
+
+      for (const edge of edges) {
+        const isActive = edge.dataset.source === id || edge.dataset.target === id;
+        edge.classList.toggle("is-active", isActive);
+      }
+    }
+
+    function applyFilters() {
+      const hiddenIds = new Set<string>();
+      for (const node of nodeLinks) {
+        const hidden =
+          Boolean(kindFilter.value && node.dataset.kind !== kindFilter.value) ||
+          Boolean(statusFilter.value && node.dataset.status !== statusFilter.value);
+        node.classList.toggle("is-hidden", hidden);
+        if (hidden && node.dataset.id) {
+          hiddenIds.add(node.dataset.id);
+        }
+      }
+
+      for (const edge of edges) {
+        edge.classList.toggle(
+          "is-hidden",
+          hiddenIds.has(edge.dataset.source ?? "") || hiddenIds.has(edge.dataset.target ?? ""),
+        );
+      }
+
+      if (selectedId && hiddenIds.has(selectedId)) {
+        setActiveNode("");
+      }
+    }
+
+    graph.addEventListener(
+      "wheel",
+      (event) => {
+        event.preventDefault();
+        const nextScale = Math.min(2.4, Math.max(0.45, scale * (event.deltaY > 0 ? 0.9 : 1.1)));
+        const rect = graph.getBoundingClientRect();
+        const pointX = event.clientX - rect.left;
+        const pointY = event.clientY - rect.top;
+        translateX = pointX - (pointX - translateX) * (nextScale / scale);
+        translateY = pointY - (pointY - translateY) * (nextScale / scale);
+        scale = nextScale;
+        applyTransform();
+      },
+      { passive: false },
+    );
+
+    graph.addEventListener("pointerdown", (event) => {
+      if ((event.target as Element).closest(".graph-node-link")) {
+        return;
+      }
+      dragStart = {
+        pointerId: event.pointerId,
+        x: event.clientX,
+        y: event.clientY,
+        translateX,
+        translateY,
+      };
+      graph.setPointerCapture(event.pointerId);
+    });
+
+    graph.addEventListener("pointermove", (event) => {
+      if (!dragStart || dragStart.pointerId !== event.pointerId) {
+        return;
+      }
+      translateX = dragStart.translateX + event.clientX - dragStart.x;
+      translateY = dragStart.translateY + event.clientY - dragStart.y;
+      applyTransform();
+    });
+
+    graph.addEventListener("pointerup", () => {
+      dragStart = undefined;
+    });
+
+    for (const node of nodeLinks) {
+      node.addEventListener("mouseenter", () => setActiveNode(node.dataset.id ?? ""));
+      node.addEventListener("focus", () => setActiveNode(node.dataset.id ?? ""));
+      node.addEventListener("click", () => setActiveNode(node.dataset.id ?? ""));
+    }
+
+    graph.addEventListener("mouseleave", () => {
+      if (!selectedId) {
+        setActiveNode("");
+      }
+    });
+
+    graphReset.addEventListener("click", () => {
+      scale = 1;
+      translateX = 0;
+      translateY = 0;
+      setActiveNode("");
+      applyTransform();
+    });
+    kindFilter.addEventListener("change", applyFilters);
+    statusFilter.addEventListener("change", applyFilters);
+
+    applyTransform();
+    applyFilters();
+  </script>
+</BaseLayout>

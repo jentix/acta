@@ -2,6 +2,7 @@ import type { ActaDocument } from "@acta/core";
 import { describe, expect, it } from "vitest";
 import {
   buildDocumentHref,
+  buildDocumentOrderIndex,
   collectFilterOptions,
   getNextDocumentLimit,
   filterDocuments,
@@ -87,6 +88,20 @@ describe("web document utilities", () => {
       "SPEC-0002",
       "SPEC-0001",
     ]);
+  });
+
+  it("builds document order indexes for client-side sorting", () => {
+    const documents = [
+      documentFixture({ id: "SPEC-0001", date: "2026-04-26" }),
+      documentFixture({ id: "ADR-0004", date: "2026-05-01" }),
+      documentFixture({ id: "SPEC-0004", date: "2026-05-01" }),
+    ];
+
+    expect(buildDocumentOrderIndex(sortDocumentsByNewest(documents))).toEqual({
+      "SPEC-0004": 0,
+      "ADR-0004": 1,
+      "SPEC-0001": 2,
+    });
   });
 
   it("increments the document list limit without exceeding the matching count", () => {

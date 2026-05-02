@@ -73,6 +73,10 @@ export function sortDocumentsByNewest(documents: ActaDocument[]): ActaDocument[]
   });
 }
 
+export function buildDocumentOrderIndex(documents: ActaDocument[]): Record<string, number> {
+  return Object.fromEntries(documents.map((document, index) => [document.id, index]));
+}
+
 export function getNextDocumentLimit(
   currentLimit: number,
   matchingCount: number,

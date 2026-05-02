@@ -18,6 +18,21 @@ export type {
 } from "./config.js";
 export { buildGraph, deriveBacklinks } from "./graph.js";
 export type { DocumentGraph, GraphEdge, GraphNode } from "./graph.js";
+export {
+  buildDependencyLayers,
+  buildOrderingGraph,
+  sortDocumentsByDependency,
+} from "./ordering.js";
+export type {
+  DependencyLayer,
+  DependencySortOptions,
+  DependencyTieBreaker,
+  DocumentOrdering,
+  OrderingCycle,
+  OrderingGraphEdge,
+  OrderingGraphNode,
+  OrderingLinkKey,
+} from "./ordering.js";
 export { extractSections, hashContent, parseMarkdownDocument } from "./parse.js";
 export type { ParseDocumentInput, ParseDocumentResult } from "./parse.js";
 export { loadProject, validateLoadedProject } from "./project.js";
