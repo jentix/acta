@@ -2,6 +2,7 @@ import { access } from "node:fs/promises";
 import { dirname, join, parse, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadProject, validateProject, type LoadedActaProject, type ValidationResult } from "@acta/core";
+import { sortDocumentsByNewest } from "./documents.js";
 
 export interface ActaWebData {
   project: LoadedActaProject;
@@ -42,10 +43,7 @@ async function loadUncachedActaWebData(startDir: string): Promise<ActaWebData> {
   const project = await loadProject({ configPath });
   const validation = validateProject(project);
 
-  project.documents.sort((left, right) => {
-    const dateOrder = right.date.localeCompare(left.date);
-    return dateOrder === 0 ? left.id.localeCompare(right.id) : dateOrder;
-  });
+  project.documents = sortDocumentsByNewest(project.documents);
 
   return {
     project,

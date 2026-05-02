@@ -15,6 +15,8 @@ export interface FilterOptions {
   components: string[];
 }
 
+export const documentPageSize = 20;
+
 export const internalLinkKeys: InternalLinkKey[] = [
   "related",
   "supersedes",
@@ -62,6 +64,25 @@ export function filterDocuments(
 
     return query.length === 0 || getDocumentSearchText(document).includes(query);
   });
+}
+
+export function sortDocumentsByNewest(documents: ActaDocument[]): ActaDocument[] {
+  return documents.slice().sort((left, right) => {
+    const dateOrder = right.date.localeCompare(left.date);
+    return dateOrder === 0 ? right.id.localeCompare(left.id) : dateOrder;
+  });
+}
+
+export function getNextDocumentLimit(
+  currentLimit: number,
+  matchingCount: number,
+  pageSize = documentPageSize,
+): number {
+  return Math.min(currentLimit + pageSize, matchingCount);
+}
+
+export function shouldShowMoreDocuments(matchingCount: number, visibleLimit: number): boolean {
+  return matchingCount > visibleLimit;
 }
 
 export function getDocumentSearchText(document: ActaDocument): string {
