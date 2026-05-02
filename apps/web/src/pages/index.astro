@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import {
   buildDocumentHref,
   collectFilterOptions,
+  documentPageSize,
   getDocumentSearchText,
 } from "@lib/documents.js";
 import { loadActaWebData } from "@lib/project.js";
@@ -67,7 +68,12 @@ const specCount = documents.filter((document) => document.kind === "spec").lengt
     </label>
   </section>
 
-  <section class="document-list" id="document-list" aria-live="polite">
+  <section
+    class="document-list"
+    id="document-list"
+    aria-live="polite"
+    data-page-size={documentPageSize}
+  >
     {
       documents.map((document) => (
         <article
@@ -95,6 +101,9 @@ const specCount = documents.filter((document) => document.kind === "spec").lengt
     }
     <p class="empty-state" id="empty-state" hidden>No matching documents.</p>
   </section>
+  <div class="list-actions">
+    <button class="button" id="show-more" type="button" hidden>Show more</button>
+  </div>
 
   <script>
     const searchInput = document.querySelector<HTMLInputElement>("#search");
@@ -102,6 +111,8 @@ const specCount = documents.filter((document) => document.kind === "spec").lengt
     const statusSelect = document.querySelector<HTMLSelectElement>("#status");
     const tagSelect = document.querySelector<HTMLSelectElement>("#tag");
     const componentSelect = document.querySelector<HTMLSelectElement>("#component");
+    const documentList = document.querySelector<HTMLElement>("#document-list");
+    const showMoreButton = document.querySelector<HTMLButtonElement>("#show-more");
     const rows = Array.from(document.querySelectorAll<HTMLElement>(".document-row"));
     const emptyState = document.querySelector<HTMLElement>("#empty-state");
 
@@ -111,6 +122,8 @@ const specCount = documents.filter((document) => document.kind === "spec").lengt
       !statusSelect ||
       !tagSelect ||
       !componentSelect ||
+      !documentList ||
+      !showMoreButton ||
       !emptyState
     ) {
       throw new Error("Document filter controls failed to initialize.");
@@ -121,8 +134,14 @@ const specCount = documents.filter((document) => document.kind === "spec").lengt
     const statusFilter = statusSelect as HTMLSelectElement;
     const tagFilter = tagSelect as HTMLSelectElement;
     const componentFilter = componentSelect as HTMLSelectElement;
+    const list = documentList as HTMLElement;
+    const showMore = showMoreButton as HTMLButtonElement;
     const empty = emptyState as HTMLElement;
     const controls = [search, kindFilter, statusFilter, tagFilter, componentFilter];
+    const pageSize = Number.parseInt(list.dataset.pageSize ?? "20", 10);
+    const increment = Number.isFinite(pageSize) && pageSize > 0 ? pageSize : 20;
+    let visibleLimit = increment;
+    let currentMatchingCount = rows.length;
 
     function normalize(value: string) {
       return String(value || "").toLowerCase().trim();
@@ -134,7 +153,7 @@ const specCount = documents.filter((document) => document.kind === "spec").lengt
       const status = statusFilter.value;
       const tag = tagFilter.value;
       const component = componentFilter.value;
-      let visibleCount = 0;
+      let matchingCount = 0;
 
       for (const row of rows) {
         const matches =
@@ -144,18 +163,33 @@ const specCount = documents.filter((document) => document.kind === "spec").lengt
           (!tag || (row.dataset.tags ?? "").split(" ").includes(tag)) &&
           (!component || (row.dataset.components ?? "").split(" ").includes(component));
 
-        row.hidden = !matches;
+        const isWithinLimit = matchingCount < visibleLimit;
+        row.hidden = !matches || !isWithinLimit;
         if (matches) {
-          visibleCount += 1;
+          matchingCount += 1;
         }
       }
 
-      empty.hidden = visibleCount > 0;
+      currentMatchingCount = matchingCount;
+      empty.hidden = matchingCount > 0;
+      showMore.hidden = matchingCount <= visibleLimit;
     }
 
+    const resetAndUpdateFilters = () => {
+      visibleLimit = increment;
+      updateFilters();
+    };
+
     for (const control of controls) {
-      control.addEventListener("input", updateFilters);
-      control.addEventListener("change", updateFilters);
+      control.addEventListener("input", resetAndUpdateFilters);
+      control.addEventListener("change", resetAndUpdateFilters);
     }
+
+    showMore.addEventListener("click", () => {
+      visibleLimit = Math.min(visibleLimit + increment, currentMatchingCount);
+      updateFilters();
+    });
+
+    updateFilters();
   </script>
 </BaseLayout>

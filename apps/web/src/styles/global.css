@@ -193,6 +193,12 @@ select {
   background: var(--panel);
 }
 
+.list-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 14px;
+}
+
 .document-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

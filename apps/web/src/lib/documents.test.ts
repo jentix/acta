@@ -3,8 +3,11 @@ import { describe, expect, it } from "vitest";
 import {
   buildDocumentHref,
   collectFilterOptions,
+  getNextDocumentLimit,
   filterDocuments,
   getDocumentSearchText,
+  shouldShowMoreDocuments,
+  sortDocumentsByNewest,
 } from "./documents.js";
 
 describe("web document utilities", () => {
@@ -68,6 +71,29 @@ describe("web document utilities", () => {
         component: "acta-web",
       }).map((document) => document.id),
     ).toEqual(["SPEC-0004"]);
+  });
+
+  it("sorts newest documents first and uses descending IDs for matching dates", () => {
+    const documents = [
+      documentFixture({ id: "SPEC-0001", date: "2026-04-26" }),
+      documentFixture({ id: "SPEC-0002", date: "2026-04-26" }),
+      documentFixture({ id: "ADR-0004", date: "2026-05-01" }),
+      documentFixture({ id: "SPEC-0004", date: "2026-05-01" }),
+    ];
+
+    expect(sortDocumentsByNewest(documents).map((document) => document.id)).toEqual([
+      "SPEC-0004",
+      "ADR-0004",
+      "SPEC-0002",
+      "SPEC-0001",
+    ]);
+  });
+
+  it("increments the document list limit without exceeding the matching count", () => {
+    expect(getNextDocumentLimit(20, 45)).toBe(40);
+    expect(getNextDocumentLimit(40, 45)).toBe(45);
+    expect(shouldShowMoreDocuments(45, 40)).toBe(true);
+    expect(shouldShowMoreDocuments(45, 45)).toBe(false);
   });
 
   it("includes metadata and section content in search text", () => {
