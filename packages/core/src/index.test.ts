@@ -164,10 +164,14 @@ describe("@acta/core", () => {
       const searchIndex = JSON.parse(
         await readFile(join(fixture.root, ".acta/dist/search-index.json"), "utf8"),
       );
+      const ordering = JSON.parse(
+        await readFile(join(fixture.root, ".acta/dist/ordering.json"), "utf8"),
+      );
 
       expect(result.manifest.documentCount).toBe(2);
       expect(manifest.documentCount).toBe(2);
       expect(searchIndex).toHaveLength(2);
+      expect(ordering.documentIds).toEqual(["ADR-0001", "SPEC-0001"]);
     });
   });
 

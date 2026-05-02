@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import {
+  buildDocumentOrderIndex,
   buildDocumentHref,
   collectFilterOptions,
   documentPageSize,
@@ -13,6 +14,12 @@ const documents = project.documents;
 const filterOptions = collectFilterOptions(documents);
 const adrCount = documents.filter((document) => document.kind === "adr").length;
 const specCount = documents.filter((document) => document.kind === "spec").length;
+const newestOrder = buildDocumentOrderIndex(documents);
+const documentsById = new Map(documents.map((document) => [document.id, document]));
+const dependencyOrderDocuments = project.ordering.documentIds
+  .map((id) => documentsById.get(id))
+  .filter((document) => document !== undefined);
+const dependencyOrder = buildDocumentOrderIndex(dependencyOrderDocuments);
 ---
 
 <BaseLayout title="Acta documents" description="Browse Acta ADR and spec documents">
@@ -66,6 +73,17 @@ const specCount = documents.filter((document) => document.kind === "spec").lengt
         }
       </select>
     </label>
+    <fieldset class="segmented-control" aria-label="Document sort order">
+      <legend>Sort</legend>
+      <label>
+        <input type="radio" name="sort-order" value="newest" checked />
+        <span>Newest first</span>
+      </label>
+      <label>
+        <input type="radio" name="sort-order" value="dependency" />
+        <span>Dependency order</span>
+      </label>
+    </fieldset>
   </section>
 
   <section
@@ -82,6 +100,8 @@ const specCount = documents.filter((document) => document.kind === "spec").lengt
           data-status={document.status}
           data-tags={document.tags.join(" ")}
           data-components={document.component.join(" ")}
+          data-newest-order={newestOrder[document.id]}
+          data-dependency-order={dependencyOrder[document.id] ?? newestOrder[document.id]}
           data-search={getDocumentSearchText(document)}
         >
           <div class="row-main">
@@ -111,6 +131,9 @@ const specCount = documents.filter((document) => document.kind === "spec").lengt
     const statusSelect = document.querySelector<HTMLSelectElement>("#status");
     const tagSelect = document.querySelector<HTMLSelectElement>("#tag");
     const componentSelect = document.querySelector<HTMLSelectElement>("#component");
+    const sortInputs = Array.from(
+      document.querySelectorAll<HTMLInputElement>('input[name="sort-order"]'),
+    );
     const documentList = document.querySelector<HTMLElement>("#document-list");
     const showMoreButton = document.querySelector<HTMLButtonElement>("#show-more");
     const rows = Array.from(document.querySelectorAll<HTMLElement>(".document-row"));
@@ -122,6 +145,7 @@ const specCount = documents.filter((document) => document.kind === "spec").lengt
       !statusSelect ||
       !tagSelect ||
       !componentSelect ||
+      sortInputs.length === 0 ||
       !documentList ||
       !showMoreButton ||
       !emptyState
@@ -137,7 +161,7 @@ const specCount = documents.filter((document) => document.kind === "spec").lengt
     const list = documentList as HTMLElement;
     const showMore = showMoreButton as HTMLButtonElement;
     const empty = emptyState as HTMLElement;
-    const controls = [search, kindFilter, statusFilter, tagFilter, componentFilter];
+    const controls = [search, kindFilter, statusFilter, tagFilter, componentFilter, ...sortInputs];
     const pageSize = Number.parseInt(list.dataset.pageSize ?? "20", 10);
     const increment = Number.isFinite(pageSize) && pageSize > 0 ? pageSize : 20;
     let visibleLimit = increment;
@@ -153,7 +177,9 @@ const specCount = documents.filter((document) => document.kind === "spec").lengt
       const status = statusFilter.value;
       const tag = tagFilter.value;
       const component = componentFilter.value;
-      let matchingCount = 0;
+      const sortOrder = sortInputs.find((input) => input.checked)?.value ?? "newest";
+      const orderKey = sortOrder === "dependency" ? "dependencyOrder" : "newestOrder";
+      const matchingRows = [];
 
       for (const row of rows) {
         const matches =
@@ -163,16 +189,31 @@ const specCount = documents.filter((document) => document.kind === "spec").lengt
           (!tag || (row.dataset.tags ?? "").split(" ").includes(tag)) &&
           (!component || (row.dataset.components ?? "").split(" ").includes(component));
 
-        const isWithinLimit = matchingCount < visibleLimit;
-        row.hidden = !matches || !isWithinLimit;
         if (matches) {
-          matchingCount += 1;
+          matchingRows.push(row);
         }
       }
 
-      currentMatchingCount = matchingCount;
-      empty.hidden = matchingCount > 0;
-      showMore.hidden = matchingCount <= visibleLimit;
+      matchingRows.sort((left, right) => {
+        const leftOrder = Number.parseInt(left.dataset[orderKey] ?? "0", 10);
+        const rightOrder = Number.parseInt(right.dataset[orderKey] ?? "0", 10);
+        return leftOrder - rightOrder;
+      });
+
+      for (const row of rows) {
+        row.hidden = true;
+      }
+
+      matchingRows.forEach((row, index) => {
+        list.append(row);
+        row.hidden = index >= visibleLimit;
+      });
+
+      list.append(empty);
+
+      currentMatchingCount = matchingRows.length;
+      empty.hidden = matchingRows.length > 0;
+      showMore.hidden = matchingRows.length <= visibleLimit;
     }
 
     const resetAndUpdateFilters = () => {

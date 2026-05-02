@@ -1,6 +1,7 @@
 import type { ResolvedActaConfig } from "./config.js";
 import { loadConfig, resolveConfig, type ActaConfigInput } from "./config.js";
 import { buildGraph, deriveBacklinks, type DocumentGraph } from "./graph.js";
+import { buildOrderingGraph, type DocumentOrdering } from "./ordering.js";
 import { parseMarkdownDocument } from "./parse.js";
 import { scanMarkdownFiles } from "./scanner.js";
 import type { ActaDocument } from "./schema.js";
@@ -10,6 +11,7 @@ export interface LoadedActaProject {
   config: ResolvedActaConfig;
   documents: ActaDocument[];
   graph: DocumentGraph;
+  ordering: DocumentOrdering;
   issues: ValidationIssue[];
 }
 
@@ -36,12 +38,14 @@ export async function loadProject(options: LoadProjectOptions = {}): Promise<Loa
     parseResults.flatMap((result) => (result.document ? [result.document] : [])),
   );
   const graph = buildGraph(documents);
+  const ordering = buildOrderingGraph(documents);
   const issues = parseResults.flatMap((result) => result.issues);
 
   return {
     config,
     documents,
     graph,
+    ordering,
     issues,
   };
 }
