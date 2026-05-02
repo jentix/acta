@@ -20,6 +20,7 @@ acta/
 │   │       ├── project.ts      # loadProject, validateLoadedProject
 │   │       ├── validation.ts   # Validation rules engine, ValidationResult
 │   │       ├── graph.ts        # buildGraph, deriveBacklinks
+│   │       ├── ordering.ts     # dependency ordering graph, topological sort, layout layers
 │   │       ├── artifacts.ts    # buildArtifacts — writes .acta/dist/*.json
 │   │       └── index.ts        # Public API re-exports
 │   ├── cli/                    # @acta/cli — thin CLI layer over core (bin: acta)
@@ -39,7 +40,7 @@ acta/
 │   ├── specs/                  # Spec documents (SPEC-NNNN-<slug>.md)
 │   └── templates/              # adr.md and spec.md templates used by `acta new`
 ├── .acta/                      # Build artifacts (gitignored)
-│   ├── dist/                   # documents.json, graph.json, search-index.json, validation.json, manifest.json
+│   ├── dist/                   # documents.json, graph.json, ordering.json, search-index.json, validation.json, manifest.json
 │   └── cache/                  # content-cache.json
 ├── acta.config.ts              # Acta configuration for this repository
 ├── package.json                # Root workspace scripts and engines declaration
