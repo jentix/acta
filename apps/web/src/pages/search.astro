@@ -1,0 +1,23 @@
+---
+import DocumentSearchList from "../components/DocumentSearchList.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { loadActaWebData } from "@lib/project.js";
+
+const { project } = await loadActaWebData();
+---
+
+<BaseLayout title="Acta search" description="Search Acta ADR and spec documents">
+  <section class="page-header">
+    <div>
+      <p class="eyebrow">Repository search</p>
+      <h1>Search</h1>
+      <p class="muted">{project.documents.length} searchable documents</p>
+    </div>
+  </section>
+
+  <DocumentSearchList
+    documents={project.documents}
+    dependencyDocumentIds={project.ordering.documentIds}
+    searchLinkLabel="Share search"
+  />
+</BaseLayout>

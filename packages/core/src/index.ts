@@ -3,7 +3,8 @@ export type {
   BuildArtifactsResult,
   BuildManifest,
   ContentCache,
-  SearchIndexEntry,
+  SearchIndexArtifact,
+  SearchIndexDocument,
 } from "./artifacts.js";
 export {
   actaConfigSchema,

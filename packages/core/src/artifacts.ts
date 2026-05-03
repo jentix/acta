@@ -9,19 +9,24 @@ export const schemaVersion = "1.0.0";
 export const parserVersion = "1.0.0";
 export const toolVersion = "0.0.0";
 
-export interface SearchIndexEntry {
+export interface SearchIndexArtifact {
+  schemaVersion: string;
+  documents: SearchIndexDocument[];
+}
+
+export interface SearchIndexDocument {
   id: string;
   kind: "adr" | "spec";
   status: string;
+  date: string;
+  href: string;
   title: string;
-  summary?: string;
+  summary: string;
   tags: string[];
-  component: string[];
+  components: string[];
   owners: string[];
-  sections: Array<{
-    title: string;
-    text: string;
-  }>;
+  sectionsText: string;
+  bodyText: string;
 }
 
 export interface BuildManifest {
@@ -49,7 +54,7 @@ export interface BuildArtifactsResult {
   project: LoadedActaProject;
   validation: ValidationResult;
   manifest: BuildManifest;
-  searchIndex: SearchIndexEntry[];
+  searchIndex: SearchIndexArtifact;
 }
 
 export async function buildArtifacts(
@@ -102,21 +107,26 @@ export async function buildArtifacts(
   };
 }
 
-export function buildSearchIndex(documents: ActaDocument[]): SearchIndexEntry[] {
-  return documents.map((document) => ({
-    id: document.id,
-    kind: document.kind,
-    status: document.status,
-    title: document.title,
-    summary: document.summary,
-    tags: document.tags,
-    component: document.component,
-    owners: document.owners,
-    sections: document.sections.map((section) => ({
-      title: section.title,
-      text: section.content,
+export function buildSearchIndex(documents: ActaDocument[]): SearchIndexArtifact {
+  return {
+    schemaVersion,
+    documents: documents.map((document) => ({
+      id: document.id,
+      href: `/documents/${encodeURIComponent(document.id)}/`,
+      kind: document.kind,
+      status: document.status,
+      date: document.date,
+      title: document.title,
+      summary: document.summary ?? "",
+      tags: document.tags,
+      components: document.component,
+      owners: document.owners,
+      sectionsText: document.sections
+        .map((section) => `${section.title}\n${section.content}`)
+        .join("\n\n"),
+      bodyText: document.body,
     })),
-  }));
+  };
 }
 
 async function writeJson(path: string, value: unknown): Promise<void> {

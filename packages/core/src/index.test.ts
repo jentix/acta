@@ -170,7 +170,37 @@ describe("@acta/core", () => {
 
       expect(result.manifest.documentCount).toBe(2);
       expect(manifest.documentCount).toBe(2);
-      expect(searchIndex).toHaveLength(2);
+      expect(searchIndex).toMatchObject({
+        schemaVersion: "1.0.0",
+        documents: [
+          {
+            id: "ADR-0001",
+            href: "/documents/ADR-0001/",
+            kind: "adr",
+            status: "accepted",
+            title: "Use core",
+            summary: "Test ADR.",
+            tags: ["core"],
+            components: ["acta-core"],
+            owners: ["Boris"],
+            sectionsText: expect.any(String),
+            bodyText: expect.any(String),
+          },
+          {
+            id: "SPEC-0001",
+            href: "/documents/SPEC-0001/",
+            kind: "spec",
+            status: "active",
+            title: "Core pipeline",
+            summary: "Test spec.",
+            tags: ["core"],
+            components: ["acta-core"],
+            owners: ["Boris"],
+            sectionsText: expect.any(String),
+            bodyText: expect.any(String),
+          },
+        ],
+      });
       expect(ordering.documentIds).toEqual(["ADR-0001", "SPEC-0001"]);
     });
   });
@@ -217,6 +247,7 @@ describe("@acta/core", () => {
       "SPEC-0002",
       "SPEC-0003",
       "SPEC-0004",
+      "SPEC-0005",
     ]);
     expect(validation.errors).toEqual([]);
   });

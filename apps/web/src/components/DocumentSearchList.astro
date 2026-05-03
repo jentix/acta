@@ -1,0 +1,125 @@
+---
+import type { ActaDocument } from "@acta/core";
+import {
+  buildDocumentHref,
+  buildDocumentOrderIndex,
+  collectFilterOptions,
+  documentPageSize,
+} from "../lib/documents.js";
+
+interface Props {
+  documents: ActaDocument[];
+  dependencyDocumentIds: string[];
+  searchLinkLabel: string;
+}
+
+const { documents, dependencyDocumentIds, searchLinkLabel } = Astro.props;
+const filterOptions = collectFilterOptions(documents);
+const newestOrder = buildDocumentOrderIndex(documents);
+const documentsById = new Map(documents.map((document) => [document.id, document]));
+const dependencyOrderDocuments = dependencyDocumentIds
+  .map((id) => documentsById.get(id))
+  .filter((document) => document !== undefined);
+const dependencyOrder = buildDocumentOrderIndex(dependencyOrderDocuments);
+---
+
+<div data-document-search-root>
+  <section class="toolbar" aria-label="Document filters">
+    <label>
+      <span>Search</span>
+      <input data-search-query type="search" placeholder="Title, tag, owner, section..." />
+    </label>
+    <label>
+      <span>Kind</span>
+      <select data-filter-kind>
+        <option value="">All</option>
+        {filterOptions.kinds.map((kind) => <option value={kind}>{kind.toUpperCase()}</option>)}
+      </select>
+    </label>
+    <label>
+      <span>Status</span>
+      <select data-filter-status>
+        <option value="">All</option>
+        {filterOptions.statuses.map((status) => <option value={status}>{status}</option>)}
+      </select>
+    </label>
+    <label>
+      <span>Tag</span>
+      <select data-filter-tag>
+        <option value="">All</option>
+        {filterOptions.tags.map((tag) => <option value={tag}>{tag}</option>)}
+      </select>
+    </label>
+    <label>
+      <span>Component</span>
+      <select data-filter-component>
+        <option value="">All</option>
+        {
+          filterOptions.components.map((component) => (
+            <option value={component}>{component}</option>
+          ))
+        }
+      </select>
+    </label>
+    <fieldset class="segmented-control" aria-label="Document sort order">
+      <legend>Sort</legend>
+      <label>
+        <input data-sort-order type="radio" name="sort-order" value="newest" checked />
+        <span>Newest first</span>
+      </label>
+      <label>
+        <input data-sort-order type="radio" name="sort-order" value="dependency" />
+        <span>Dependency order</span>
+      </label>
+    </fieldset>
+    <a class="button" data-search-link href="/search">{searchLinkLabel}</a>
+  </section>
+
+  <section
+    class="document-list"
+    aria-live="polite"
+    data-document-list
+    data-page-size={documentPageSize}
+  >
+    {
+      documents.map((document) => (
+        <article
+          class="document-row"
+          data-document-row
+          data-document-id={document.id}
+          data-kind={document.kind}
+          data-status={document.status}
+          data-tags={document.tags.join(" ")}
+          data-components={document.component.join(" ")}
+          data-newest-order={newestOrder[document.id]}
+          data-dependency-order={dependencyOrder[document.id] ?? newestOrder[document.id]}
+        >
+          <div class="row-main">
+            <a class="document-title" href={buildDocumentHref(document.id)}>
+              <span class="document-id">{document.id}</span>
+              {document.title}
+            </a>
+            {document.summary && <p>{document.summary}</p>}
+          </div>
+          <div class="row-meta">
+            <span class={`badge kind-${document.kind}`}>{document.kind}</span>
+            <span class={`badge status-${document.status}`}>{document.status}</span>
+            <span class="muted">{document.date}</span>
+          </div>
+        </article>
+      ))
+    }
+    <p class="empty-state" data-empty-state hidden>No matching documents.</p>
+  </section>
+  <div class="list-actions">
+    <button class="button" data-show-more type="button" hidden>Show more</button>
+  </div>
+</div>
+
+<script>
+  import { initDocumentSearch } from "../lib/search-client.js";
+
+  for (const root of document.querySelectorAll<HTMLElement>("[data-document-search-root]")) {
+    initDocumentSearch(root);
+  }
+</script>
