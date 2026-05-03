@@ -19,7 +19,7 @@ The web viewer is read-only. Markdown remains the source of truth and the viewer
 ## Workspace
 
 ```txt
- apps/web          Astro static web viewer
+apps/web          Astro static web viewer
 packages/core     Schemas, parser, validator, graph, search index and artifacts
 packages/cli      CLI package with the acta binary
 packages/renderer Markdown-to-HTML rendering helpers
