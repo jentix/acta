@@ -1,9 +1,9 @@
-import { defineCommand } from "citty";
-import { mkdir, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { createInterface } from "node:readline";
 import { resolveConfig } from "@acta/core";
+import { defineCommand } from "citty";
 import { printLine, printSuccess, printWarn } from "../output.js";
 
 // Built-in bundled templates (inline defaults) used when no existing template found
@@ -112,6 +112,72 @@ export default defineConfig({
 });
 `;
 
+const LEFTHOOK_TEMPLATE = `pre-commit:
+  commands:
+    biome:
+      glob: "*.{js,jsx,ts,tsx,json,jsonc,css,md,yml,yaml}"
+      run: pnpm exec biome check --write --files-ignore-unknown=true {staged_files}
+      stage_fixed: true
+
+pre-push:
+  commands:
+    typecheck:
+      run: pnpm typecheck
+    test:
+      run: pnpm test
+`;
+
+const GITHUB_ACTION_TEMPLATE = `name: Acta CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Check formatting
+        run: pnpm format:check
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+      - name: Validate Acta docs
+        run: pnpm exec acta validate
+
+      - name: Build Acta artifacts
+        run: pnpm exec acta build
+`;
+
 async function confirm(message: string): Promise<boolean> {
   return new Promise((resolvePromise) => {
     const rl = createInterface({ input: process.stdin, output: process.stdout });
@@ -122,11 +188,7 @@ async function confirm(message: string): Promise<boolean> {
   });
 }
 
-async function safeWriteFile(
-  filePath: string,
-  content: string,
-  yes: boolean,
-): Promise<boolean> {
+async function safeWriteFile(filePath: string, content: string, yes: boolean): Promise<boolean> {
   if (existsSync(filePath)) {
     if (!yes) {
       const ok = await confirm(`  Overwrite ${filePath}?`);
@@ -156,12 +218,12 @@ export const initCommand = defineCommand({
     },
     hooks: {
       type: "boolean",
-      description: "Install lefthook pre-commit hook template (placeholder)",
+      description: "Install Lefthook workflow template",
       default: false,
     },
     "github-action": {
       type: "boolean",
-      description: "Install GitHub Actions workflow template (placeholder)",
+      description: "Install GitHub Actions workflow template",
       default: false,
     },
     config: {
@@ -217,12 +279,20 @@ export const initCommand = defineCommand({
       }
     }
 
-    // 5. Placeholder notices for hooks / github-action
+    // 5. Optional workflow templates
     if (args.hooks) {
-      printWarn("--hooks: lefthook template not yet implemented (Phase 4)");
+      const lefthookPath = join(cwd, "lefthook.yml");
+      const lefthookWritten = await safeWriteFile(lefthookPath, LEFTHOOK_TEMPLATE, yes);
+      if (lefthookWritten) printSuccess(`Created ${lefthookPath}`);
     }
+
     if (args["github-action"]) {
-      printWarn("--github-action: GH Actions template not yet implemented (Phase 4)");
+      const workflowsDir = join(cwd, ".github", "workflows");
+      await mkdir(workflowsDir, { recursive: true });
+
+      const workflowPath = join(workflowsDir, "acta-ci.yml");
+      const workflowWritten = await safeWriteFile(workflowPath, GITHUB_ACTION_TEMPLATE, yes);
+      if (workflowWritten) printSuccess(`Created ${workflowPath}`);
     }
 
     printLine();

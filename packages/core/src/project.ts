@@ -1,6 +1,6 @@
 import type { ResolvedActaConfig } from "./config.js";
-import { loadConfig, resolveConfig, type ActaConfigInput } from "./config.js";
-import { buildGraph, deriveBacklinks, type DocumentGraph } from "./graph.js";
+import { type ActaConfigInput, loadConfig, resolveConfig } from "./config.js";
+import { buildGraph, type DocumentGraph, deriveBacklinks } from "./graph.js";
 import { buildOrderingGraph, type DocumentOrdering } from "./ordering.js";
 import { parseMarkdownDocument } from "./parse.js";
 import { scanMarkdownFiles } from "./scanner.js";

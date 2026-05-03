@@ -1,17 +1,14 @@
-import { loadConfig, resolveConfig } from "@acta/core";
-import type { ResolvedActaConfig } from "@acta/core";
 import { existsSync } from "node:fs";
 import { join, resolve } from "node:path";
+import type { ResolvedActaConfig } from "@acta/core";
+import { loadConfig, resolveConfig } from "@acta/core";
 
 export interface CliContext {
   config: ResolvedActaConfig;
   cwd: string;
 }
 
-export async function resolveContext(opts: {
-  config?: string;
-  cwd?: string;
-}): Promise<CliContext> {
+export async function resolveContext(opts: { config?: string; cwd?: string }): Promise<CliContext> {
   const cwd = resolve(opts.cwd ?? process.cwd());
 
   if (opts.config) {

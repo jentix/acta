@@ -1,5 +1,5 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { createFixture, adrContent, specContent } from "./fixture.js";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { adrContent, createFixture, specContent } from "./fixture.js";
 
 vi.spyOn(process, "exit").mockImplementation((code) => {
   throw new Error(`process.exit(${code})`);

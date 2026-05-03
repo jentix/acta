@@ -1,6 +1,6 @@
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
@@ -248,6 +248,7 @@ describe("@acta/core", () => {
       "SPEC-0003",
       "SPEC-0004",
       "SPEC-0005",
+      "SPEC-0006",
     ]);
     expect(validation.errors).toEqual([]);
   });

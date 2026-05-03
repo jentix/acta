@@ -1,10 +1,10 @@
-import { defineCommand } from "citty";
-import { loadProject, internalLinkKeys } from "@acta/core";
-import type { ActaDocument } from "@acta/core";
 import { readFile, rename, writeFile } from "node:fs/promises";
 import { basename, dirname, join } from "node:path";
-import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
+import type { ActaDocument } from "@acta/core";
+import { internalLinkKeys, loadProject } from "@acta/core";
+import { defineCommand } from "citty";
 import kleur from "kleur";
+import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 import { resolveContext } from "../context.js";
 import { exitFailure, exitUsage, printLine, printSuccess, printWarn } from "../output.js";
 
@@ -23,17 +23,13 @@ function buildRenumberPlan(
   toId: string,
   project: Awaited<ReturnType<typeof loadProject>>,
 ): RenumberPlan {
-  const target = project.documents.find(
-    (d) => d.id.toLowerCase() === fromId.toLowerCase(),
-  );
+  const target = project.documents.find((d) => d.id.toLowerCase() === fromId.toLowerCase());
 
   if (!target) {
     exitFailure(`Document "${fromId}" not found.`);
   }
 
-  const collision = project.documents.find(
-    (d) => d.id.toLowerCase() === toId.toLowerCase(),
-  );
+  const collision = project.documents.find((d) => d.id.toLowerCase() === toId.toLowerCase());
   if (collision) {
     exitFailure(`Target ID "${toId}" already exists at ${collision.file.path}.`);
   }
@@ -56,9 +52,7 @@ function buildRenumberPlan(
   // Find all docs that reference fromId in internal links
   const affectedDocs = project.documents
     .filter((d) => d.id !== target.id)
-    .filter((d) =>
-      internalLinkKeys.some((key) => d.links[key].includes(target.id)),
-    )
+    .filter((d) => internalLinkKeys.some((key) => d.links[key].includes(target.id)))
     .map((d) => ({ doc: d, path: d.file.path }));
 
   return {
@@ -156,7 +150,9 @@ export const renumberCommand = defineCommand({
     printLine();
     printLine(kleur.bold("Renumber plan:"));
     printLine(`  ${kleur.dim("rename")}  ${plan.target.id} → ${kleur.bold(toId)}`);
-    printLine(`  ${kleur.dim("file")}    ${basename(plan.oldPath)} → ${kleur.bold(plan.newFilename)}`);
+    printLine(
+      `  ${kleur.dim("file")}    ${basename(plan.oldPath)} → ${kleur.bold(plan.newFilename)}`,
+    );
 
     if (plan.affectedDocs.length > 0) {
       printLine(`  ${kleur.dim("update links in:")}`);

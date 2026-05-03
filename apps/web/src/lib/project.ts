@@ -1,7 +1,12 @@
 import { access } from "node:fs/promises";
 import { dirname, join, parse, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { loadProject, validateProject, type LoadedActaProject, type ValidationResult } from "@acta/core";
+import {
+  type LoadedActaProject,
+  loadProject,
+  type ValidationResult,
+  validateProject,
+} from "@acta/core";
 import { sortDocumentsByNewest } from "./documents.js";
 
 export interface ActaWebData {

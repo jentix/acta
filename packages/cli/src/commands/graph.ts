@@ -1,6 +1,6 @@
-import { defineCommand } from "citty";
-import { buildGraph, loadProject } from "@acta/core";
 import type { DocumentGraph, GraphEdge, GraphNode } from "@acta/core";
+import { buildGraph, loadProject } from "@acta/core";
+import { defineCommand } from "citty";
 import { resolveContext } from "../context.js";
 import { exitUsage, printJson, printLine } from "../output.js";
 

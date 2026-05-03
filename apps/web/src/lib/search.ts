@@ -78,7 +78,9 @@ export async function searchDocuments(
     ? await rankedDocuments(index, normalizedQuery)
     : index.documents;
 
-  return filteredDocuments.filter((document) => matchesFilters(document, filters)).map((document) => document.id);
+  return filteredDocuments
+    .filter((document) => matchesFilters(document, filters))
+    .map((document) => document.id);
 }
 
 function matchesFilters(document: WebSearchIndexDocument, filters: WebSearchFilters): boolean {
@@ -98,7 +100,16 @@ async function rankedDocuments(
   await insertMultiple(db, index.documents);
   const result = await search<typeof db, WebSearchIndexDocument>(db, {
     term: query,
-    properties: ["id", "title", "summary", "tags", "components", "owners", "sectionsText", "bodyText"],
+    properties: [
+      "id",
+      "title",
+      "summary",
+      "tags",
+      "components",
+      "owners",
+      "sectionsText",
+      "bodyText",
+    ],
     boost: {
       id: 16,
       title: 10,

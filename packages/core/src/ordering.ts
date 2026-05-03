@@ -58,7 +58,10 @@ export function buildOrderingGraph(
     date: document.date,
   }));
   const edges = buildOrderingEdges(documents);
-  const cycles = detectCycles(nodes.map((node) => node.id), edges);
+  const cycles = detectCycles(
+    nodes.map((node) => node.id),
+    edges,
+  );
   const documentIds = sortDocumentsByDependency(documents, options).map((document) => document.id);
   const layers = buildDependencyLayers(documents, options).layers;
 
@@ -76,7 +79,9 @@ export function sortDocumentsByDependency(
   options: DependencySortOptions = {},
 ): ActaDocument[] {
   const documentsById = new Map(documents.map((document) => [document.id, document]));
-  return topologicalDocumentIds(documents, options).map((id) => documentsById.get(id) as ActaDocument);
+  return topologicalDocumentIds(documents, options).map(
+    (id) => documentsById.get(id) as ActaDocument,
+  );
 }
 
 export function buildDependencyLayers(

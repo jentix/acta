@@ -1,5 +1,5 @@
-import kleur from "kleur";
 import type { ValidationIssue } from "@acta/core";
+import kleur from "kleur";
 
 // ---------------------------------------------------------------------------
 // Print helpers
@@ -49,9 +49,7 @@ export function exitUsage(msg: string): never {
 
 export function printIssues(issues: ValidationIssue[]): void {
   for (const issue of issues) {
-    const prefix = issue.severity === "error"
-      ? kleur.red("✗ error")
-      : kleur.yellow("⚠ warn ");
+    const prefix = issue.severity === "error" ? kleur.red("✗ error") : kleur.yellow("⚠ warn ");
     const location = issue.documentId ? kleur.bold(issue.documentId) : (issue.path ?? "");
     printLine(`  ${prefix}  ${location}  ${issue.message}`);
   }
@@ -63,11 +61,13 @@ export function printValidationSummary(
   valid: boolean,
 ): void {
   if (valid) {
-    printSuccess(`Validation passed  ${kleur.dim(`(${warningCount} warning${warningCount !== 1 ? "s" : ""})`)}`);
+    printSuccess(
+      `Validation passed  ${kleur.dim(`(${warningCount} warning${warningCount !== 1 ? "s" : ""})`)}`,
+    );
   } else {
     printLine(
-      `  ${kleur.red(`${errorCount} error${errorCount !== 1 ? "s" : ""}`)}`
-      + `  ${kleur.yellow(`${warningCount} warning${warningCount !== 1 ? "s" : ""}`)}`,
+      `  ${kleur.red(`${errorCount} error${errorCount !== 1 ? "s" : ""}`)}` +
+        `  ${kleur.yellow(`${warningCount} warning${warningCount !== 1 ? "s" : ""}`)}`,
     );
   }
 }
@@ -78,9 +78,7 @@ export function printValidationSummary(
 
 export function printTable(rows: string[][]): void {
   if (rows.length === 0) return;
-  const widths = rows[0]?.map((_, col) =>
-    Math.max(...rows.map((row) => (row[col] ?? "").length)),
-  );
+  const widths = rows[0]?.map((_, col) => Math.max(...rows.map((row) => (row[col] ?? "").length)));
   for (const row of rows) {
     printLine(row.map((cell, col) => cell.padEnd(widths[col] ?? 0)).join("  "));
   }

@@ -1,8 +1,8 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { createFixture, adrContent, specContent as makeSpec } from "./fixture.js";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { adrContent, createFixture, specContent as makeSpec } from "./fixture.js";
 
 vi.spyOn(process, "exit").mockImplementation((code) => {
   throw new Error(`process.exit(${code})`);
@@ -27,13 +27,23 @@ describe("acta renumber", () => {
   it("renames the file and updates frontmatter id", async () => {
     const fixture = await createFixture();
     try {
-      await fixture.writeAdr("ADR-0001-old-title.md", adrContent({ id: "ADR-0001", title: "Old Title" }));
+      await fixture.writeAdr(
+        "ADR-0001-old-title.md",
+        adrContent({ id: "ADR-0001", title: "Old Title" }),
+      );
 
       process.cwd = () => fixture.root;
 
-      const { renumberCommand } = await import("../commands/renumber.js");
-      // @ts-expect-error citty internal
-      await renumberCommand.run({ args: { from: "ADR-0001", to: "ADR-0007", "dry-run": false, config: undefined } });
+      await runRenumberCommand({
+        args: {
+          _: [],
+          from: "ADR-0001",
+          to: "ADR-0007",
+          "dry-run": false,
+          config: undefined,
+          c: undefined,
+        },
+      } as never);
 
       const newPath = join(fixture.config.resolvedDocs.adrDir, "ADR-0007-old-title.md");
       expect(existsSync(newPath)).toBe(true);
@@ -57,9 +67,16 @@ describe("acta renumber", () => {
 
       process.cwd = () => fixture.root;
 
-      const { renumberCommand } = await import("../commands/renumber.js");
-      // @ts-expect-error citty internal
-      await renumberCommand.run({ args: { from: "ADR-0001", to: "ADR-0005", "dry-run": false, config: undefined } });
+      await runRenumberCommand({
+        args: {
+          _: [],
+          from: "ADR-0001",
+          to: "ADR-0005",
+          "dry-run": false,
+          config: undefined,
+          c: undefined,
+        },
+      } as never);
 
       const specPath = join(fixture.config.resolvedDocs.specDir, "SPEC-0001-linking.md");
       const specFileContent = await readFile(specPath, "utf8");
@@ -77,9 +94,16 @@ describe("acta renumber", () => {
 
       process.cwd = () => fixture.root;
 
-      const { renumberCommand } = await import("../commands/renumber.js");
-      // @ts-expect-error citty internal
-      await renumberCommand.run({ args: { from: "ADR-0001", to: "ADR-0009", "dry-run": true, config: undefined } });
+      await runRenumberCommand({
+        args: {
+          _: [],
+          from: "ADR-0001",
+          to: "ADR-0009",
+          "dry-run": true,
+          config: undefined,
+          c: undefined,
+        },
+      } as never);
 
       // Old file still exists
       expect(existsSync(join(fixture.config.resolvedDocs.adrDir, "ADR-0001-dry.md"))).toBe(true);
@@ -95,13 +119,29 @@ describe("acta renumber", () => {
     try {
       process.cwd = () => fixture.root;
 
-      const { renumberCommand } = await import("../commands/renumber.js");
       await expect(
-        // @ts-expect-error citty internal
-        renumberCommand.run({ args: { from: "ADR-9999", to: "ADR-0001", "dry-run": false, config: undefined } }),
+        runRenumberCommand({
+          args: {
+            _: [],
+            from: "ADR-9999",
+            to: "ADR-0001",
+            "dry-run": false,
+            config: undefined,
+            c: undefined,
+          },
+        } as never),
       ).rejects.toThrow();
     } finally {
       await fixture.cleanup();
     }
   });
 });
+
+async function runRenumberCommand(options: {
+  args: Record<string, string | number | boolean | string[]>;
+}) {
+  const { renumberCommand } = await import("../commands/renumber.js");
+  const run = renumberCommand.run;
+  if (!run) throw new Error("renumber command run handler is missing");
+  await run(options as never);
+}

@@ -10,6 +10,7 @@
   "scripts": {
     "build": "turbo run build",
     "build:web": "pnpm --filter @acta/web build",
+    "dev": "concurrently -n core,renderer,cli,web -c blue,magenta,cyan,green \"pnpm --filter @acta/core dev\" \"pnpm --filter @acta/renderer dev\" \"pnpm --filter @acta/cli dev\" \"pnpm --filter @acta/web dev\"",
     "dev:web": "pnpm --filter @acta/web dev",
     "test": "turbo run test",
     "lint": "biome lint .",
@@ -21,6 +22,8 @@
     "@acta/core": "workspace:*",
     "@biomejs/biome": "2.4.14",
     "@types/node": "^22.15.3",
+    "concurrently": "^9.2.1",
+    "lefthook": "^2.1.6",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "turbo": "^2.9.8",

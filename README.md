@@ -90,7 +90,16 @@ pnpm format:check
 pnpm typecheck
 pnpm build
 pnpm test
+pnpm dev
 pnpm dev:web
 pnpm --filter @acta/web build
 pnpm --filter @acta/web preview
+```
+
+`pnpm dev` starts watch builds for the workspace packages and the Astro dev server. `pnpm dev:web` starts only the web viewer.
+
+Git hooks are opt-in:
+
+```sh
+pnpm exec lefthook install
 ```

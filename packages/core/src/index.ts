@@ -1,4 +1,3 @@
-export { buildArtifacts, buildSearchIndex } from "./artifacts.js";
 export type {
   BuildArtifactsResult,
   BuildManifest,
@@ -6,24 +5,20 @@ export type {
   SearchIndexArtifact,
   SearchIndexDocument,
 } from "./artifacts.js";
+export { buildArtifacts, buildSearchIndex } from "./artifacts.js";
+export type {
+  ActaConfig,
+  ActaConfigInput,
+  ResolvedActaConfig,
+} from "./config.js";
 export {
   actaConfigSchema,
   defineConfig,
   loadConfig,
   resolveConfig,
 } from "./config.js";
-export type {
-  ActaConfig,
-  ActaConfigInput,
-  ResolvedActaConfig,
-} from "./config.js";
-export { buildGraph, deriveBacklinks } from "./graph.js";
 export type { DocumentGraph, GraphEdge, GraphNode } from "./graph.js";
-export {
-  buildDependencyLayers,
-  buildOrderingGraph,
-  sortDocumentsByDependency,
-} from "./ordering.js";
+export { buildGraph, deriveBacklinks } from "./graph.js";
 export type {
   DependencyLayer,
   DependencySortOptions,
@@ -34,24 +29,15 @@ export type {
   OrderingGraphNode,
   OrderingLinkKey,
 } from "./ordering.js";
-export { extractSections, hashContent, parseMarkdownDocument } from "./parse.js";
-export type { ParseDocumentInput, ParseDocumentResult } from "./parse.js";
-export { loadProject, validateLoadedProject } from "./project.js";
-export type { LoadedActaProject, LoadProjectOptions } from "./project.js";
 export {
-  adrFrontmatterSchema,
-  adrStatuses,
-  baseFrontmatterSchema,
-  createEmptyLinks,
-  documentKinds,
-  documentLinksSchema,
-  frontmatterSchema,
-  internalLinkKeys,
-  linkKeys,
-  normalizeLinks,
-  specFrontmatterSchema,
-  specStatuses,
-} from "./schema.js";
+  buildDependencyLayers,
+  buildOrderingGraph,
+  sortDocumentsByDependency,
+} from "./ordering.js";
+export type { ParseDocumentInput, ParseDocumentResult } from "./parse.js";
+export { extractSections, hashContent, parseMarkdownDocument } from "./parse.js";
+export type { LoadedActaProject, LoadProjectOptions } from "./project.js";
+export { loadProject, validateLoadedProject } from "./project.js";
 export type {
   ActaDocument,
   AdrDocument,
@@ -69,9 +55,19 @@ export type {
   SpecStatus,
 } from "./schema.js";
 export {
-  validateProject,
-  validationRules,
-} from "./validation.js";
+  adrFrontmatterSchema,
+  adrStatuses,
+  baseFrontmatterSchema,
+  createEmptyLinks,
+  documentKinds,
+  documentLinksSchema,
+  frontmatterSchema,
+  internalLinkKeys,
+  linkKeys,
+  normalizeLinks,
+  specFrontmatterSchema,
+  specStatuses,
+} from "./schema.js";
 export type {
   ProjectLike,
   ValidationContext,
@@ -79,6 +75,10 @@ export type {
   ValidationResult,
   ValidationRule,
   ValidationSeverity,
+} from "./validation.js";
+export {
+  validateProject,
+  validationRules,
 } from "./validation.js";
 
 export const actaCorePackage = "@acta/core";

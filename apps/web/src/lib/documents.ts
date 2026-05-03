@@ -115,10 +115,7 @@ export function getIssuesForDocument(
   );
 }
 
-export function getDocumentById(
-  documents: ActaDocument[],
-  id: string,
-): ActaDocument | undefined {
+export function getDocumentById(documents: ActaDocument[], id: string): ActaDocument | undefined {
   return documents.find((document) => document.id === id);
 }
 

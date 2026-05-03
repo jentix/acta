@@ -1,5 +1,5 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { createFixture, adrContent, specContent } from "./fixture.js";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { adrContent, createFixture, specContent } from "./fixture.js";
 
 vi.spyOn(process, "exit").mockImplementation((code) => {
   throw new Error(`process.exit(${code})`);
@@ -31,9 +31,20 @@ describe("acta list", () => {
         return true;
       });
 
-      const { listCommand } = await import("../commands/list.js");
-      // @ts-expect-error citty internal
-      await listCommand.run({ args: { kind: undefined, status: undefined, tag: undefined, json: false, config: undefined } });
+      await runListCommand({
+        args: {
+          _: [],
+          kind: undefined,
+          k: undefined,
+          status: undefined,
+          s: undefined,
+          tag: undefined,
+          t: undefined,
+          json: false,
+          config: undefined,
+          c: undefined,
+        },
+      } as never);
 
       const text = output.join("");
       expect(text).toContain("ADR-0001");
@@ -57,9 +68,20 @@ describe("acta list", () => {
         return true;
       });
 
-      const { listCommand } = await import("../commands/list.js");
-      // @ts-expect-error citty internal
-      await listCommand.run({ args: { kind: "adr", status: undefined, tag: undefined, json: false, config: undefined } });
+      await runListCommand({
+        args: {
+          _: [],
+          kind: "adr",
+          k: undefined,
+          status: undefined,
+          s: undefined,
+          tag: undefined,
+          t: undefined,
+          json: false,
+          config: undefined,
+          c: undefined,
+        },
+      } as never);
 
       const text = output.join("");
       expect(text).toContain("ADR-0001");
@@ -82,9 +104,20 @@ describe("acta list", () => {
         return true;
       });
 
-      const { listCommand } = await import("../commands/list.js");
-      // @ts-expect-error citty internal
-      await listCommand.run({ args: { kind: undefined, status: undefined, tag: undefined, json: true, config: undefined } });
+      await runListCommand({
+        args: {
+          _: [],
+          kind: undefined,
+          k: undefined,
+          status: undefined,
+          s: undefined,
+          tag: undefined,
+          t: undefined,
+          json: true,
+          config: undefined,
+          c: undefined,
+        },
+      } as never);
 
       const parsed = JSON.parse(output.join("")) as Array<{ id: string; kind: string }>;
       expect(Array.isArray(parsed)).toBe(true);
@@ -94,3 +127,12 @@ describe("acta list", () => {
     }
   });
 });
+
+async function runListCommand(options: {
+  args: Record<string, string | number | boolean | string[]>;
+}) {
+  const { listCommand } = await import("../commands/list.js");
+  const run = listCommand.run;
+  if (!run) throw new Error("list command run handler is missing");
+  await run(options as never);
+}

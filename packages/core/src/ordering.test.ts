@@ -1,10 +1,10 @@
-import type { ActaDocument } from "./schema.js";
 import { describe, expect, it } from "vitest";
 import {
   buildDependencyLayers,
   buildOrderingGraph,
   sortDocumentsByDependency,
 } from "./ordering.js";
+import type { ActaDocument } from "./schema.js";
 
 describe("dependency ordering", () => {
   it("builds directed ordering edges from causal link types only", () => {

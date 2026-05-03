@@ -1,0 +1,13 @@
+pre-commit:
+  commands:
+    biome:
+      glob: "*.{js,jsx,ts,tsx,json,jsonc,css,md,yml,yaml}"
+      run: pnpm exec biome check --write --files-ignore-unknown=true {staged_files}
+      stage_fixed: true
+
+pre-push:
+  commands:
+    typecheck:
+      run: pnpm typecheck
+    test:
+      run: pnpm test
