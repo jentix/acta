@@ -44,6 +44,9 @@ importers:
       '@acta/renderer':
         specifier: workspace:*
         version: link:../../packages/renderer
+      '@orama/orama':
+        specifier: ^2.0.6
+        version: 2.1.1
       astro:
         specifier: ^6.2.0
         version: 6.2.1(@types/node@22.19.17)(rollup@4.60.2)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.3)
@@ -590,6 +593,10 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@orama/orama@2.1.1':
+    resolution: {integrity: sha512-euTV/2kya290SNkl5m8e/H1na8iDygk74nNtl4E0YZNyYIrEMwE1JwamoroMKGZw2Uz+in/8gH3m1+2YfP0j1w==}
+    engines: {node: '>= 16.0.0'}
 
   '@oslojs/encoding@1.1.0':
     resolution: {integrity: sha512-70wQhgYmndg4GCPxPPxPGevRKqTIJ2Nh4OkiMWmDAVYsTQ+Ta7Sq+rPevXyXGdzr30/qZBnyOalCszoMxlyldQ==}
@@ -2662,6 +2669,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@orama/orama@2.1.1': {}
 
   '@oslojs/encoding@1.1.0': {}
 
