@@ -16,15 +16,16 @@ const { title, description = "Acta document viewer" } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
+    <link rel="icon" href="/favicon.png" />
   </head>
   <body>
     <div class="app-shell">
       <aside class="sidebar">
         <a class="brand" href="/">
-          <span class="brand-mark">A</span>
+          <span class="brand-mark"><img src="/favicon.png" alt="A" /></span>
           <span>
             <strong>Acta</strong>
-            <small>ADR and specs</small>
+            <small>ADR and Specs</small>
           </span>
         </a>
         <nav class="nav">

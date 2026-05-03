@@ -10,10 +10,9 @@ import {
 interface Props {
   documents: ActaDocument[];
   dependencyDocumentIds: string[];
-  searchLinkLabel: string;
 }
 
-const { documents, dependencyDocumentIds, searchLinkLabel } = Astro.props;
+const { documents, dependencyDocumentIds } = Astro.props;
 const filterOptions = collectFilterOptions(documents);
 const newestOrder = buildDocumentOrderIndex(documents);
 const documentsById = new Map(documents.map((document) => [document.id, document]));
@@ -72,7 +71,6 @@ const dependencyOrder = buildDocumentOrderIndex(dependencyOrderDocuments);
         <span>Dependency order</span>
       </label>
     </fieldset>
-    <a class="button" data-search-link href="/search">{searchLinkLabel}</a>
   </section>
 
   <section

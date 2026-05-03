@@ -19,11 +19,11 @@
   "devDependencies": {
     "@acta/cli": "workspace:*",
     "@acta/core": "workspace:*",
-    "@biomejs/biome": "2.4.13",
+    "@biomejs/biome": "2.4.14",
     "@types/node": "^22.15.3",
-    "tsup": "^8.4.0",
+    "tsup": "^8.5.1",
     "tsx": "^4.21.0",
-    "turbo": "^2.9.6",
+    "turbo": "^2.9.8",
     "typescript": "^5.9.3",
     "vitest": "^4.1.5"
   }
