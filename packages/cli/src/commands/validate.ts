@@ -1,15 +1,10 @@
-import { defineCommand } from "citty";
-import { validateLoadedProject } from "@acta/core";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { validateLoadedProject } from "@acta/core";
+import { defineCommand } from "citty";
 import kleur from "kleur";
 import { resolveContext } from "../context.js";
-import {
-  printIssues,
-  printJson,
-  printLine,
-  printValidationSummary,
-} from "../output.js";
+import { printIssues, printJson, printLine, printValidationSummary } from "../output.js";
 
 export const validateCommand = defineCommand({
   meta: {
@@ -52,15 +47,11 @@ export const validateCommand = defineCommand({
       // Concise output
       if (result.errors.length > 0) {
         for (const issue of result.errors) {
-          printLine(
-            `${kleur.red("error")}  ${issue.documentId ?? ""}  ${issue.message}`,
-          );
+          printLine(`${kleur.red("error")}  ${issue.documentId ?? ""}  ${issue.message}`);
         }
       }
       for (const issue of result.warnings) {
-        printLine(
-          `${kleur.yellow("warn")}   ${issue.documentId ?? ""}  ${issue.message}`,
-        );
+        printLine(`${kleur.yellow("warn")}   ${issue.documentId ?? ""}  ${issue.message}`);
       }
       printLine(`Written ${outPath}`);
       process.exit(result.valid ? 0 : 1);

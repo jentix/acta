@@ -13,10 +13,7 @@ const sanitizeSchema: Options = {
   ...defaultSchema,
   attributes: {
     ...defaultSchema.attributes,
-    code: [
-      ...(defaultSchema.attributes?.code ?? []),
-      ["className", /^language-[a-zA-Z0-9_-]+$/],
-    ],
+    code: [...(defaultSchema.attributes?.code ?? []), ["className", /^language-[a-zA-Z0-9_-]+$/]],
   },
 };
 

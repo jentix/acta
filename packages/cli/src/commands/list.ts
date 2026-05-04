@@ -1,6 +1,6 @@
-import { defineCommand } from "citty";
-import { loadProject } from "@acta/core";
 import type { ActaDocument } from "@acta/core";
+import { loadProject } from "@acta/core";
+import { defineCommand } from "citty";
 import kleur from "kleur";
 import { resolveContext } from "../context.js";
 import { printJson, printLine, printTable } from "../output.js";
@@ -108,18 +108,8 @@ export const listCommand = defineCommand({
     }
 
     const rows = [
-      [
-        kleur.bold("ID"),
-        kleur.bold("KIND"),
-        kleur.bold("STATUS"),
-        kleur.bold("TITLE"),
-      ],
-      ...docs.map((d) => [
-        kleur.bold(d.id),
-        d.kind,
-        colorStatus(d.status),
-        d.title,
-      ]),
+      [kleur.bold("ID"), kleur.bold("KIND"), kleur.bold("STATUS"), kleur.bold("TITLE")],
+      ...docs.map((d) => [kleur.bold(d.id), d.kind, colorStatus(d.status), d.title]),
     ];
 
     printTable(rows);

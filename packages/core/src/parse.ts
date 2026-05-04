@@ -3,8 +3,8 @@ import { basename, relative } from "node:path";
 import { parse as parseYaml } from "yaml";
 import {
   type ActaDocument,
-  type DocumentSection,
   createEmptyLinks,
+  type DocumentSection,
   frontmatterSchema,
   normalizeLinks,
 } from "./schema.js";

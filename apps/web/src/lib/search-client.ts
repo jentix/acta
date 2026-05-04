@@ -63,7 +63,9 @@ export function initDocumentSearch(root: HTMLElement): void {
   }
 
   function selectedSortOrder(): "newest" | "dependency" {
-    return sortInputs.find((input) => input.checked)?.value === "dependency" ? "dependency" : "newest";
+    return sortInputs.find((input) => input.checked)?.value === "dependency"
+      ? "dependency"
+      : "newest";
   }
 
   function syncQueryUrl() {
@@ -122,7 +124,14 @@ export function initDocumentSearch(root: HTMLElement): void {
     void updateResults();
   };
 
-  for (const control of [search, kindFilter, statusFilter, tagFilter, componentFilter, ...sortInputs]) {
+  for (const control of [
+    search,
+    kindFilter,
+    statusFilter,
+    tagFilter,
+    componentFilter,
+    ...sortInputs,
+  ]) {
     control.addEventListener("input", resetAndUpdateResults);
     control.addEventListener("change", resetAndUpdateResults);
   }

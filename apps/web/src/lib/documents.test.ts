@@ -4,9 +4,9 @@ import {
   buildDocumentHref,
   buildDocumentOrderIndex,
   collectFilterOptions,
-  getNextDocumentLimit,
   filterDocuments,
   getDocumentSearchText,
+  getNextDocumentLimit,
   shouldShowMoreDocuments,
   sortDocumentsByNewest,
 } from "./documents.js";

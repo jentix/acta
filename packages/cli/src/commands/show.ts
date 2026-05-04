@@ -1,5 +1,5 @@
-import { defineCommand } from "citty";
 import { loadProject } from "@acta/core";
+import { defineCommand } from "citty";
 import kleur from "kleur";
 import { resolveContext } from "../context.js";
 import { exitFailure, exitUsage, printJson, printLine } from "../output.js";
@@ -34,9 +34,7 @@ export const showCommand = defineCommand({
     const { config } = await resolveContext({ config: args.config });
     const project = await loadProject({ config });
 
-    const doc = project.documents.find(
-      (d) => d.id.toLowerCase() === args.id.toLowerCase(),
-    );
+    const doc = project.documents.find((d) => d.id.toLowerCase() === args.id.toLowerCase());
 
     if (!doc) {
       exitFailure(`Document "${args.id}" not found.`);
@@ -60,7 +58,9 @@ export const showCommand = defineCommand({
     }
 
     // Metadata
-    printLine(`${kleur.bold("Date:")}     ${doc.date}${doc.updated ? `  (updated ${doc.updated})` : ""}`);
+    printLine(
+      `${kleur.bold("Date:")}     ${doc.date}${doc.updated ? `  (updated ${doc.updated})` : ""}`,
+    );
     if (doc.tags.length > 0) {
       printLine(`${kleur.bold("Tags:")}     ${doc.tags.join(", ")}`);
     }
@@ -81,9 +81,7 @@ export const showCommand = defineCommand({
     }
 
     // Outgoing links
-    const linkEntries = Object.entries(doc.links).filter(
-      ([, ids]) => (ids as string[]).length > 0,
-    );
+    const linkEntries = Object.entries(doc.links).filter(([, ids]) => (ids as string[]).length > 0);
     if (linkEntries.length > 0) {
       printLine();
       printLine(kleur.bold("Links:"));

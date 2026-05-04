@@ -1,9 +1,9 @@
-import { defineCommand } from "citty";
-import { writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { DocumentKind } from "@acta/core";
 import { adrStatuses, specStatuses } from "@acta/core";
+import { defineCommand } from "citty";
 import { resolveContext } from "../context.js";
 import { allocateNextId } from "../id.js";
 import { exitFailure, exitUsage, printSuccess } from "../output.js";
@@ -55,9 +55,7 @@ async function createDocument(
   // Validate status
   const validStatuses: readonly string[] = kind === "adr" ? adrStatuses : specStatuses;
   if (!validStatuses.includes(status)) {
-    exitUsage(
-      `Invalid status "${status}" for ${kind}. Valid: ${validStatuses.join(", ")}`,
-    );
+    exitUsage(`Invalid status "${status}" for ${kind}. Valid: ${validStatuses.join(", ")}`);
   }
 
   const slug = titleToSlug(title.trim());
@@ -69,7 +67,11 @@ async function createDocument(
     exitFailure(`File already exists: ${destPath}`);
   }
 
-  const content = await renderTemplate(kind, { id, title: title.trim(), date: todayIso(), status }, config);
+  const content = await renderTemplate(
+    kind,
+    { id, title: title.trim(), date: todayIso(), status },
+    config,
+  );
 
   await writeFile(destPath, content, "utf8");
   printSuccess(`Created ${destPath}`);

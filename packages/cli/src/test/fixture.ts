@@ -1,8 +1,8 @@
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { resolveConfig } from "@acta/core";
+import { join } from "node:path";
 import type { ResolvedActaConfig } from "@acta/core";
+import { resolveConfig } from "@acta/core";
 
 export interface Fixture {
   root: string;
@@ -110,12 +110,10 @@ Requirements.
   return {
     root,
     config,
-    writeAdr: (name, content) =>
-      writeFile(join(config.resolvedDocs.adrDir, name), content, "utf8"),
+    writeAdr: (name, content) => writeFile(join(config.resolvedDocs.adrDir, name), content, "utf8"),
     writeSpec: (name, content) =>
       writeFile(join(config.resolvedDocs.specDir, name), content, "utf8"),
-    writeFile: (relativePath, content) =>
-      writeFile(join(root, relativePath), content, "utf8"),
+    writeFile: (relativePath, content) => writeFile(join(root, relativePath), content, "utf8"),
     cleanup: () => rm(root, { recursive: true, force: true }),
   };
 }
@@ -125,13 +123,7 @@ Requirements.
 // ---------------------------------------------------------------------------
 
 export function adrContent(
-  opts: {
-    id?: string;
-    title?: string;
-    status?: string;
-    links?: string;
-    body?: string;
-  } = {},
+  opts: { id?: string; title?: string; status?: string; links?: string; body?: string } = {},
 ): string {
   return `---
 id: ${opts.id ?? "ADR-0001"}
@@ -147,7 +139,9 @@ links:
   ${opts.links ?? "related: []"}
 ---
 
-${opts.body ?? `# Context
+${
+  opts.body ??
+  `# Context
 
 Context here.
 
@@ -161,18 +155,13 @@ Consequences here.
 
 # Alternatives
 
-Alternatives here.`}
+Alternatives here.`
+}
 `;
 }
 
 export function specContent(
-  opts: {
-    id?: string;
-    title?: string;
-    status?: string;
-    links?: string;
-    body?: string;
-  } = {},
+  opts: { id?: string; title?: string; status?: string; links?: string; body?: string } = {},
 ): string {
   return `---
 id: ${opts.id ?? "SPEC-0001"}
@@ -188,7 +177,9 @@ links:
   ${opts.links ?? "related: []"}
 ---
 
-${opts.body ?? `# Summary
+${
+  opts.body ??
+  `# Summary
 
 Summary here.
 
@@ -198,6 +189,7 @@ Goals here.
 
 # Requirements
 
-Requirements here.`}
+Requirements here.`
+}
 `;
 }

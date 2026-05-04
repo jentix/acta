@@ -3,7 +3,7 @@ import { join } from "node:path";
 import type { LoadedActaProject, LoadProjectOptions } from "./project.js";
 import { loadProject } from "./project.js";
 import type { ActaDocument } from "./schema.js";
-import { validateProject, type ValidationResult } from "./validation.js";
+import { type ValidationResult, validateProject } from "./validation.js";
 
 export const schemaVersion = "1.0.0";
 export const parserVersion = "1.0.0";

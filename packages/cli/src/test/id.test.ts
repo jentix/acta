@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
-import { resolveConfig } from "@acta/core";
 import type { ActaDocument, ResolvedActaConfig } from "@acta/core";
+import { resolveConfig } from "@acta/core";
+import { describe, expect, it } from "vitest";
 import { allocateNextId, parseIdNumber, parseIdPrefix } from "../id.js";
 
 const config: ResolvedActaConfig = resolveConfig({}, { rootDir: "/tmp/fake" });
@@ -15,11 +15,32 @@ function fakeDoc(id: string, kind: "adr" | "spec"): ActaDocument {
     tags: [],
     component: [],
     owners: [],
-    links: { related: [], supersedes: [], replacedBy: [], decidedBy: [], dependsOn: [], validates: [], references: [] },
-    backlinks: { related: [], supersedes: [], replacedBy: [], decidedBy: [], dependsOn: [], validates: [], references: [] },
+    links: {
+      related: [],
+      supersedes: [],
+      replacedBy: [],
+      decidedBy: [],
+      dependsOn: [],
+      validates: [],
+      references: [],
+    },
+    backlinks: {
+      related: [],
+      supersedes: [],
+      replacedBy: [],
+      decidedBy: [],
+      dependsOn: [],
+      validates: [],
+      references: [],
+    },
     sections: [],
     body: "",
-    file: { path: `/tmp/${id}.md`, relativePath: `docs/${id}.md`, slug: id.toLowerCase(), contentHash: "abc" },
+    file: {
+      path: `/tmp/${id}.md`,
+      relativePath: `docs/${id}.md`,
+      slug: id.toLowerCase(),
+      contentHash: "abc",
+    },
   } as ActaDocument;
 }
 
