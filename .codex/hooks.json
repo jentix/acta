@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$(git rev-parse --show-toplevel)/.codex/hooks/format_changed_files.sh\"",
+            "timeout": 120,
+            "statusMessage": "Formatting changed files"
+          }
+        ]
+      }
+    ]
+  }
+}
