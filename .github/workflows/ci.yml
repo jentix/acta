@@ -43,7 +43,7 @@ jobs:
         run: pnpm build
 
       - name: Validate Acta docs
-        run: pnpm --filter @acta/cli exec acta validate
+        run: pnpm --filter @acta/cli exec node dist/index.js validate
 
       - name: Build Acta artifacts
-        run: pnpm --filter @acta/cli exec acta build
+        run: pnpm --filter @acta/cli exec node dist/index.js build
