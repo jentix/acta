@@ -1,0 +1,152 @@
+.graph-rf-wrapper {
+  width: 100%;
+  min-height: 620px;
+  height: 620px;
+}
+
+/* Override React Flow panel background to match theme */
+.react-flow__background {
+  background: var(--panel);
+}
+
+.react-flow__panel {
+  color: var(--text);
+}
+
+.react-flow__controls button {
+  background: var(--panel);
+  border-color: var(--border);
+  color: var(--text);
+  fill: var(--text);
+}
+
+.react-flow__controls button:hover {
+  background: var(--panel-muted);
+}
+
+.react-flow__minimap {
+  background: var(--panel-muted) !important;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* Node card */
+.graph-rf-node-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.graph-rf-node {
+  width: 220px;
+  height: 80px;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    opacity 0.15s;
+  box-sizing: border-box;
+}
+
+.graph-rf-node:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.graph-rf-node--highlighted {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 18%, var(--panel));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.graph-rf-node--adr {
+  background: color-mix(in srgb, var(--accent) 11%, var(--panel));
+}
+
+.graph-rf-node--adr.graph-rf-node--highlighted {
+  background: color-mix(in srgb, var(--accent) 28%, var(--panel));
+}
+
+.graph-rf-node--dimmed {
+  opacity: 0.2;
+}
+
+.graph-rf-node__id {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--muted);
+  line-height: 1;
+}
+
+.graph-rf-node__title {
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--text);
+  line-height: 1.2;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.graph-rf-node__status {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-top: auto;
+}
+
+/* Edges */
+.react-flow__edge-path {
+  stroke: var(--muted);
+  stroke-width: 1.6;
+  opacity: 0.72;
+}
+
+.edge-related .react-flow__edge-path {
+  stroke-dasharray: 5 5;
+  opacity: 0.45;
+}
+
+.edge-supersedes .react-flow__edge-path,
+.edge-replacedBy .react-flow__edge-path {
+  stroke: var(--warning);
+  stroke-width: 2;
+  opacity: 0.85;
+}
+
+.edge-highlighted .react-flow__edge-path {
+  stroke: var(--accent);
+  stroke-width: 2.4;
+  opacity: 1;
+}
+
+.edge-dimmed .react-flow__edge-path {
+  opacity: 0.12;
+}
+
+/* React Flow handle overrides */
+.react-flow__handle {
+  width: 8px;
+  height: 8px;
+  background: var(--border);
+  border-color: var(--border);
+}
+
+.react-flow__handle:hover {
+  background: var(--accent);
+}
+
+/* Toolbar */
+.graph-toolbar {
+  grid-template-columns: repeat(2, minmax(140px, 180px));
+}
