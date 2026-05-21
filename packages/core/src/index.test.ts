@@ -243,6 +243,7 @@ describe("@acta/core", () => {
       "ADR-0002",
       "ADR-0003",
       "ADR-0004",
+      "ADR-0005",
       "SPEC-0001",
       "SPEC-0002",
       "SPEC-0003",

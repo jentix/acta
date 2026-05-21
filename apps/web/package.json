@@ -13,11 +13,19 @@
   "dependencies": {
     "@acta/core": "workspace:*",
     "@acta/renderer": "workspace:*",
+    "@astrojs/react": "^5.0.4",
+    "@dagrejs/dagre": "^3.0.0",
     "@orama/orama": "^2.0.6",
-    "astro": "^6.2.0"
+    "@xyflow/react": "^12.10.2",
+    "astro": "^6.2.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@types/dagre": "^0.7.54",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "typescript": "^5.9.3",
     "vitest": "^4.1.5"
   }
