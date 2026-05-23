@@ -1,9 +1,9 @@
 {
   "name": "acta",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.10.0",
+  "packageManager": "pnpm@11.2.2+sha512.36e6621fad506178936455e70247b8808ef4ec25797a9f437a93281a020484e2607f6a469a22e982987c3dbb8866e3071514ab10a4a1749e06edcd1ec118436f",
   "engines": {
     "node": ">=22.12 <26"
   },
@@ -20,14 +20,14 @@
   "devDependencies": {
     "@acta/cli": "workspace:*",
     "@acta/core": "workspace:*",
-    "@biomejs/biome": "2.4.14",
+    "@biomejs/biome": "2.4.15",
     "@types/node": "^22.15.3",
     "concurrently": "^9.2.1",
-    "lefthook": "^2.1.6",
+    "lefthook": "^2.1.8",
     "tsup": "^8.5.1",
-    "tsx": "^4.21.0",
-    "turbo": "^2.9.8",
+    "tsx": "^4.22.3",
+    "turbo": "^2.9.14",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.7"
   }
 }
