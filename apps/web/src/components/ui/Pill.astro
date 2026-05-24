@@ -1,0 +1,64 @@
+---
+type PillTone = "neutral" | "success" | "danger" | "warning";
+
+interface Props {
+  as?: "a" | "span";
+  href?: string;
+  tone?: PillTone;
+  class?: string;
+  [key: `data-${string}`]: string | number | boolean | undefined;
+}
+
+const {
+  as = "span",
+  href,
+  tone = "neutral",
+  class: className,
+  ...rest
+} = Astro.props as Props & Record<string, unknown>;
+
+const classes = ["ui-pill", `ui-pill--${tone}`, className].filter(Boolean).join(" ");
+---
+
+{
+  as === "a" ? (
+    <a class={classes} href={href} {...rest}>
+      <slot />
+    </a>
+  ) : (
+    <span class={classes} {...rest}>
+      <slot />
+    </span>
+  )
+}
+
+<style>
+  .ui-pill {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    min-height: 32px;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-panel);
+    color: var(--color-text);
+    font-size: var(--text-base);
+    text-decoration: none;
+  }
+
+  .ui-pill--success {
+    color: var(--color-accent);
+    border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
+  }
+
+  .ui-pill--danger {
+    color: var(--color-danger);
+    border-color: color-mix(in srgb, var(--color-danger) 40%, var(--color-border));
+  }
+
+  .ui-pill--warning {
+    color: var(--color-warning);
+    border-color: color-mix(in srgb, var(--color-warning) 40%, var(--color-border));
+  }
+</style>

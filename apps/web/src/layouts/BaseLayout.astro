@@ -1,5 +1,7 @@
 ---
 import "../styles/global.css";
+import ThemeToggle from "../components/ThemeToggle.tsx";
+import SidebarToggle from "../components/SidebarToggle.tsx";
 
 interface Props {
   title: string;
@@ -7,6 +9,17 @@ interface Props {
 }
 
 const { title, description = "Acta document viewer" } = Astro.props;
+
+const pathname = Astro.url.pathname;
+const isActive = (href: string) => {
+  if (href === "/") return pathname === "/" || pathname.startsWith("/documents");
+  return pathname === href || pathname.startsWith(href);
+};
+const navItems = [
+  { href: "/", label: "Documents", icon: "▤" },
+  { href: "/graph/", label: "Graph", icon: "◇" },
+  { href: "/validation/", label: "Validation", icon: "✓" },
+];
 ---
 
 <!doctype html>
@@ -17,23 +30,63 @@ const { title, description = "Acta document viewer" } = Astro.props;
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" href="/favicon.png" />
+    <script is:inline>
+      (() => {
+        try {
+          const t = localStorage.getItem("acta-theme") ?? "system";
+          const r =
+            t === "system"
+              ? matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : t;
+          document.documentElement.dataset.theme = r;
+          document.documentElement.dataset.themePref = t;
+          const s = localStorage.getItem("acta-sidebar");
+          document.documentElement.dataset.sidebar = s === "collapsed" ? "collapsed" : "expanded";
+        } catch {
+          document.documentElement.dataset.theme = "light";
+          document.documentElement.dataset.themePref = "system";
+          document.documentElement.dataset.sidebar = "expanded";
+        }
+      })();
+    </script>
   </head>
   <body>
     <div class="app-shell">
       <aside class="sidebar">
-        <a class="brand" href="/">
-          <span class="brand-mark"><img src="/favicon.png" alt="A" /></span>
-          <span>
-            <strong>Acta</strong>
-            <small>ADR and Specs</small>
-          </span>
-        </a>
+        <div class="sidebar-head">
+          <a class="brand" href="/">
+            <span class="brand-mark"><img src="/favicon.png" alt="A" /></span>
+            <span class="brand-label">
+              <strong>Acta</strong>
+              <small>ADR and Specs</small>
+            </span>
+          </a>
+          <SidebarToggle client:load />
+        </div>
         <nav class="nav">
-          <a href="/">Documents</a>
-          <a href="/graph/">Graph</a>
-          <a href="/validation/">Validation</a>
+          {
+            navItems.map((item) => {
+              const active = isActive(item.href);
+              return (
+                <a
+                  href={item.href}
+                  title={item.label}
+                  class:list={[{ "is-active": active }]}
+                  aria-current={active ? "page" : undefined}
+                >
+                  <span class="nav-icon" aria-hidden="true">{item.icon}</span>
+                  <span class="nav-label">{item.label}</span>
+                </a>
+              );
+            })
+          }
         </nav>
         <slot name="sidebar" />
+        <div class="sidebar-foot">
+          <ThemeToggle client:load />
+        </div>
       </aside>
       <main class="content">
         <slot />

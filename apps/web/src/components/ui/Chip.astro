@@ -1,0 +1,124 @@
+---
+interface Props {
+  as?: "a" | "span";
+  href?: string;
+  status?: string;
+  kind?: string;
+  interactive?: boolean;
+  class?: string;
+  [key: `data-${string}`]: string | number | boolean | undefined;
+}
+
+const {
+  as = "span",
+  href,
+  status,
+  kind,
+  interactive,
+  class: className,
+  ...rest
+} = Astro.props as Props & Record<string, unknown>;
+
+const isInteractive = interactive ?? as === "a";
+const classes = [
+  "ui-chip",
+  isInteractive ? "ui-chip--interactive" : "",
+  status ? `ui-chip--status` : "",
+  kind ? `ui-chip--kind` : "",
+  className,
+]
+  .filter(Boolean)
+  .join(" ");
+
+const dataProps: Record<string, string> = {};
+if (status) dataProps["data-status"] = status;
+if (kind) dataProps["data-kind"] = kind;
+---
+
+{
+  as === "a" ? (
+    <a class={classes} href={href} {...dataProps} {...rest}>
+      <slot />
+    </a>
+  ) : (
+    <span class={classes} {...dataProps} {...rest}>
+      <slot />
+    </span>
+  )
+}
+
+<style>
+  .ui-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 3px var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-panel-muted);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+
+  .ui-chip--interactive:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .ui-chip--kind[data-kind="adr"] {
+    color: var(--color-accent);
+  }
+
+  /* Status-colored chips — driven by per-status semantic tokens (5.4) */
+  .ui-chip--status[data-status="proposed"] {
+    color: var(--status-proposed-fg);
+    background: var(--status-proposed-bg);
+    border-color: var(--status-proposed-border);
+  }
+  .ui-chip--status[data-status="accepted"] {
+    color: var(--status-accepted-fg);
+    background: var(--status-accepted-bg);
+    border-color: var(--status-accepted-border);
+  }
+  .ui-chip--status[data-status="rejected"] {
+    color: var(--status-rejected-fg);
+    background: var(--status-rejected-bg);
+    border-color: var(--status-rejected-border);
+  }
+  .ui-chip--status[data-status="deprecated"] {
+    color: var(--status-deprecated-fg);
+    background: var(--status-deprecated-bg);
+    border-color: var(--status-deprecated-border);
+  }
+  .ui-chip--status[data-status="superseded"] {
+    color: var(--status-superseded-fg);
+    background: var(--status-superseded-bg);
+    border-color: var(--status-superseded-border);
+  }
+  .ui-chip--status[data-status="draft"] {
+    color: var(--status-draft-fg);
+    background: var(--status-draft-bg);
+    border-color: var(--status-draft-border);
+  }
+  .ui-chip--status[data-status="active"] {
+    color: var(--status-active-fg);
+    background: var(--status-active-bg);
+    border-color: var(--status-active-border);
+  }
+  .ui-chip--status[data-status="paused"] {
+    color: var(--status-paused-fg);
+    background: var(--status-paused-bg);
+    border-color: var(--status-paused-border);
+  }
+  .ui-chip--status[data-status="implemented"] {
+    color: var(--status-implemented-fg);
+    background: var(--status-implemented-bg);
+    border-color: var(--status-implemented-border);
+  }
+  .ui-chip--status[data-status="obsolete"] {
+    color: var(--status-obsolete-fg);
+    background: var(--status-obsolete-bg);
+    border-color: var(--status-obsolete-border);
+  }
+</style>

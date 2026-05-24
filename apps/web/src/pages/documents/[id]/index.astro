@@ -1,6 +1,10 @@
 ---
 import { renderMarkdown } from "@acta/renderer";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Button from "../../../components/ui/Button.astro";
+import Chip from "../../../components/ui/Chip.astro";
+import Tooltip from "../../../components/ui/Tooltip.astro";
+import { linkTypeDescriptions } from "@lib/link-types.js";
 import {
   buildDocumentHref,
   formatDisplayDate,
@@ -34,11 +38,14 @@ const { document, documents, issues, rendered } = Astro.props;
 <BaseLayout title={`${document.id} · ${document.title}`} description={document.summary}>
   <section class="page-header document-header">
     <div>
-      <p class="eyebrow">{document.kind.toUpperCase()} · {document.status}</p>
+      <p class="eyebrow">
+        {document.kind.toUpperCase()} ·
+        <Chip status={document.status}>{document.status}</Chip>
+      </p>
       <h1>{document.title}</h1>
       <p class="muted">{document.id} · {formatDisplayDate(document.date)}</p>
     </div>
-    <a class="button" href="/">Back to documents</a>
+    <Button as="a" href="/">Back to documents</Button>
   </section>
 
   <div class="document-grid">
@@ -89,15 +96,21 @@ const { document, documents, issues, rendered } = Astro.props;
             (key) =>
               document.links[key].length > 0 && (
                 <div class="relation-group">
-                  <h3>{key}</h3>
+                  <div class="relation-group-header">
+                    <h3>{key}</h3>
+                    <Tooltip
+                      label={`What is "${key}"?`}
+                      text={linkTypeDescriptions[key]?.outgoing ?? ""}
+                    />
+                  </div>
                   <div class="chip-list">
                     {document.links[key].map((id) => {
                       const target = getDocumentById(documents, id);
                       return (
-                        <a href={buildDocumentHref(id)} class="chip">
+                        <Chip as="a" href={buildDocumentHref(id)} interactive>
                           {id}
                           {target ? ` · ${target.title}` : ""}
-                        </a>
+                        </Chip>
                       );
                     })}
                   </div>
@@ -118,15 +131,21 @@ const { document, documents, issues, rendered } = Astro.props;
             (key) =>
               document.backlinks[key].length > 0 && (
                 <div class="relation-group">
-                  <h3>{key}</h3>
+                  <div class="relation-group-header">
+                    <h3>{key}</h3>
+                    <Tooltip
+                      label={`What is "${key}" (incoming)?`}
+                      text={linkTypeDescriptions[key]?.incoming ?? ""}
+                    />
+                  </div>
                   <div class="chip-list">
                     {document.backlinks[key].map((id) => {
                       const source = getDocumentById(documents, id);
                       return (
-                        <a href={buildDocumentHref(id)} class="chip">
+                        <Chip as="a" href={buildDocumentHref(id)} interactive>
                           {id}
                           {source ? ` · ${source.title}` : ""}
-                        </a>
+                        </Chip>
                       );
                     })}
                   </div>
@@ -144,12 +163,18 @@ const { document, documents, issues, rendered } = Astro.props;
     document.links.references.length > 0 && (
       <section class="relations single">
         <div>
-          <h2>External references</h2>
+          <div class="relation-group-header">
+            <h2>External references</h2>
+            <Tooltip
+              label='What is "references"?'
+              text={linkTypeDescriptions.references?.outgoing ?? ""}
+            />
+          </div>
           <div class="chip-list">
             {document.links.references.map((reference) => (
-              <a class="chip" href={reference}>
+              <Chip as="a" href={reference} interactive>
                 {reference}
-              </a>
+              </Chip>
             ))}
           </div>
         </div>

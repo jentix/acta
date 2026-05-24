@@ -31,8 +31,10 @@ function GraphNodeCard({
 
   const href = data.href;
 
+  const statusKey = data.status.toLowerCase().replace(/\s+/g, "-");
   const inner = (
     <div
+      data-status={statusKey}
       className={[
         "graph-rf-node",
         `graph-rf-node--${kind}`,
@@ -44,15 +46,14 @@ function GraphNodeCard({
     >
       <Handle type="target" position={Position.Left} />
       <Handle type="source" position={Position.Right} />
-      <span className="graph-rf-node__id">{id}</span>
+      <div className="graph-rf-node__head">
+        <span className="graph-rf-node__id">{id}</span>
+        <span className={`graph-rf-node__kind graph-rf-node__kind--${kind}`}>
+          {kind.toUpperCase()}
+        </span>
+      </div>
       <span className="graph-rf-node__title">{truncate(data.label, 30)}</span>
-      <span
-        className={`graph-rf-node__status graph-rf-node__status--${data.status
-          .toLowerCase()
-          .replace(/\s+/g, "-")}`}
-      >
-        {data.status}
-      </span>
+      <span className="graph-rf-node__status">{data.status}</span>
     </div>
   );
 

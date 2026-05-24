@@ -110,9 +110,13 @@ export default function DocumentGraphIsland({ graph, filterOptions, hrefForId }:
     <GraphContext.Provider value={contextValue}>
       <div>
         <section className="graph-toolbar section-grid" aria-label="Graph filters">
-          <label>
+          <label className="ui-field">
             <span>Kind</span>
-            <select value={kindFilter} onChange={(e) => setKindFilter(e.target.value)}>
+            <select
+              className="ui-select"
+              value={kindFilter}
+              onChange={(e) => setKindFilter(e.target.value)}
+            >
               <option value="">All</option>
               {filterOptions.kinds.map((kind) => (
                 <option key={kind} value={kind}>
@@ -121,9 +125,13 @@ export default function DocumentGraphIsland({ graph, filterOptions, hrefForId }:
               ))}
             </select>
           </label>
-          <label>
+          <label className="ui-field">
             <span>Status</span>
-            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+            <select
+              className="ui-select"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
               <option value="">All</option>
               {filterOptions.statuses.map((status) => (
                 <option key={status} value={status}>
@@ -183,6 +191,18 @@ export default function DocumentGraphIsland({ graph, filterOptions, hrefForId }:
           <span>
             <i className="legend-line supersession"></i>Supersession
           </span>
+          {filterOptions.kinds.map((kind) => (
+            <span key={`kind-${kind}`}>
+              <i className="legend-kind-bar" data-kind={kind}></i>
+              {kind.toUpperCase()}
+            </span>
+          ))}
+          {filterOptions.statuses.map((status) => (
+            <span key={status}>
+              <i className="legend-swatch" data-status={status}></i>
+              {status}
+            </span>
+          ))}
         </section>
       </div>
     </GraphContext.Provider>

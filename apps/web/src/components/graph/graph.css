@@ -4,30 +4,29 @@
   height: 620px;
 }
 
-/* Override React Flow panel background to match theme */
 .react-flow__background {
-  background: var(--panel);
+  background: var(--color-panel);
 }
 
 .react-flow__panel {
-  color: var(--text);
+  color: var(--color-text);
 }
 
 .react-flow__controls button {
-  background: var(--panel);
-  border-color: var(--border);
-  color: var(--text);
-  fill: var(--text);
+  background: var(--color-panel);
+  border-color: var(--color-border);
+  color: var(--color-text);
+  fill: var(--color-text);
 }
 
 .react-flow__controls button:hover {
-  background: var(--panel-muted);
+  background: var(--color-panel-muted);
 }
 
 .react-flow__minimap {
-  background: var(--panel-muted) !important;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  background: var(--color-panel-muted) !important;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
 }
 
 /* Node card */
@@ -40,10 +39,11 @@
 .graph-rf-node {
   width: 220px;
   height: 80px;
-  padding: 10px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--panel-muted);
+  padding: 10px 14px 10px 12px;
+  border: 1.5px solid var(--color-border);
+  border-left-width: 4px;
+  border-radius: var(--radius-lg);
+  background: var(--color-panel-muted);
   display: flex;
   flex-direction: column;
   gap: 3px;
@@ -55,23 +55,114 @@
   box-sizing: border-box;
 }
 
+.graph-rf-node--adr {
+  border-left-color: var(--kind-adr-color);
+}
+
+.graph-rf-node--spec {
+  border-left-color: var(--kind-spec-color);
+}
+
+.graph-rf-node__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.graph-rf-node__kind {
+  display: inline-flex;
+  align-items: center;
+  height: 14px;
+  padding: 0 5px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+
+.graph-rf-node__kind--adr {
+  background: color-mix(in srgb, var(--kind-adr-color) 18%, transparent);
+  color: var(--kind-adr-color);
+}
+
+.graph-rf-node__kind--spec {
+  background: color-mix(in srgb, var(--kind-spec-color) 18%, transparent);
+  color: var(--kind-spec-color);
+}
+
+/* Status-driven node coloring (per-status semantic tokens) */
+.graph-rf-node[data-status="proposed"] {
+  border-top-color: var(--status-proposed-border);
+  border-right-color: var(--status-proposed-border);
+  border-bottom-color: var(--status-proposed-border);
+  background: var(--status-proposed-bg);
+}
+.graph-rf-node[data-status="accepted"] {
+  border-top-color: var(--status-accepted-border);
+  border-right-color: var(--status-accepted-border);
+  border-bottom-color: var(--status-accepted-border);
+  background: var(--status-accepted-bg);
+}
+.graph-rf-node[data-status="rejected"] {
+  border-top-color: var(--status-rejected-border);
+  border-right-color: var(--status-rejected-border);
+  border-bottom-color: var(--status-rejected-border);
+  background: var(--status-rejected-bg);
+}
+.graph-rf-node[data-status="deprecated"] {
+  border-top-color: var(--status-deprecated-border);
+  border-right-color: var(--status-deprecated-border);
+  border-bottom-color: var(--status-deprecated-border);
+  background: var(--status-deprecated-bg);
+}
+.graph-rf-node[data-status="superseded"] {
+  border-top-color: var(--status-superseded-border);
+  border-right-color: var(--status-superseded-border);
+  border-bottom-color: var(--status-superseded-border);
+  background: var(--status-superseded-bg);
+}
+.graph-rf-node[data-status="draft"] {
+  border-top-color: var(--status-draft-border);
+  border-right-color: var(--status-draft-border);
+  border-bottom-color: var(--status-draft-border);
+  background: var(--status-draft-bg);
+}
+.graph-rf-node[data-status="active"] {
+  border-top-color: var(--status-active-border);
+  border-right-color: var(--status-active-border);
+  border-bottom-color: var(--status-active-border);
+  background: var(--status-active-bg);
+}
+.graph-rf-node[data-status="paused"] {
+  border-top-color: var(--status-paused-border);
+  border-right-color: var(--status-paused-border);
+  border-bottom-color: var(--status-paused-border);
+  background: var(--status-paused-bg);
+}
+.graph-rf-node[data-status="implemented"] {
+  border-top-color: var(--status-implemented-border);
+  border-right-color: var(--status-implemented-border);
+  border-bottom-color: var(--status-implemented-border);
+  background: var(--status-implemented-bg);
+}
+.graph-rf-node[data-status="obsolete"] {
+  border-top-color: var(--status-obsolete-border);
+  border-right-color: var(--status-obsolete-border);
+  border-bottom-color: var(--status-obsolete-border);
+  background: var(--status-obsolete-bg);
+}
+
 .graph-rf-node:hover {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent);
 }
 
 .graph-rf-node--highlighted {
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 18%, var(--panel));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
-}
-
-.graph-rf-node--adr {
-  background: color-mix(in srgb, var(--accent) 11%, var(--panel));
-}
-
-.graph-rf-node--adr.graph-rf-node--highlighted {
-  background: color-mix(in srgb, var(--accent) 28%, var(--panel));
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 22%, transparent);
 }
 
 .graph-rf-node--dimmed {
@@ -79,18 +170,18 @@
 }
 
 .graph-rf-node__id {
-  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  font-size: 11px;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
   font-weight: 650;
-  color: var(--muted);
+  color: var(--color-text-muted);
   line-height: 1;
 }
 
 .graph-rf-node__title {
-  font-size: 13px;
+  font-size: var(--text-base);
   font-weight: 650;
-  color: var(--text);
-  line-height: 1.2;
+  color: var(--color-text);
+  line-height: var(--leading-tight);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -98,16 +189,48 @@
 
 .graph-rf-node__status {
   font-size: 10px;
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--muted);
+  color: var(--color-text-muted);
   margin-top: auto;
+}
+
+/* Status text color follows per-status fg */
+.graph-rf-node[data-status="proposed"] .graph-rf-node__status {
+  color: var(--status-proposed-fg);
+}
+.graph-rf-node[data-status="accepted"] .graph-rf-node__status {
+  color: var(--status-accepted-fg);
+}
+.graph-rf-node[data-status="rejected"] .graph-rf-node__status {
+  color: var(--status-rejected-fg);
+}
+.graph-rf-node[data-status="deprecated"] .graph-rf-node__status {
+  color: var(--status-deprecated-fg);
+}
+.graph-rf-node[data-status="superseded"] .graph-rf-node__status {
+  color: var(--status-superseded-fg);
+}
+.graph-rf-node[data-status="draft"] .graph-rf-node__status {
+  color: var(--status-draft-fg);
+}
+.graph-rf-node[data-status="active"] .graph-rf-node__status {
+  color: var(--status-active-fg);
+}
+.graph-rf-node[data-status="paused"] .graph-rf-node__status {
+  color: var(--status-paused-fg);
+}
+.graph-rf-node[data-status="implemented"] .graph-rf-node__status {
+  color: var(--status-implemented-fg);
+}
+.graph-rf-node[data-status="obsolete"] .graph-rf-node__status {
+  color: var(--status-obsolete-fg);
 }
 
 /* Edges */
 .react-flow__edge-path {
-  stroke: var(--muted);
+  stroke: var(--color-text-muted);
   stroke-width: 1.6;
   opacity: 0.72;
 }
@@ -119,13 +242,13 @@
 
 .edge-supersedes .react-flow__edge-path,
 .edge-replacedBy .react-flow__edge-path {
-  stroke: var(--warning);
+  stroke: var(--color-warning);
   stroke-width: 2;
   opacity: 0.85;
 }
 
 .edge-highlighted .react-flow__edge-path {
-  stroke: var(--accent);
+  stroke: var(--color-accent);
   stroke-width: 2.4;
   opacity: 1;
 }
@@ -134,19 +257,74 @@
   opacity: 0.12;
 }
 
-/* React Flow handle overrides */
 .react-flow__handle {
   width: 8px;
   height: 8px;
-  background: var(--border);
-  border-color: var(--border);
+  background: var(--color-border);
+  border-color: var(--color-border);
 }
 
 .react-flow__handle:hover {
-  background: var(--accent);
+  background: var(--color-accent);
 }
 
-/* Toolbar */
 .graph-toolbar {
   grid-template-columns: repeat(2, minmax(140px, 180px));
+}
+
+.legend-kind-bar {
+  display: inline-block;
+  width: 14px;
+  height: 4px;
+  border-radius: 2px;
+}
+
+.legend-kind-bar[data-kind="adr"] {
+  background: var(--kind-adr-color);
+}
+
+.legend-kind-bar[data-kind="spec"] {
+  background: var(--kind-spec-color);
+}
+
+/* Graph status swatches in legend */
+.legend-swatch[data-status="proposed"] {
+  background: var(--status-proposed-bg);
+  border-color: var(--status-proposed-border);
+}
+.legend-swatch[data-status="accepted"] {
+  background: var(--status-accepted-bg);
+  border-color: var(--status-accepted-border);
+}
+.legend-swatch[data-status="rejected"] {
+  background: var(--status-rejected-bg);
+  border-color: var(--status-rejected-border);
+}
+.legend-swatch[data-status="deprecated"] {
+  background: var(--status-deprecated-bg);
+  border-color: var(--status-deprecated-border);
+}
+.legend-swatch[data-status="superseded"] {
+  background: var(--status-superseded-bg);
+  border-color: var(--status-superseded-border);
+}
+.legend-swatch[data-status="draft"] {
+  background: var(--status-draft-bg);
+  border-color: var(--status-draft-border);
+}
+.legend-swatch[data-status="active"] {
+  background: var(--status-active-bg);
+  border-color: var(--status-active-border);
+}
+.legend-swatch[data-status="paused"] {
+  background: var(--status-paused-bg);
+  border-color: var(--status-paused-border);
+}
+.legend-swatch[data-status="implemented"] {
+  background: var(--status-implemented-bg);
+  border-color: var(--status-implemented-border);
+}
+.legend-swatch[data-status="obsolete"] {
+  background: var(--status-obsolete-bg);
+  border-color: var(--status-obsolete-border);
 }

@@ -1,0 +1,98 @@
+---
+type ButtonVariant = "primary" | "secondary" | "ghost";
+type ButtonSize = "sm" | "md";
+
+interface Props {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  as?: "a" | "button";
+  href?: string;
+  type?: "button" | "submit" | "reset";
+  hidden?: boolean;
+  class?: string;
+  [key: `data-${string}`]: string | number | boolean | undefined;
+}
+
+const {
+  variant = "secondary",
+  size = "md",
+  as = "button",
+  href,
+  type = "button",
+  class: className,
+  ...rest
+} = Astro.props as Props & Record<string, unknown>;
+
+const classes = ["ui-button", `ui-button--${variant}`, `ui-button--${size}`, className]
+  .filter(Boolean)
+  .join(" ");
+---
+
+{
+  as === "a" ? (
+    <a class={classes} href={href} {...rest}>
+      <slot />
+    </a>
+  ) : (
+    <button class={classes} type={type} {...rest}>
+      <slot />
+    </button>
+  )
+}
+
+<style>
+  .ui-button[hidden] {
+    display: none;
+  }
+
+  .ui-button {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    min-height: 32px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-panel);
+    color: var(--color-text);
+    font: inherit;
+    font-size: var(--text-base);
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.12s, color 0.12s, background 0.12s;
+  }
+
+  .ui-button:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .ui-button--sm {
+    min-height: 26px;
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--text-sm);
+  }
+
+  .ui-button--primary {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-panel);
+  }
+
+  .ui-button--primary:hover {
+    background: color-mix(in srgb, var(--color-accent) 85%, var(--color-text));
+    color: var(--color-panel);
+  }
+
+  .ui-button--ghost {
+    background: transparent;
+    border-color: transparent;
+  }
+
+  .ui-button--ghost:hover {
+    background: var(--color-panel-muted);
+    color: var(--color-accent);
+  }
+</style>

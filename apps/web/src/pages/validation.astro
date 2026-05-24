@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Pill from "../components/ui/Pill.astro";
 import { buildDocumentHref } from "@lib/documents.js";
 import { loadActaWebData } from "@lib/project.js";
 
@@ -16,9 +17,9 @@ const documentsById = new Map(project.documents.map((document) => [document.id, 
         {validation.errorCount} errors, {validation.warningCount} warnings
       </p>
     </div>
-    <a class={`validation-pill ${validation.valid ? "is-valid" : "is-invalid"}`} href="/validation/">
+    <Pill as="a" href="/validation/" tone={validation.valid ? "success" : "danger"}>
       {validation.valid ? "Valid" : "Needs attention"}
-    </a>
+    </Pill>
   </section>
 
   {

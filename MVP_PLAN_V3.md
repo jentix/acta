@@ -138,6 +138,22 @@ apps/web/src/styles/
 - Удалить старые `.status-*` правила цветами через `--accent/--warning/--danger`, заменить на per-status токены
 - Sanity: один source of truth — добавил статус в schema → добавил токен → автоматически работает везде
 
+#### 5.5 UI-примитивы в Astro-компоненты
+
+- Вынести повторяющиеся UI-куски из `.astro`-страниц и `DocumentSearchList.astro` в `apps/web/src/components/ui/`:
+  - `Button.astro` — варианты `primary | secondary | ghost`, `as="a" | "button"`, size `sm | md`
+  - `Input.astro` — обёртка над `<input>` с пробрасыванием `type`, `name`, `data-*`
+  - `Select.astro` — `<select>` + slot для `<option>`
+  - `Field.astro` — `<label><span>{label}</span><slot /></label>`, единая разметка для toolbar-полей
+  - `SegmentedControl.astro` — fieldset+radio, принимает `name`, `legend`, массив `options`
+  - `Chip.astro` — `as="a" | "span"`, варианты для kind/status (через data-атрибут под токены 5.4)
+  - `Pill.astro` — общий для `.validation-pill` и `.badge`, варианты state
+  - `Tooltip.astro` — обёртка с `?`-иконкой и `<span role="tooltip">` (используется в 5.3)
+- Стили перенести из `global.css` в scoped-блоки внутри компонентов (или per-component css), консумируя только токены из 5.1
+- Применить в: `DocumentSearchList.astro`, `pages/index.astro`, `pages/documents/[id]/index.astro`, `pages/validation.astro`, `pages/search.astro`
+- React-аналоги (для islands `DocumentGraphIsland`, `ThemeToggle`) — пока inline; React-обёртка появится позже, если возникнет дубликат
+- Acceptance: в `global.css` остаются только reset, base-typography и layout-классы (`.app-shell`, `.sidebar`, `.content`); никаких `.button`, `.chip`, `.badge`, `input/select` правил на корневом уровне
+
 ### Phase 6 — i18n (2 дня)
 
 #### 6.1 Стек
@@ -335,7 +351,7 @@ acta dev
 ```
 4.4 createdAt timestamp        (0.25d)
 4.5 test reorg + e2e fixture   (0.5d)
-5   theming + tooltips + status (2d)    ← 5.1–5.4
+5   theming + tooltips + status (2d)    ← 5.1–5.5
 7   README + docs               (1d)    ← параллельно с 5
 6   i18n                        (2d)
 6.5 Orama 3 + search scale     (1d)

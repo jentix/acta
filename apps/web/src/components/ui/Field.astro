@@ -1,0 +1,24 @@
+---
+interface Props {
+  label: string;
+  class?: string;
+}
+
+const { label, class: className } = Astro.props;
+const classes = ["ui-field", className].filter(Boolean).join(" ");
+---
+
+<label class={classes}>
+  <span class="ui-field__label">{label}</span>
+  <slot />
+</label>
+
+<style>
+  .ui-field {
+    display: grid;
+    gap: 5px;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+  }
+</style>
