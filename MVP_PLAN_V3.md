@@ -50,6 +50,18 @@
 
 ## 4. Roadmap
 
+### Phase 4.4 — `createdAt` timestamp в документах (0.25 дня)
+
+Цель: стабильная сортировка по новизне, когда в один день создано много документов.
+
+- Расширить frontmatter: добавить optional `createdAt: string` (ISO 8601 datetime, e.g. `2026-05-24T14:32:11Z`). Поле `date` остаётся (день публикации/решения, human-facing)
+- Zod-schema: `createdAt: z.string().datetime().optional()`
+- `acta new` записывает `createdAt: new Date().toISOString()` автоматически
+- Sort order в `repository.ts` и в `documents` list: `createdAt ?? date` desc как tie-break после `date`
+- В UI **не показываем** `createdAt` (внутреннее поле), но включаем в `documents.json` artifact
+- Backfill стратегия: для существующих документов без `createdAt` — fallback на `date` + index суффикс или mtime файла. Документировать как known limitation
+- Тест: два документа с одинаковым `date`, разным `createdAt` → корректный порядок
+
 ### Phase 4.5 — Test reorg + e2e fixture (0.5 дня)
 
 - Создать `tests/fixtures/demo-repo/` (2 ADR + 2 SPEC, типовые связи)
@@ -99,6 +111,33 @@ apps/web/src/styles/
 - Прокинуть тему в Shiki: dual-themes (`light: github-light`, `dark: github-dark`), CSS-vars-based highlighting
 - React Flow: подхватить через CSS vars или передать prop
 
+#### 5.3 Tooltips для Link/Backlink типов
+
+- У каждой группы Links и Backlinks на странице документа (`related`, `supersedes`, `replacedBy`, `decidedBy`, `dependsOn`, `validates`, `references`) — иконка `?` с tooltip-объяснением типа связи
+- Tooltip: на hover + focus (accessibility). Native `<button aria-describedby>` + `<span role="tooltip">`, либо лёгкая Astro/React-обёртка
+- Тексты тултипов — через i18n namespace `documents:linkTypes.<type>` (после Phase 6); до этого — hardcoded en
+- Стилизация через те же tokens (`--color-text-muted`, `--radius-sm`, `--shadow-sm`)
+- Применяется и к incoming (backlinks), и к outgoing связям
+
+#### 5.4 Status colors → global tokens, синхронизировать Graph и Documents
+
+- Вынести цвета статусов в semantic tokens:
+  ```
+  --status-proposed, --status-accepted, --status-rejected,
+  --status-deprecated, --status-superseded,
+  --status-draft, --status-active, --status-paused,
+  --status-implemented, --status-obsolete
+  ```
+- Каждый имеет пару `--status-<x>-bg` / `--status-<x>-fg` / `--status-<x>-border` для chip-стилизации
+- Светлая и тёмная темы — оба набора в `themes/light.css` и `themes/dark.css`
+- Применить **везде** где отображается статус:
+  - Документ-list (таблица `Documents`) — chip уже есть, перевести на новые токены
+  - Document page — status badge
+  - Graph: node-карточки красить рамкой/фоном по статусу через CSS-vars (React Flow custom node читает `data.status`, ставит `style={{ borderColor: var(--status-${status}-border) }}` или CSS-class `status-${status}`)
+  - Legend на странице Graph — обновить
+- Удалить старые `.status-*` правила цветами через `--accent/--warning/--danger`, заменить на per-status токены
+- Sanity: один source of truth — добавил статус в schema → добавил токен → автоматически работает везде
+
 ### Phase 6 — i18n (2 дня)
 
 #### 6.1 Стек
@@ -141,6 +180,55 @@ apps/web/src/locales/
 #### 6.5 Документы — будущее
 
 Документы остаются на языке оригинала. Если потом захочется multi-language docs — отдельный feature через `doc.lang` frontmatter поле, не в MVP.
+
+### Phase 6.5 — Orama 3 upgrade + search scalability (1 день)
+
+Цель: search не деградирует при сотнях/тысячах документов. Сейчас весь `search-index.json` тянется одним blob-ом при первой загрузке `/search`.
+
+#### 6.5.1 Audit + upgrade
+
+- Зафиксировать текущую версию Orama в `packages/core` и `apps/web`
+- Прочитать changelog Orama 2→3: breaking changes API (`create`, `insert`, `search`), schema-define синтаксис, persistence (`@orama/plugin-data-persistence`), новый embed-flow
+- Обновить до `orama@^3`, прогнать тесты, починить call-sites в `core/src/search.ts` и `apps/web/src/lib/search*.ts`
+- Проверить размер bundle (Orama 3 переписал runtime)
+
+#### 6.5.2 Index optimization
+
+Стратегии (применяем по мере необходимости, измеряя):
+
+1. **Persistence format**: вместо JSON-сериализации использовать `@orama/plugin-data-persistence` с binary/msgpack — меньше payload, быстрее restore
+2. **Field tuning**:
+   - `bodyText` — полнотекстовый поиск, но stored=false (не возвращаем в результате, только используем для матчинга) → меньше index
+   - `summary`, `title`, `tags`, `component`, `owners` — searchable + stored
+   - `id` — searchable + boost при ранжировании
+3. **Stemming/tokenization**: подключить language-stemmers для `en` и `ru` (`@orama/stemmers`)
+4. **Stop-words**: применить per-locale
+5. **Compression**: gzip/brotli static asset на уровне Pages (auto)
+
+#### 6.5.3 Lazy loading стратегии
+
+Порог: если `search-index.json` > 500KB gzipped, активировать одну из стратегий:
+
+- **Variant A — split by kind**: `search-index-adr.json`, `search-index-spec.json`. Загружать по active-filter, fallback — обе
+- **Variant B — shards by first letter of id**: 26 файлов. Хорошо для prefix-поиска по id, но плохо для full-text
+- **Variant C — secondary index**: маленький index с (id, title, tags) загружается сразу, полный body-index lazy при первом keystroke
+- **Variant D — server-side search**: out of scope для MVP (static site)
+
+Рекомендация: начать с **Variant C** (secondary index). Это даёт мгновенный type-ahead для самого частого кейса (поиск по title/id) и подгружает body-search только при запросе.
+
+#### 6.5.4 Реализация
+
+- `core/src/search.ts`: `buildSearchIndex` возвращает `{ primary, full }` — primary (id/title/summary/tags) + full (с body)
+- `artifacts.ts`: пишет `search-index.json` (primary) и `search-index-full.json` (full)
+- `apps/web/src/lib/search-client.ts`: на init грузит только primary, full грузит при первом search > 2 chars или explicit toggle "search in content"
+- UI: indicator "searching content…" при загрузке full
+
+#### 6.5.5 Benchmark
+
+- Fixture: сгенерировать synthetic-репо на 100/500/1000 документов
+- Замерить: размер `search-index.json` (raw/gzip), time-to-first-result, memory
+- Добавить в `tests/perf/search.bench.ts` (Vitest `bench`)
+- Документировать пороги в `docs/architecture/search.md`
 
 ### Phase 7 — README & CLI docs (1 день)
 
@@ -230,9 +318,13 @@ acta dev
 - README ведёт нового пользователя от `npm install` до работающего сайта
 - Все CLI-команды задокументированы с примерами
 - Темы: переключатель `system/light/dark` работает без FOUC, все стили через CSS-переменные в `tokens/themes`
+- Status-цвета — single source of truth, синхронны между Documents list, document page и Graph
+- Link/Backlink группы имеют tooltip-объяснения
+- `createdAt` присутствует во всех новых документах, используется в сортировке
 - i18n: `en` (default) и `ru`, namespace-структура, переключатель в sidebar, все UI-strings локализованы
+- Orama 3, search index оптимизирован, lazy-стратегия активна, benchmark проходит на 1000-документ fixture
 - Demo-сайт self-hosted на Pages из own dogfooding-документов
-- CI: разнесённые jobs (unit / e2e / dogfood-validate / lint / typecheck / build)
+- CI: разнесённые jobs (unit / e2e / dogfood-validate / lint / typecheck / build / bench)
 - `acta` опубликован в npm с рабочим `bin`
 - Changesets настроен, CHANGELOG ведётся
 
@@ -241,13 +333,18 @@ acta dev
 ## 6. Порядок исполнения
 
 ```
+4.4 createdAt timestamp        (0.25d)
 4.5 test reorg + e2e fixture   (0.5d)
-5   theming                     (1.5d)
-7   README + docs               (1d)    ← можно параллельно с 5
+5   theming + tooltips + status (2d)    ← 5.1–5.4
+7   README + docs               (1d)    ← параллельно с 5
 6   i18n                        (2d)
+6.5 Orama 3 + search scale     (1d)
 8   release + pages deploy      (1d)
                                 ─────
-                                ~6 дней
+                                ~7.75 дней
 ```
 
-Phase 7 (README) можно начать параллельно с Phase 5, так как они не пересекаются по коду. Phase 6 (i18n) идёт после темизации, чтобы LanguageSwitcher визуально соответствовал ThemeToggle.
+- Phase 4.4 (createdAt) — первый, потому что меняет schema/artifacts, всё остальное от этого зависит
+- Phase 7 (README) можно начать параллельно с Phase 5
+- Phase 6 (i18n) после темизации, чтобы LanguageSwitcher визуально соответствовал ThemeToggle, и чтобы tooltip-тексты (5.3) сразу проходили через i18n namespace
+- Phase 6.5 (search) — после i18n: stemmers подключаются per-locale, поэтому имеет смысл иметь готовый i18n-контекст
