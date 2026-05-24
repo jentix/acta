@@ -18,11 +18,11 @@ links:
 
 # Summary
 
-Describe the feature, system, or technical change.
+Describe the feature or system.
 
 # Goals
 
-List the outcomes this spec must achieve.
+List the outcomes.
 
 # Requirements
 

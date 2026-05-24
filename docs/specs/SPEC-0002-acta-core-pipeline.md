@@ -3,7 +3,7 @@ id: SPEC-0002
 kind: spec
 title: Acta core pipeline
 status: active
-date: 2026-04-26
+date: 2026-04-26T00:00:00.000Z
 tags: [core, validation, artifacts]
 component: [acta-core]
 owners: [Boris]

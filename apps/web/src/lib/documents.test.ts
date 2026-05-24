@@ -5,6 +5,7 @@ import {
   buildDocumentOrderIndex,
   collectFilterOptions,
   filterDocuments,
+  formatDisplayDate,
   getDocumentSearchText,
   getNextDocumentLimit,
   shouldShowMoreDocuments,
@@ -109,6 +110,13 @@ describe("web document utilities", () => {
     expect(getNextDocumentLimit(40, 45)).toBe(45);
     expect(shouldShowMoreDocuments(45, 40)).toBe(true);
     expect(shouldShowMoreDocuments(45, 45)).toBe(false);
+  });
+
+  it("formats display date by dropping the time portion of ISO datetime", () => {
+    expect(formatDisplayDate("2026-04-26T08:15:00.000Z")).toBe("2026-04-26");
+    expect(formatDisplayDate("2026-04-26")).toBe("2026-04-26");
+    expect(formatDisplayDate("")).toBe("");
+    expect(formatDisplayDate("not-a-date")).toBe("not-a-date");
   });
 
   it("includes metadata and section content in search text", () => {

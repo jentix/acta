@@ -3,6 +3,7 @@ import { renderMarkdown } from "@acta/renderer";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import {
   buildDocumentHref,
+  formatDisplayDate,
   getDocumentById,
   getIssuesForDocument,
   hasBacklinks,
@@ -35,7 +36,7 @@ const { document, documents, issues, rendered } = Astro.props;
     <div>
       <p class="eyebrow">{document.kind.toUpperCase()} · {document.status}</p>
       <h1>{document.title}</h1>
-      <p class="muted">{document.id} · {document.date}</p>
+      <p class="muted">{document.id} · {formatDisplayDate(document.date)}</p>
     </div>
     <a class="button" href="/">Back to documents</a>
   </section>

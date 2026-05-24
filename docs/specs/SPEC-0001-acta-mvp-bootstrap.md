@@ -3,7 +3,7 @@ id: SPEC-0001
 kind: spec
 title: Acta MVP bootstrap
 status: active
-date: 2026-04-26
+date: 2026-04-26T00:00:00.000Z
 tags: [mvp, bootstrap, tooling]
 component: [acta-core, acta-cli, acta-web]
 owners: [Boris]

@@ -20,16 +20,16 @@ links:
 
 # Context
 
-Describe the forces, constraints, and problem that make this decision necessary.
+Describe the forces, constraints, and problem.
 
 # Decision
 
-State the decision clearly.
+State the decision.
 
 # Consequences
 
-Describe expected tradeoffs, follow-up work, and operational impact.
+Describe tradeoffs and follow-up work.
 
 # Alternatives
 
-List the meaningful options considered and why they were not chosen.
+List meaningful options considered.

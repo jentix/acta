@@ -3,7 +3,7 @@ id: ADR-0001
 kind: adr
 title: Use Markdown as the source of truth
 status: accepted
-date: 2026-04-26
+date: 2026-04-26T00:00:00.000Z
 tags: [docs, architecture, storage]
 component: [acta-core]
 owners: [Boris]

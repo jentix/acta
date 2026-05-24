@@ -3,7 +3,7 @@ id: SPEC-0006
 kind: spec
 title: Search index optimization
 status: draft
-date: 2026-05-03
+date: 2026-05-03T00:00:00.000Z
 tags: []
 component: [acta-core, acta-web]
 owners: [Boris]

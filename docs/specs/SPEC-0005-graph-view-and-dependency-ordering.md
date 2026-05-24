@@ -3,7 +3,7 @@ id: SPEC-0005
 kind: spec
 title: Graph view and dependency ordering
 status: implemented
-date: 2026-05-02
+date: 2026-05-02T00:00:00.000Z
 tags: [web, graph, ordering, phase-3]
 component: [acta-core, acta-web]
 owners: [Boris]

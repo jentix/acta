@@ -5,6 +5,7 @@ import {
   buildDocumentOrderIndex,
   collectFilterOptions,
   documentPageSize,
+  formatDisplayDate,
 } from "../lib/documents.js";
 
 interface Props {
@@ -102,7 +103,7 @@ const dependencyOrder = buildDocumentOrderIndex(dependencyOrderDocuments);
           <div class="row-meta">
             <span class={`badge kind-${document.kind}`}>{document.kind}</span>
             <span class={`badge status-${document.status}`}>{document.status}</span>
-            <span class="muted">{document.date}</span>
+            <span class="muted">{formatDisplayDate(document.date)}</span>
           </div>
         </article>
       ))

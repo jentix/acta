@@ -41,6 +41,12 @@ describe("acta new adr", () => {
       expect(content).toContain("id: ADR-0001");
       expect(content).toContain("title: My First Decision");
       expect(content).toContain("kind: adr");
+      // `date` should be a parseable ISO 8601 datetime close to "now".
+      const dateMatch = content.match(/^date:\s*(\S+)/m);
+      expect(dateMatch).not.toBeNull();
+      const dateValue = dateMatch?.[1] ?? "";
+      expect(Number.isNaN(Date.parse(dateValue))).toBe(false);
+      expect(Math.abs(Date.now() - Date.parse(dateValue))).toBeLessThan(60_000);
 
       process.cwd = origCwd;
     } finally {

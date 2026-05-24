@@ -224,6 +224,46 @@ describe("@acta/core", () => {
     });
   });
 
+  it("parses ISO datetime date and round-trips it", async () => {
+    await withFixture(async (fixture) => {
+      await fixture.writeAdr("ADR-0001-stamped.md", validAdr({ date: "2026-04-26T08:15:00.000Z" }));
+
+      const project = await loadProject({ config: fixture.config });
+      expect(project.documents[0].date).toBe("2026-04-26T08:15:00.000Z");
+    });
+  });
+
+  it("rejects malformed date values", async () => {
+    await withFixture(async (fixture) => {
+      await fixture.writeAdr("ADR-0001-bad.md", validAdr({ date: "not-a-date" }));
+
+      const validation = validateProject(await loadProject({ config: fixture.config }));
+      expect(validation.errors.map((issue) => issue.ruleId)).toContain("frontmatter.schema");
+    });
+  });
+
+  it("uses datetime precision when sorting by newest", async () => {
+    await withFixture(async (fixture) => {
+      await fixture.writeAdr(
+        "ADR-0001-earlier.md",
+        validAdr({ id: "ADR-0001", date: "2026-04-26T08:00:00.000Z" }),
+      );
+      await fixture.writeAdr(
+        "ADR-0002-later.md",
+        validAdr({
+          id: "ADR-0002",
+          date: "2026-04-26T14:00:00.000Z",
+          links: "related: []",
+        }),
+      );
+
+      const result = await buildArtifacts({ config: fixture.config });
+      const ordering = result.project.ordering.documentIds;
+      // Same calendar day; later datetime wins (newest first).
+      expect(ordering.indexOf("ADR-0002")).toBeLessThan(ordering.indexOf("ADR-0001"));
+    });
+  });
+
   it("loads and validates the repository dogfooding documents", async () => {
     const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "../../..");
     const project = await loadProject({
@@ -244,12 +284,14 @@ describe("@acta/core", () => {
       "ADR-0003",
       "ADR-0004",
       "ADR-0005",
+      "ADR-0006",
       "SPEC-0001",
       "SPEC-0002",
       "SPEC-0003",
       "SPEC-0004",
       "SPEC-0005",
       "SPEC-0006",
+      "SPEC-0007",
     ]);
     expect(validation.errors).toEqual([]);
   });
@@ -295,14 +337,21 @@ async function withFixture(
 }
 
 function validAdr(
-  options: { id?: string; title?: string; status?: string; links?: string; body?: string } = {},
+  options: {
+    id?: string;
+    title?: string;
+    status?: string;
+    links?: string;
+    body?: string;
+    date?: string;
+  } = {},
 ): string {
   return `---
 id: ${options.id ?? "ADR-0001"}
 kind: adr
 title: ${options.title ?? "Use core"}
 status: ${options.status ?? "accepted"}
-date: 2026-04-26
+date: ${options.date ?? "2026-04-26T00:00:00.000Z"}
 tags: [core]
 component: [acta-core]
 owners: [Boris]
@@ -340,7 +389,7 @@ id: ${options.id ?? "SPEC-0001"}
 kind: spec
 title: ${options.title ?? "Core pipeline"}
 status: ${options.status ?? "active"}
-date: 2026-04-26
+date: 2026-04-26T00:00:00.000Z
 tags: [core]
 component: [acta-core]
 owners: [Boris]
