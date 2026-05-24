@@ -18,8 +18,11 @@
     "@orama/orama": "^2.0.6",
     "@xyflow/react": "^12.10.2",
     "astro": "^6.3.7",
+    "i18next": "^26.2.0",
+    "i18next-resources-to-backend": "^1.2.1",
     "react": "^19.2.5",
-    "react-dom": "^19.2.5"
+    "react-dom": "^19.2.5",
+    "react-i18next": "^17.0.8"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",

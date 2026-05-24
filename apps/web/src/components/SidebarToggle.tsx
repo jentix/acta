@@ -11,7 +11,9 @@ function applyCollapsed(collapsed: boolean): void {
   document.documentElement.dataset.sidebar = collapsed ? "collapsed" : "expanded";
 }
 
-export default function SidebarToggle() {
+type Props = { labels: { collapse: string; expand: string } };
+
+export default function SidebarToggle({ labels }: Props) {
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
@@ -30,7 +32,7 @@ export default function SidebarToggle() {
     <button
       type="button"
       className="ui-sidebar-toggle"
-      aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+      aria-label={collapsed ? labels.expand : labels.collapse}
       aria-pressed={collapsed}
       onClick={toggle}
     >
