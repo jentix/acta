@@ -1,0 +1,31 @@
+/* Semantic token contract. Actual values set per-theme in themes/light.css and themes/dark.css. */
+:root {
+  /* surfaces */
+  --color-bg: initial;
+  --color-panel: initial;
+  --color-panel-muted: initial;
+
+  /* text */
+  --color-text: initial;
+  --color-text-muted: initial;
+
+  /* lines */
+  --color-border: initial;
+
+  /* feedback */
+  --color-accent: initial;
+  --color-danger: initial;
+  --color-warning: initial;
+
+  /* legacy aliases (kept for any consumers not yet migrated) */
+  --bg: var(--color-bg);
+  --panel: var(--color-panel);
+  --panel-muted: var(--color-panel-muted);
+  --text: var(--color-text);
+  --muted: var(--color-text-muted);
+  --border: var(--color-border);
+  --accent: var(--color-accent);
+  --danger: var(--color-danger);
+  --warning: var(--color-warning);
+  --radius: var(--radius-lg);
+}

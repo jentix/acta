@@ -1,0 +1,54 @@
+[data-theme="light"] {
+  --color-bg: var(--c-paper);
+  --color-panel: var(--c-paper-elevated);
+  --color-panel-muted: var(--c-paper-soft);
+  --color-text: var(--c-ink);
+  --color-text-muted: var(--c-ink-soft);
+  --color-border: var(--c-edge);
+  --color-accent: var(--c-teal-600);
+  --color-danger: var(--c-red-600);
+  --color-warning: var(--c-amber-700);
+
+  --kind-adr-color: var(--c-teal-600);
+  --kind-spec-color: var(--c-slate-600);
+
+  --status-proposed-fg: var(--c-amber-700);
+  --status-proposed-bg: color-mix(in srgb, var(--c-amber-700) 12%, var(--c-paper-elevated));
+  --status-proposed-border: color-mix(in srgb, var(--c-amber-700) 36%, var(--c-paper-elevated));
+
+  --status-accepted-fg: var(--c-teal-600);
+  --status-accepted-bg: color-mix(in srgb, var(--c-teal-600) 12%, var(--c-paper-elevated));
+  --status-accepted-border: color-mix(in srgb, var(--c-teal-600) 36%, var(--c-paper-elevated));
+
+  --status-rejected-fg: var(--c-red-600);
+  --status-rejected-bg: color-mix(in srgb, var(--c-red-600) 12%, var(--c-paper-elevated));
+  --status-rejected-border: color-mix(in srgb, var(--c-red-600) 36%, var(--c-paper-elevated));
+
+  --status-deprecated-fg: var(--c-slate-600);
+  --status-deprecated-bg: color-mix(in srgb, var(--c-slate-600) 12%, var(--c-paper-elevated));
+  --status-deprecated-border: color-mix(in srgb, var(--c-slate-600) 36%, var(--c-paper-elevated));
+
+  --status-superseded-fg: var(--c-slate-600);
+  --status-superseded-bg: color-mix(in srgb, var(--c-slate-600) 12%, var(--c-paper-elevated));
+  --status-superseded-border: color-mix(in srgb, var(--c-slate-600) 36%, var(--c-paper-elevated));
+
+  --status-draft-fg: var(--c-blue-600);
+  --status-draft-bg: color-mix(in srgb, var(--c-blue-600) 12%, var(--c-paper-elevated));
+  --status-draft-border: color-mix(in srgb, var(--c-blue-600) 36%, var(--c-paper-elevated));
+
+  --status-active-fg: var(--c-teal-600);
+  --status-active-bg: color-mix(in srgb, var(--c-teal-600) 12%, var(--c-paper-elevated));
+  --status-active-border: color-mix(in srgb, var(--c-teal-600) 36%, var(--c-paper-elevated));
+
+  --status-paused-fg: var(--c-amber-700);
+  --status-paused-bg: color-mix(in srgb, var(--c-amber-700) 12%, var(--c-paper-elevated));
+  --status-paused-border: color-mix(in srgb, var(--c-amber-700) 36%, var(--c-paper-elevated));
+
+  --status-implemented-fg: var(--c-teal-600);
+  --status-implemented-bg: color-mix(in srgb, var(--c-teal-600) 12%, var(--c-paper-elevated));
+  --status-implemented-border: color-mix(in srgb, var(--c-teal-600) 36%, var(--c-paper-elevated));
+
+  --status-obsolete-fg: var(--c-slate-600);
+  --status-obsolete-bg: color-mix(in srgb, var(--c-slate-600) 12%, var(--c-paper-elevated));
+  --status-obsolete-border: color-mix(in srgb, var(--c-slate-600) 36%, var(--c-paper-elevated));
+}

@@ -1,0 +1,86 @@
+---
+interface Props {
+  label: string;
+  text: string;
+  id?: string;
+  class?: string;
+}
+
+const { label, text, id, class: className } = Astro.props;
+const tipId =
+  id ?? `tip-${Math.random().toString(36).slice(2, 9)}-${Date.now().toString(36).slice(-4)}`;
+const classes = ["ui-tooltip", className].filter(Boolean).join(" ");
+---
+
+<span class={classes}>
+  <button
+    type="button"
+    class="ui-tooltip__trigger"
+    aria-label={label}
+    aria-describedby={tipId}
+  >
+    ?
+  </button>
+  <span role="tooltip" id={tipId} class="ui-tooltip__bubble">{text}</span>
+</span>
+
+<style>
+  .ui-tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .ui-tooltip__trigger {
+    display: inline-grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-panel);
+    color: var(--color-text-muted);
+    font: inherit;
+    font-size: 10px;
+    font-weight: var(--weight-bold);
+    line-height: 1;
+    cursor: help;
+  }
+
+  .ui-tooltip__trigger:hover,
+  .ui-tooltip__trigger:focus-visible {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    outline: none;
+  }
+
+  .ui-tooltip__bubble {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    width: max-content;
+    max-width: 240px;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-panel);
+    color: var(--color-text);
+    box-shadow: var(--shadow-md);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-regular);
+    line-height: var(--leading-snug);
+    text-transform: none;
+    letter-spacing: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.12s;
+  }
+
+  .ui-tooltip__trigger:hover + .ui-tooltip__bubble,
+  .ui-tooltip__trigger:focus-visible + .ui-tooltip__bubble {
+    opacity: 1;
+  }
+</style>

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import DocumentSearchList from "../components/DocumentSearchList.astro";
+import Pill from "../components/ui/Pill.astro";
 import { loadActaWebData } from "@lib/project.js";
 
 const { project, validation } = await loadActaWebData();
@@ -18,9 +19,9 @@ const specCount = documents.filter((document) => document.kind === "spec").lengt
         {documents.length} documents, {adrCount} ADRs, {specCount} specs
       </p>
     </div>
-    <a class={`validation-pill ${validation.valid ? "is-valid" : "is-invalid"}`} href="/validation/">
+    <Pill as="a" href="/validation/" tone={validation.valid ? "success" : "danger"}>
       {validation.errorCount} errors · {validation.warningCount} warnings
-    </a>
+    </Pill>
   </section>
 
   <DocumentSearchList

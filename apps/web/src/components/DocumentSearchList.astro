@@ -7,6 +7,12 @@ import {
   documentPageSize,
   formatDisplayDate,
 } from "../lib/documents.js";
+import Field from "./ui/Field.astro";
+import Input from "./ui/Input.astro";
+import Select from "./ui/Select.astro";
+import SegmentedControl from "./ui/SegmentedControl.astro";
+import Chip from "./ui/Chip.astro";
+import Button from "./ui/Button.astro";
 
 interface Props {
   documents: ActaDocument[];
@@ -25,53 +31,47 @@ const dependencyOrder = buildDocumentOrderIndex(dependencyOrderDocuments);
 
 <div data-document-search-root>
   <section class="toolbar" aria-label="Document filters">
-    <label>
-      <span>Search</span>
-      <input data-search-query type="search" placeholder="Title, tag, owner, section..." />
-    </label>
-    <label>
-      <span>Kind</span>
-      <select data-filter-kind>
+    <Field label="Search">
+      <Input type="search" placeholder="Title, tag, owner, section..." data-search-query />
+    </Field>
+    <Field label="Kind">
+      <Select data-filter-kind>
         <option value="">All</option>
         {filterOptions.kinds.map((kind) => <option value={kind}>{kind.toUpperCase()}</option>)}
-      </select>
-    </label>
-    <label>
-      <span>Status</span>
-      <select data-filter-status>
+      </Select>
+    </Field>
+    <Field label="Status">
+      <Select data-filter-status>
         <option value="">All</option>
         {filterOptions.statuses.map((status) => <option value={status}>{status}</option>)}
-      </select>
-    </label>
-    <label>
-      <span>Tag</span>
-      <select data-filter-tag>
+      </Select>
+    </Field>
+    <Field label="Tag">
+      <Select data-filter-tag>
         <option value="">All</option>
         {filterOptions.tags.map((tag) => <option value={tag}>{tag}</option>)}
-      </select>
-    </label>
-    <label>
-      <span>Component</span>
-      <select data-filter-component>
+      </Select>
+    </Field>
+    <Field label="Component">
+      <Select data-filter-component>
         <option value="">All</option>
         {
           filterOptions.components.map((component) => (
             <option value={component}>{component}</option>
           ))
         }
-      </select>
-    </label>
-    <fieldset class="segmented-control" aria-label="Document sort order">
-      <legend>Sort</legend>
-      <label>
-        <input data-sort-order type="radio" name="sort-order" value="newest" checked />
-        <span>Newest first</span>
-      </label>
-      <label>
-        <input data-sort-order type="radio" name="sort-order" value="dependency" />
-        <span>Dependency order</span>
-      </label>
-    </fieldset>
+      </Select>
+    </Field>
+    <SegmentedControl
+      name="sort-order"
+      legend="Sort"
+      value="newest"
+      dataAttr="data-sort-order"
+      options={[
+        { value: "newest", label: "Newest first" },
+        { value: "dependency", label: "Dependency order" },
+      ]}
+    />
   </section>
 
   <section
@@ -100,18 +100,18 @@ const dependencyOrder = buildDocumentOrderIndex(dependencyOrderDocuments);
             </a>
             {document.summary && <p>{document.summary}</p>}
           </div>
-          <div class="row-meta">
-            <span class={`badge kind-${document.kind}`}>{document.kind}</span>
-            <span class={`badge status-${document.status}`}>{document.status}</span>
-            <span class="muted">{formatDisplayDate(document.date)}</span>
+          <div class="row-chips">
+            <Chip kind={document.kind}>{document.kind}</Chip>
+            <Chip status={document.status}>{document.status}</Chip>
           </div>
+          <span class="muted row-date">{formatDisplayDate(document.date)}</span>
         </article>
       ))
     }
     <p class="empty-state" data-empty-state hidden>No matching documents.</p>
   </section>
   <div class="list-actions">
-    <button class="button" data-show-more type="button" hidden>Show more</button>
+    <Button data-show-more hidden>Show more</Button>
   </div>
 </div>
 
