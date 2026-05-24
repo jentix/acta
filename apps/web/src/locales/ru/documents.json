@@ -9,7 +9,9 @@
     "component": "Компонент",
     "sort": "Сортировка",
     "sortNewest": "Сначала новые",
-    "sortDependency": "По зависимостям"
+    "sortDependency": "По зависимостям",
+    "searchContent": "Искать в содержимом",
+    "searchingContent": "Идет поиск по содержимому..."
   },
   "empty": "Нет подходящих документов.",
   "showMore": "Показать ещё",

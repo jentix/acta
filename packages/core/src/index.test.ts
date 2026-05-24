@@ -164,6 +164,9 @@ describe("@acta/core", () => {
       const searchIndex = JSON.parse(
         await readFile(join(fixture.root, ".acta/dist/search-index.json"), "utf8"),
       );
+      const fullSearchIndex = JSON.parse(
+        await readFile(join(fixture.root, ".acta/dist/search-index-full.json"), "utf8"),
+      );
       const ordering = JSON.parse(
         await readFile(join(fixture.root, ".acta/dist/ordering.json"), "utf8"),
       );
@@ -183,8 +186,6 @@ describe("@acta/core", () => {
             tags: ["core"],
             components: ["acta-core"],
             owners: ["Boris"],
-            sectionsText: expect.any(String),
-            bodyText: expect.any(String),
           },
           {
             id: "SPEC-0001",
@@ -196,6 +197,21 @@ describe("@acta/core", () => {
             tags: ["core"],
             components: ["acta-core"],
             owners: ["Boris"],
+          },
+        ],
+      });
+      expect(searchIndex.documents[0]).not.toHaveProperty("sectionsText");
+      expect(searchIndex.documents[0]).not.toHaveProperty("bodyText");
+      expect(fullSearchIndex).toMatchObject({
+        schemaVersion: "1.0.0",
+        documents: [
+          {
+            id: "ADR-0001",
+            sectionsText: expect.any(String),
+            bodyText: expect.any(String),
+          },
+          {
+            id: "SPEC-0001",
             sectionsText: expect.any(String),
             bodyText: expect.any(String),
           },

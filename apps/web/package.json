@@ -15,7 +15,7 @@
     "@acta/renderer": "workspace:*",
     "@astrojs/react": "^5.0.5",
     "@dagrejs/dagre": "^3.0.0",
-    "@orama/orama": "^2.0.6",
+    "@orama/orama": "^3.1.18",
     "@xyflow/react": "^12.10.2",
     "astro": "^6.3.7",
     "i18next": "^26.2.0",

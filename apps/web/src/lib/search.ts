@@ -16,8 +16,8 @@ export interface WebSearchIndexDocument {
   tags: string[];
   components: string[];
   owners: string[];
-  sectionsText: string;
-  bodyText: string;
+  sectionsText?: string;
+  bodyText?: string;
 }
 
 export interface WebSearchFilters {
@@ -38,6 +38,10 @@ const searchSchema = {
   tags: "string[]",
   components: "string[]",
   owners: "string[]",
+} as const;
+
+const fullSearchSchema = {
+  ...searchSchema,
   sectionsText: "string",
   bodyText: "string",
 } as const;
@@ -96,28 +100,51 @@ async function rankedDocuments(
   index: WebSearchIndexArtifact,
   query: string,
 ): Promise<WebSearchIndexDocument[]> {
-  const db = await create({ schema: searchSchema });
+  const searchesBody = index.documents.some(
+    (document) => document.sectionsText !== undefined || document.bodyText !== undefined,
+  );
+
+  if (searchesBody) {
+    const db = create({ schema: fullSearchSchema });
+    await insertMultiple(db, index.documents);
+    const result = await search<typeof db, WebSearchIndexDocument>(db, {
+      term: query,
+      properties: [
+        "id",
+        "title",
+        "summary",
+        "tags",
+        "components",
+        "owners",
+        "sectionsText",
+        "bodyText",
+      ],
+      boost: {
+        id: 16,
+        title: 10,
+        tags: 6,
+        components: 6,
+        summary: 4,
+        sectionsText: 2,
+        bodyText: 1,
+      },
+      limit: index.documents.length,
+    });
+
+    return result.hits.map((hit) => hit.document);
+  }
+
+  const db = create({ schema: searchSchema });
   await insertMultiple(db, index.documents);
   const result = await search<typeof db, WebSearchIndexDocument>(db, {
     term: query,
-    properties: [
-      "id",
-      "title",
-      "summary",
-      "tags",
-      "components",
-      "owners",
-      "sectionsText",
-      "bodyText",
-    ],
+    properties: ["id", "title", "summary", "tags", "components", "owners"],
     boost: {
       id: 16,
       title: 10,
       tags: 6,
       components: 6,
       summary: 4,
-      sectionsText: 2,
-      bodyText: 1,
     },
     limit: index.documents.length,
   });

@@ -34,6 +34,7 @@ describe("acta build", () => {
       expect(existsSync(join(outDir, "documents.json"))).toBe(true);
       expect(existsSync(join(outDir, "graph.json"))).toBe(true);
       expect(existsSync(join(outDir, "search-index.json"))).toBe(true);
+      expect(existsSync(join(outDir, "search-index-full.json"))).toBe(true);
       expect(existsSync(join(outDir, "validation.json"))).toBe(true);
       expect(existsSync(join(outDir, "manifest.json"))).toBe(true);
     } finally {

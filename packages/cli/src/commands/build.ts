@@ -8,7 +8,7 @@ export const buildCommand = defineCommand({
   meta: {
     name: "build",
     description:
-      "Build artifacts: documents.json, graph.json, search-index.json, validation.json, manifest.json",
+      "Build artifacts: documents.json, graph.json, search-index.json, search-index-full.json, validation.json, manifest.json",
   },
   args: {
     config: {

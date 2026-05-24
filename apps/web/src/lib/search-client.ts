@@ -8,6 +8,7 @@ import {
 } from "./search.js";
 
 let searchIndexPromise: Promise<WebSearchIndexArtifact> | undefined;
+let fullSearchIndexPromise: Promise<WebSearchIndexArtifact> | undefined;
 
 export function initDocumentSearch(root: HTMLElement): void {
   const searchInput = root.querySelector<HTMLInputElement>("[data-search-query]");
@@ -16,6 +17,8 @@ export function initDocumentSearch(root: HTMLElement): void {
   const tagSelect = root.querySelector<HTMLSelectElement>("[data-filter-tag]");
   const componentSelect = root.querySelector<HTMLSelectElement>("[data-filter-component]");
   const sortInputs = Array.from(root.querySelectorAll<HTMLInputElement>("[data-sort-order]"));
+  const contentSearchInput = root.querySelector<HTMLInputElement>("[data-search-content]");
+  const contentLoading = root.querySelector<HTMLElement>("[data-search-content-loading]");
   const documentList = root.querySelector<HTMLElement>("[data-document-list]");
   const showMoreButton = root.querySelector<HTMLButtonElement>("[data-show-more]");
   const rows = Array.from(root.querySelectorAll<HTMLElement>("[data-document-row]"));
@@ -28,6 +31,7 @@ export function initDocumentSearch(root: HTMLElement): void {
     !statusSelect ||
     !tagSelect ||
     !componentSelect ||
+    !contentSearchInput ||
     sortInputs.length === 0 ||
     !documentList ||
     !showMoreButton ||
@@ -41,6 +45,8 @@ export function initDocumentSearch(root: HTMLElement): void {
   const statusFilter = statusSelect;
   const tagFilter = tagSelect;
   const componentFilter = componentSelect;
+  const contentSearch = contentSearchInput;
+  const loading = contentLoading;
   const list = documentList;
   const showMore = showMoreButton;
   const empty = emptyState;
@@ -80,7 +86,14 @@ export function initDocumentSearch(root: HTMLElement): void {
     const query = search.value.trim();
 
     if (query.length > 0) {
-      const ids = await searchDocuments(await loadSearchIndex(), query, filters());
+      const includeContent = contentSearch.checked || query.length > 2;
+      if (loading) {
+        loading.hidden = !includeContent || fullSearchIndexPromise !== undefined;
+      }
+      const ids = await searchDocuments(await loadSearchIndex(includeContent), query, filters());
+      if (loading) {
+        loading.hidden = true;
+      }
       return ids.map((id) => rowsById.get(id)).filter((row) => row !== undefined);
     }
 
@@ -130,6 +143,7 @@ export function initDocumentSearch(root: HTMLElement): void {
     statusFilter,
     tagFilter,
     componentFilter,
+    contentSearch,
     ...sortInputs,
   ]) {
     control.addEventListener("input", resetAndUpdateResults);
@@ -153,7 +167,19 @@ function rowMatchesFilters(row: HTMLElement, filters: WebSearchFilters): boolean
   );
 }
 
-async function loadSearchIndex(): Promise<WebSearchIndexArtifact> {
+async function loadSearchIndex(includeContent: boolean): Promise<WebSearchIndexArtifact> {
+  if (includeContent) {
+    fullSearchIndexPromise ??= fetch("/search-index-full.json").then((response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to load full search index: ${response.status}`);
+      }
+
+      return response.json() as Promise<WebSearchIndexArtifact>;
+    });
+
+    return fullSearchIndexPromise;
+  }
+
   searchIndexPromise ??= fetch("/search-index.json").then((response) => {
     if (!response.ok) {
       throw new Error(`Failed to load search index: ${response.status}`);
