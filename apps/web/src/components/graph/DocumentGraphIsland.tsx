@@ -21,13 +21,26 @@ import { GraphContext } from "./GraphContext.js";
 import { computeLayout } from "./layout.js";
 import { nodeTypes } from "./nodes.js";
 
+type GraphLabels = {
+  filtersLegend: string;
+  filterKind: string;
+  filterStatus: string;
+  all: string;
+  areaLabel: string;
+  legendLabel: string;
+  legendDependency: string;
+  legendRelated: string;
+  legendSupersession: string;
+};
+
 type Props = {
   graph: DocumentGraph;
   filterOptions: FilterOptions;
   hrefForId: Record<string, string>;
+  labels: GraphLabels;
 };
 
-export default function DocumentGraphIsland({ graph, filterOptions, hrefForId }: Props) {
+export default function DocumentGraphIsland({ graph, filterOptions, hrefForId, labels }: Props) {
   const [kindFilter, setKindFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -109,15 +122,15 @@ export default function DocumentGraphIsland({ graph, filterOptions, hrefForId }:
   return (
     <GraphContext.Provider value={contextValue}>
       <div>
-        <section className="graph-toolbar section-grid" aria-label="Graph filters">
+        <section className="graph-toolbar section-grid" aria-label={labels.filtersLegend}>
           <label className="ui-field">
-            <span>Kind</span>
+            <span>{labels.filterKind}</span>
             <select
               className="ui-select"
               value={kindFilter}
               onChange={(e) => setKindFilter(e.target.value)}
             >
-              <option value="">All</option>
+              <option value="">{labels.all}</option>
               {filterOptions.kinds.map((kind) => (
                 <option key={kind} value={kind}>
                   {kind.toUpperCase()}
@@ -126,13 +139,13 @@ export default function DocumentGraphIsland({ graph, filterOptions, hrefForId }:
             </select>
           </label>
           <label className="ui-field">
-            <span>Status</span>
+            <span>{labels.filterStatus}</span>
             <select
               className="ui-select"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
-              <option value="">All</option>
+              <option value="">{labels.all}</option>
               {filterOptions.statuses.map((status) => (
                 <option key={status} value={status}>
                   {status}
@@ -142,7 +155,7 @@ export default function DocumentGraphIsland({ graph, filterOptions, hrefForId }:
           </label>
         </section>
 
-        <section className="graph-shell" aria-label="Document relationship graph">
+        <section className="graph-shell" aria-label={labels.areaLabel}>
           <div className="graph-rf-wrapper">
             <ReactFlowProvider>
               <ReactFlow
@@ -181,15 +194,18 @@ export default function DocumentGraphIsland({ graph, filterOptions, hrefForId }:
           </div>
         </section>
 
-        <section className="graph-legend" aria-label="Graph legend">
+        <section className="graph-legend" aria-label={labels.legendLabel}>
           <span>
-            <i className="legend-line solid"></i>Dependency
+            <i className="legend-line solid"></i>
+            {labels.legendDependency}
           </span>
           <span>
-            <i className="legend-line related"></i>Related
+            <i className="legend-line related"></i>
+            {labels.legendRelated}
           </span>
           <span>
-            <i className="legend-line supersession"></i>Supersession
+            <i className="legend-line supersession"></i>
+            {labels.legendSupersession}
           </span>
           {filterOptions.kinds.map((kind) => (
             <span key={`kind-${kind}`}>

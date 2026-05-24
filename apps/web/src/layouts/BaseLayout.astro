@@ -2,32 +2,49 @@
 import "../styles/global.css";
 import ThemeToggle from "../components/ThemeToggle.tsx";
 import SidebarToggle from "../components/SidebarToggle.tsx";
+import LanguageSwitcher from "../components/LanguageSwitcher.tsx";
+import { defaultLocale, getT, isLocale, localizedHref, type Locale } from "@lib/i18n.js";
 
 interface Props {
   title: string;
   description?: string;
 }
 
-const { title, description = "Acta document viewer" } = Astro.props;
+const { title, description } = Astro.props;
+
+const rawLocale = Astro.currentLocale ?? defaultLocale;
+const locale: Locale = isLocale(rawLocale) ? rawLocale : defaultLocale;
+const t = await getT(locale);
+const tCommon = (key: string, params?: Record<string, unknown>) => t(`common:${key}`, params);
+const tSidebar = (key: string, params?: Record<string, unknown>) => t(`sidebar:${key}`, params);
+
+const finalDescription = description ?? tCommon("metaDefault") ?? "Acta document viewer";
 
 const pathname = Astro.url.pathname;
+const segments = pathname.split("/").filter(Boolean);
+const bareSegments = segments[0] && isLocale(segments[0]) ? segments.slice(1) : segments;
+const barePath = `/${bareSegments.join("/")}${bareSegments.length > 0 ? "/" : ""}` || "/";
+
 const isActive = (href: string) => {
-  if (href === "/") return pathname === "/" || pathname.startsWith("/documents");
-  return pathname === href || pathname.startsWith(href);
+  if (href === "/") return barePath === "/" || barePath.startsWith("/documents");
+  return barePath === href || barePath.startsWith(href);
 };
+
 const navItems = [
-  { href: "/", label: "Documents", icon: "▤" },
-  { href: "/graph/", label: "Graph", icon: "◇" },
-  { href: "/validation/", label: "Validation", icon: "✓" },
+  { href: "/", label: tSidebar("nav.documents"), icon: "▤" },
+  { href: "/graph/", label: tSidebar("nav.graph"), icon: "◇" },
+  { href: "/validation/", label: tSidebar("nav.validation"), icon: "✓" },
 ];
+
+const languageLabels = { en: tSidebar("language.en"), ru: tSidebar("language.ru") };
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description} />
+    <meta name="description" content={finalDescription} />
     <title>{title}</title>
     <link rel="icon" href="/favicon.png" />
     <script is:inline>
@@ -56,14 +73,20 @@ const navItems = [
     <div class="app-shell">
       <aside class="sidebar">
         <div class="sidebar-head">
-          <a class="brand" href="/">
+          <a class="brand" href={localizedHref(locale, "/")}>
             <span class="brand-mark"><img src="/favicon.png" alt="A" /></span>
             <span class="brand-label">
               <strong>Acta</strong>
-              <small>ADR and Specs</small>
+              <small>{tSidebar("brand.subtitle")}</small>
             </span>
           </a>
-          <SidebarToggle client:load />
+          <SidebarToggle
+            client:load
+            labels={{
+              collapse: tSidebar("sidebar.collapse"),
+              expand: tSidebar("sidebar.expand"),
+            }}
+          />
         </div>
         <nav class="nav">
           {
@@ -71,7 +94,7 @@ const navItems = [
               const active = isActive(item.href);
               return (
                 <a
-                  href={item.href}
+                  href={localizedHref(locale, item.href)}
                   title={item.label}
                   class:list={[{ "is-active": active }]}
                   aria-current={active ? "page" : undefined}
@@ -85,7 +108,20 @@ const navItems = [
         </nav>
         <slot name="sidebar" />
         <div class="sidebar-foot">
-          <ThemeToggle client:load />
+          <LanguageSwitcher
+            client:load
+            labels={languageLabels}
+            legend={tSidebar("language.legend")}
+          />
+          <ThemeToggle
+            client:load
+            labels={{
+              legend: tSidebar("theme.legend"),
+              system: tSidebar("theme.system"),
+              light: tSidebar("theme.light"),
+              dark: tSidebar("theme.dark"),
+            }}
+          />
         </div>
       </aside>
       <main class="content">

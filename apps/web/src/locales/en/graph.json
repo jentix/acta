@@ -1,0 +1,19 @@
+{
+  "tab": "Acta graph",
+  "meta": "Explore Acta document relationships",
+  "eyebrow": "Repository viewer",
+  "header": "Graph",
+  "counts": "{{nodes}} nodes, {{edges}} relationships",
+  "filters": {
+    "legend": "Graph filters",
+    "kind": "Kind",
+    "status": "Status"
+  },
+  "areaLabel": "Document relationship graph",
+  "legend": {
+    "label": "Graph legend",
+    "dependency": "Dependency",
+    "related": "Related",
+    "supersession": "Supersession"
+  }
+}

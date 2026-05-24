@@ -1,9 +1,9 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
 import { buildDocumentHref, collectFilterOptions } from "@lib/documents.js";
 import { loadActaWebData } from "@lib/project.js";
 import { defaultLocale, getT, isLocale, localizedHref, type Locale } from "@lib/i18n.js";
-import DocumentGraphIsland from "../components/graph/DocumentGraphIsland.tsx";
+import DocumentGraphIsland from "../../components/graph/DocumentGraphIsland.tsx";
 
 const { project } = await loadActaWebData();
 const documents = project.documents;

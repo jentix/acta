@@ -7,6 +7,7 @@ import {
   documentPageSize,
   formatDisplayDate,
 } from "../lib/documents.js";
+import { defaultLocale, getT, isLocale, localizedHref, type Locale } from "../lib/i18n.js";
 import Field from "./ui/Field.astro";
 import Input from "./ui/Input.astro";
 import Select from "./ui/Select.astro";
@@ -27,34 +28,40 @@ const dependencyOrderDocuments = dependencyDocumentIds
   .map((id) => documentsById.get(id))
   .filter((document) => document !== undefined);
 const dependencyOrder = buildDocumentOrderIndex(dependencyOrderDocuments);
+
+const rawLocale = Astro.currentLocale ?? defaultLocale;
+const locale: Locale = isLocale(rawLocale) ? rawLocale : defaultLocale;
+const t = await getT(locale);
+const td = (key: string) => t(`documents:${key}`);
+const tc = (key: string) => t(`common:${key}`);
 ---
 
 <div data-document-search-root>
-  <section class="toolbar" aria-label="Document filters">
-    <Field label="Search">
-      <Input type="search" placeholder="Title, tag, owner, section..." data-search-query />
+  <section class="toolbar" aria-label={td("filters.legend")}>
+    <Field label={td("filters.search")}>
+      <Input type="search" placeholder={td("filters.searchPlaceholder")} data-search-query />
     </Field>
-    <Field label="Kind">
+    <Field label={td("filters.kind")}>
       <Select data-filter-kind>
-        <option value="">All</option>
+        <option value="">{tc("all")}</option>
         {filterOptions.kinds.map((kind) => <option value={kind}>{kind.toUpperCase()}</option>)}
       </Select>
     </Field>
-    <Field label="Status">
+    <Field label={td("filters.status")}>
       <Select data-filter-status>
-        <option value="">All</option>
+        <option value="">{tc("all")}</option>
         {filterOptions.statuses.map((status) => <option value={status}>{status}</option>)}
       </Select>
     </Field>
-    <Field label="Tag">
+    <Field label={td("filters.tag")}>
       <Select data-filter-tag>
-        <option value="">All</option>
+        <option value="">{tc("all")}</option>
         {filterOptions.tags.map((tag) => <option value={tag}>{tag}</option>)}
       </Select>
     </Field>
-    <Field label="Component">
+    <Field label={td("filters.component")}>
       <Select data-filter-component>
-        <option value="">All</option>
+        <option value="">{tc("all")}</option>
         {
           filterOptions.components.map((component) => (
             <option value={component}>{component}</option>
@@ -64,12 +71,12 @@ const dependencyOrder = buildDocumentOrderIndex(dependencyOrderDocuments);
     </Field>
     <SegmentedControl
       name="sort-order"
-      legend="Sort"
+      legend={td("filters.sort")}
       value="newest"
       dataAttr="data-sort-order"
       options={[
-        { value: "newest", label: "Newest first" },
-        { value: "dependency", label: "Dependency order" },
+        { value: "newest", label: td("filters.sortNewest") },
+        { value: "dependency", label: td("filters.sortDependency") },
       ]}
     />
   </section>
@@ -94,7 +101,7 @@ const dependencyOrder = buildDocumentOrderIndex(dependencyOrderDocuments);
           data-dependency-order={dependencyOrder[document.id] ?? newestOrder[document.id]}
         >
           <div class="row-main">
-            <a class="document-title" href={buildDocumentHref(document.id)}>
+            <a class="document-title" href={localizedHref(locale, buildDocumentHref(document.id))}>
               <span class="document-id">{document.id}</span>
               {document.title}
             </a>
@@ -108,10 +115,10 @@ const dependencyOrder = buildDocumentOrderIndex(dependencyOrderDocuments);
         </article>
       ))
     }
-    <p class="empty-state" data-empty-state hidden>No matching documents.</p>
+    <p class="empty-state" data-empty-state hidden>{td("empty")}</p>
   </section>
   <div class="list-actions">
-    <Button data-show-more hidden>Show more</Button>
+    <Button data-show-more hidden>{td("showMore")}</Button>
   </div>
 </div>
 

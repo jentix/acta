@@ -1,0 +1,61 @@
+{
+  "filters": {
+    "legend": "Document filters",
+    "search": "Search",
+    "searchPlaceholder": "Title, tag, owner, section...",
+    "kind": "Kind",
+    "status": "Status",
+    "tag": "Tag",
+    "component": "Component",
+    "sort": "Sort",
+    "sortNewest": "Newest first",
+    "sortDependency": "Dependency order"
+  },
+  "empty": "No matching documents.",
+  "showMore": "Show more",
+  "detail": {
+    "file": "File",
+    "owners": "Owners",
+    "tags": "Tags",
+    "components": "Components",
+    "validation": "Validation",
+    "links": "Links",
+    "backlinks": "Backlinks",
+    "externalReferences": "External references",
+    "noOutgoing": "No outgoing internal links.",
+    "noBacklinks": "No backlinks.",
+    "back": "Back to documents"
+  },
+  "linkTypes": {
+    "tooltipOutgoing": "What is \"{{key}}\"?",
+    "tooltipIncoming": "What is \"{{key}}\" (incoming)?",
+    "related": {
+      "outgoing": "Loose semantic connection — context shared, no dependency.",
+      "incoming": "Other documents that mark this one as related context."
+    },
+    "supersedes": {
+      "outgoing": "This document replaces the linked documents.",
+      "incoming": "Documents that replace this one (this one is superseded)."
+    },
+    "replacedBy": {
+      "outgoing": "The linked documents replace this one.",
+      "incoming": "Documents that this one replaces."
+    },
+    "decidedBy": {
+      "outgoing": "Decisions (ADRs) that drive this document.",
+      "incoming": "Documents driven by the decision recorded here."
+    },
+    "dependsOn": {
+      "outgoing": "Documents this one depends on.",
+      "incoming": "Documents that depend on this one."
+    },
+    "validates": {
+      "outgoing": "Documents this one validates (e.g. tests/specs verify decisions).",
+      "incoming": "Documents that validate this one."
+    },
+    "references": {
+      "outgoing": "External URLs cited from this document.",
+      "incoming": "External references pointing here."
+    }
+  }
+}

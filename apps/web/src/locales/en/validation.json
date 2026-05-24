@@ -1,0 +1,13 @@
+{
+  "tab": "Acta validation",
+  "meta": "Acta validation results",
+  "eyebrow": "Repository health",
+  "header": "Validation",
+  "counts": "{{errors}} errors, {{warnings}} warnings",
+  "empty": "No validation issues.",
+  "severity": {
+    "error": "error",
+    "warning": "warning",
+    "info": "info"
+  }
+}

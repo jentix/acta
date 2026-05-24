@@ -1,0 +1,8 @@
+{
+  "tab": "Acta documents",
+  "meta": "Browse Acta ADR and spec documents",
+  "eyebrow": "Repository viewer",
+  "header": "Documents",
+  "counts": "{{count}} documents, {{adrs}} ADRs, {{specs}} specs",
+  "issuesPill": "{{errors}} errors · {{warnings}} warnings"
+}

@@ -23,13 +23,13 @@ function applyPref(pref: Pref): void {
   document.documentElement.dataset.themePref = pref;
 }
 
-const OPTIONS: { value: Pref; label: string; symbol: string }[] = [
-  { value: "system", label: "System", symbol: "◐" },
-  { value: "light", label: "Light", symbol: "☀" },
-  { value: "dark", label: "Dark", symbol: "☾" },
-];
+const SYMBOLS: Record<Pref, string> = { system: "◐", light: "☀", dark: "☾" };
 
-export default function ThemeToggle() {
+type Props = {
+  labels: { legend: string; system: string; light: string; dark: string };
+};
+
+export default function ThemeToggle({ labels }: Props) {
   const [pref, setPref] = useState<Pref>("system");
 
   useEffect(() => {
@@ -50,21 +50,23 @@ export default function ThemeToggle() {
     applyPref(next);
   };
 
+  const options: Pref[] = ["system", "light", "dark"];
+
   return (
-    <fieldset className="ui-theme-toggle" aria-label="Theme">
-      <legend>Theme</legend>
-      {OPTIONS.map((option) => (
-        <label key={option.value}>
+    <fieldset className="ui-theme-toggle" aria-label={labels.legend}>
+      <legend>{labels.legend}</legend>
+      {options.map((value) => (
+        <label key={value}>
           <input
             type="radio"
             name="acta-theme"
-            value={option.value}
-            checked={pref === option.value}
-            onChange={() => update(option.value)}
+            value={value}
+            checked={pref === value}
+            onChange={() => update(value)}
           />
-          <span title={option.label}>
-            <span className="sr-only">{option.label}</span>
-            <span aria-hidden="true">{option.symbol}</span>
+          <span title={labels[value]}>
+            <span className="sr-only">{labels[value]}</span>
+            <span aria-hidden="true">{SYMBOLS[value]}</span>
           </span>
         </label>
       ))}

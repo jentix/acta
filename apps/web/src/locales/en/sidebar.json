@@ -1,0 +1,25 @@
+{
+  "brand": {
+    "subtitle": "ADR and Specs"
+  },
+  "nav": {
+    "documents": "Documents",
+    "graph": "Graph",
+    "validation": "Validation"
+  },
+  "theme": {
+    "legend": "Theme",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "sidebar": {
+    "collapse": "Collapse sidebar",
+    "expand": "Expand sidebar"
+  },
+  "language": {
+    "legend": "Language",
+    "en": "English",
+    "ru": "Russian"
+  }
+}
