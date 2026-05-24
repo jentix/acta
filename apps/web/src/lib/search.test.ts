@@ -22,8 +22,6 @@ const index: WebSearchIndexArtifact = {
       tags: ["source"],
       components: ["acta-core"],
       owners: ["Boris"],
-      sectionsText: "Context Decision Consequences",
-      bodyText: "Markdown files stay in Git.",
     },
     {
       id: "SPEC-0004",
@@ -36,6 +34,20 @@ const index: WebSearchIndexArtifact = {
       tags: ["web"],
       components: ["acta-web"],
       owners: ["Boris"],
+    },
+  ],
+};
+
+const fullIndex: WebSearchIndexArtifact = {
+  schemaVersion: "1.0.0",
+  documents: [
+    {
+      ...index.documents[0],
+      sectionsText: "Context Decision Consequences",
+      bodyText: "Markdown files stay in Git.",
+    },
+    {
+      ...index.documents[1],
       sectionsText: "Requirements Client-side search",
       bodyText: "Astro interface with Orama search.",
     },
@@ -63,12 +75,16 @@ describe("web search utilities", () => {
   it("ranks exact ID and title matches before body matches", async () => {
     await expect(searchDocuments(index, "SPEC-0004")).resolves.toEqual(["SPEC-0004"]);
     await expect(searchDocuments(index, "markdown")).resolves.toEqual(["ADR-0001"]);
-    await expect(searchDocuments(index, "orama")).resolves.toEqual(["SPEC-0004"]);
+  });
+
+  it("searches body content only when full index fields are present", async () => {
+    await expect(searchDocuments(index, "orama")).resolves.toEqual([]);
+    await expect(searchDocuments(fullIndex, "orama")).resolves.toEqual(["SPEC-0004"]);
   });
 
   it("applies metadata filters after Orama ranking", async () => {
-    await expect(searchDocuments(index, "search", { kind: "adr" })).resolves.toEqual([]);
-    await expect(searchDocuments(index, "search", { kind: "spec" })).resolves.toEqual([
+    await expect(searchDocuments(index, "viewer", { kind: "adr" })).resolves.toEqual([]);
+    await expect(searchDocuments(index, "viewer", { kind: "spec" })).resolves.toEqual([
       "SPEC-0004",
     ]);
     await expect(searchDocuments(index, "source", { component: "acta-core" })).resolves.toEqual([

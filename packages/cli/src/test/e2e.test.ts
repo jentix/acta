@@ -78,7 +78,11 @@ describe("e2e: demo-repo fixture", () => {
       const searchIndex = JSON.parse(
         await readFile(join(root, ".acta/dist/search-index.json"), "utf8"),
       );
+      const fullSearchIndex = JSON.parse(
+        await readFile(join(root, ".acta/dist/search-index-full.json"), "utf8"),
+      );
       expect(searchIndex.documents).toHaveLength(4);
+      expect(fullSearchIndex.documents).toHaveLength(4);
       expect(searchIndex.schemaVersion).toBe("1.0.0");
 
       const ordering = JSON.parse(await readFile(join(root, ".acta/dist/ordering.json"), "utf8"));
@@ -208,7 +212,11 @@ describe("e2e: new → validate → build flow without config file", () => {
     const searchIndex = JSON.parse(
       await readFile(join(root, ".acta/dist/search-index.json"), "utf8"),
     );
+    const fullSearchIndex = JSON.parse(
+      await readFile(join(root, ".acta/dist/search-index-full.json"), "utf8"),
+    );
     expect(searchIndex.documents).toHaveLength(2);
+    expect(fullSearchIndex.documents).toHaveLength(2);
   });
 
   it("renumbers an ADR and updates internal references", async () => {

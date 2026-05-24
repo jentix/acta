@@ -79,6 +79,13 @@ const tc = (key: string) => t(`common:${key}`);
         { value: "dependency", label: td("filters.sortDependency") },
       ]}
     />
+    <label class="content-search">
+      <input type="checkbox" data-search-content />
+      <span>{td("filters.searchContent")}</span>
+    </label>
+    <span class="content-loading muted" data-search-content-loading hidden>
+      {td("filters.searchingContent")}
+    </span>
   </section>
 
   <section
@@ -129,3 +136,21 @@ const tc = (key: string) => t(`common:${key}`);
     initDocumentSearch(root);
   }
 </script>
+
+<style>
+  .content-search {
+    align-items: center;
+    color: var(--color-text-muted);
+    display: inline-flex;
+    font-size: var(--text-sm);
+    gap: var(--space-2);
+    min-height: 2.25rem;
+  }
+
+  .content-loading {
+    align-self: end;
+    font-size: var(--text-sm);
+    min-height: 2.25rem;
+    padding-block: var(--space-2);
+  }
+</style>

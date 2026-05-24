@@ -25,8 +25,13 @@ export interface SearchIndexDocument {
   tags: string[];
   components: string[];
   owners: string[];
-  sectionsText: string;
-  bodyText: string;
+  sectionsText?: string;
+  bodyText?: string;
+}
+
+export interface SearchIndexes {
+  primary: SearchIndexArtifact;
+  full: SearchIndexArtifact;
 }
 
 export interface BuildManifest {
@@ -55,6 +60,7 @@ export interface BuildArtifactsResult {
   validation: ValidationResult;
   manifest: BuildManifest;
   searchIndex: SearchIndexArtifact;
+  fullSearchIndex: SearchIndexArtifact;
 }
 
 export async function buildArtifacts(
@@ -78,7 +84,7 @@ export async function buildArtifacts(
     warningCount: validation.warningCount,
     errorCount: validation.errorCount,
   };
-  const searchIndex = buildSearchIndex(project.documents);
+  const searchIndexes = buildSearchIndexes(project.documents);
   const cache: ContentCache = {
     schemaVersion,
     parserVersion,
@@ -94,7 +100,14 @@ export async function buildArtifacts(
   await writeJson(join(project.config.resolvedBuild.outDir, "documents.json"), project.documents);
   await writeJson(join(project.config.resolvedBuild.outDir, "graph.json"), project.graph);
   await writeJson(join(project.config.resolvedBuild.outDir, "ordering.json"), project.ordering);
-  await writeJson(join(project.config.resolvedBuild.outDir, "search-index.json"), searchIndex);
+  await writeJson(
+    join(project.config.resolvedBuild.outDir, "search-index.json"),
+    searchIndexes.primary,
+  );
+  await writeJson(
+    join(project.config.resolvedBuild.outDir, "search-index-full.json"),
+    searchIndexes.full,
+  );
   await writeJson(join(project.config.resolvedBuild.outDir, "validation.json"), validation);
   await writeJson(join(project.config.resolvedBuild.outDir, "manifest.json"), manifest);
   await writeJson(join(project.config.resolvedBuild.cacheDir, "content-cache.json"), cache);
@@ -103,29 +116,59 @@ export async function buildArtifacts(
     project,
     validation,
     manifest,
-    searchIndex,
+    searchIndex: searchIndexes.primary,
+    fullSearchIndex: searchIndexes.full,
   };
 }
 
 export function buildSearchIndex(documents: ActaDocument[]): SearchIndexArtifact {
+  return buildSearchIndexes(documents).primary;
+}
+
+export function buildFullSearchIndex(documents: ActaDocument[]): SearchIndexArtifact {
+  return buildSearchIndexes(documents).full;
+}
+
+export function buildSearchIndexes(documents: ActaDocument[]): SearchIndexes {
   return {
-    schemaVersion,
-    documents: documents.map((document) => ({
-      id: document.id,
-      href: `/documents/${encodeURIComponent(document.id)}/`,
-      kind: document.kind,
-      status: document.status,
-      date: document.date,
-      title: document.title,
-      summary: document.summary ?? "",
-      tags: document.tags,
-      components: document.component,
-      owners: document.owners,
-      sectionsText: document.sections
-        .map((section) => `${section.title}\n${section.content}`)
-        .join("\n\n"),
-      bodyText: document.body,
-    })),
+    primary: {
+      schemaVersion,
+      documents: documents.map((document) => buildSearchIndexDocument(document, false)),
+    },
+    full: {
+      schemaVersion,
+      documents: documents.map((document) => buildSearchIndexDocument(document, true)),
+    },
+  };
+}
+
+function buildSearchIndexDocument(
+  document: ActaDocument,
+  includeBody: boolean,
+): SearchIndexDocument {
+  const base = {
+    id: document.id,
+    href: `/documents/${encodeURIComponent(document.id)}/`,
+    kind: document.kind,
+    status: document.status,
+    date: document.date,
+    title: document.title,
+    summary: document.summary ?? "",
+    tags: document.tags,
+    components: document.component,
+    owners: document.owners,
+  };
+
+  if (!includeBody) {
+    return base;
+  }
+
+  return {
+    ...base,
+    sectionsText: document.sections
+      .map((section) => `${section.title}\n${section.content}`)
+      .join("\n\n"),
+    bodyText: document.body,
   };
 }
 

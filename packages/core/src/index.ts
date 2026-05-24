@@ -5,7 +5,12 @@ export type {
   SearchIndexArtifact,
   SearchIndexDocument,
 } from "./artifacts.js";
-export { buildArtifacts, buildSearchIndex } from "./artifacts.js";
+export {
+  buildArtifacts,
+  buildFullSearchIndex,
+  buildSearchIndex,
+  buildSearchIndexes,
+} from "./artifacts.js";
 export type {
   ActaConfig,
   ActaConfigInput,

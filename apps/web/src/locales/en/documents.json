@@ -9,7 +9,9 @@
     "component": "Component",
     "sort": "Sort",
     "sortNewest": "Newest first",
-    "sortDependency": "Dependency order"
+    "sortDependency": "Dependency order",
+    "searchContent": "Search in content",
+    "searchingContent": "Searching content..."
   },
   "empty": "No matching documents.",
   "showMore": "Show more",
