@@ -130,7 +130,7 @@ id: ${opts.id ?? "ADR-0001"}
 kind: adr
 title: ${opts.title ?? "Test ADR"}
 status: ${opts.status ?? "accepted"}
-date: 2026-04-26
+date: 2026-04-26T00:00:00.000Z
 tags: [core]
 component: [acta-core]
 owners: [Boris]
@@ -168,7 +168,7 @@ id: ${opts.id ?? "SPEC-0001"}
 kind: spec
 title: ${opts.title ?? "Test Spec"}
 status: ${opts.status ?? "active"}
-date: 2026-04-26
+date: 2026-04-26T00:00:00.000Z
 tags: [core]
 component: [acta-core]
 owners: [Boris]

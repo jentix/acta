@@ -3,7 +3,7 @@ id: ADR-0003
 kind: adr
 title: Use core library and artifacts as the Acta contract
 status: accepted
-date: 2026-04-26
+date: 2026-04-26T00:00:00.000Z
 tags: [core, artifacts, architecture]
 component: [acta-core, acta-cli, acta-web]
 owners: [Boris]

@@ -3,7 +3,7 @@ id: SPEC-0004
 kind: spec
 title: Acta web viewer
 status: implemented
-date: 2026-05-01
+date: 2026-05-01T00:00:00.000Z
 tags: [web, phase-3]
 component: [acta-web, acta-renderer]
 owners: [Boris]

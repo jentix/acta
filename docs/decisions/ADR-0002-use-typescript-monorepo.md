@@ -3,7 +3,7 @@ id: ADR-0002
 kind: adr
 title: Use a TypeScript monorepo
 status: accepted
-date: 2026-04-26
+date: 2026-04-26T00:00:00.000Z
 tags: [tooling, architecture, typescript]
 component: [acta-core, acta-cli, acta-web]
 owners: [Boris]

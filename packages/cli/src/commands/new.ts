@@ -8,7 +8,7 @@ import { resolveContext } from "../context.js";
 import { allocateNextId } from "../id.js";
 import { exitFailure, exitUsage, printSuccess } from "../output.js";
 import { titleToSlug } from "../slug.js";
-import { renderTemplate, todayIso } from "../template.js";
+import { nowIsoDateTime, renderTemplate } from "../template.js";
 
 async function createDocument(
   kind: DocumentKind,
@@ -69,7 +69,7 @@ async function createDocument(
 
   const content = await renderTemplate(
     kind,
-    { id, title: title.trim(), date: todayIso(), status },
+    { id, title: title.trim(), date: nowIsoDateTime(), status },
     config,
   );
 

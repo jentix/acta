@@ -3,7 +3,7 @@ id: ADR-0004
 kind: adr
 title: Use citty for Acta CLI framework
 status: accepted
-date: 2026-05-01
+date: 2026-05-01T00:00:00.000Z
 tags: [cli, architecture]
 component: [acta-cli]
 owners: [Boris]

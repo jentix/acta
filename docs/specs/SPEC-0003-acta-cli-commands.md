@@ -3,7 +3,7 @@ id: SPEC-0003
 kind: spec
 title: Acta CLI commands
 status: active
-date: 2026-05-01
+date: 2026-05-01T00:00:00.000Z
 tags: [cli, phase-2]
 component: [acta-cli]
 owners: [Boris]

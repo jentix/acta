@@ -59,7 +59,7 @@ export const showCommand = defineCommand({
 
     // Metadata
     printLine(
-      `${kleur.bold("Date:")}     ${doc.date}${doc.updated ? `  (updated ${doc.updated})` : ""}`,
+      `${kleur.bold("Date:")}     ${formatShowDate(doc.date)}${doc.updated ? `  (updated ${formatShowDate(doc.updated)})` : ""}`,
     );
     if (doc.tags.length > 0) {
       printLine(`${kleur.bold("Tags:")}     ${doc.tags.join(", ")}`);
@@ -105,3 +105,18 @@ export const showCommand = defineCommand({
     printLine();
   },
 });
+
+/** Format an ISO 8601 datetime as `YYYY-MM-DD` for terminal display. */
+function formatShowDate(value: string): string {
+  if (!value) {
+    return "";
+  }
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return value;
+  }
+  const year = parsed.getUTCFullYear();
+  const month = String(parsed.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(parsed.getUTCDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}

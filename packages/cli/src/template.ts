@@ -5,7 +5,7 @@ import type { DocumentKind, ResolvedActaConfig } from "@acta/core";
 export interface TemplateVars {
   id: string;
   title: string;
-  date: string; // YYYY-MM-DD
+  date: string; // ISO 8601 datetime with offset
   status: string;
 }
 
@@ -31,11 +31,7 @@ function interpolate(raw: string, vars: TemplateVars): string {
     .replace(/^(status:\s*).*$/m, `$1${vars.status}`);
 }
 
-/** Today's date as YYYY-MM-DD (local timezone). */
-export function todayIso(): string {
-  const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
+/** Current instant as ISO 8601 datetime with offset, e.g. `2026-05-24T14:32:11.123Z`. */
+export function nowIsoDateTime(): string {
+  return new Date().toISOString();
 }

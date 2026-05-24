@@ -3,7 +3,7 @@ id: ADR-0005
 kind: adr
 title: Use React Flow for graph view instead of vanilla SVG
 status: accepted
-date: 2026-05-21
+date: 2026-05-21T00:00:00.000Z
 tags: [web, graph, react, architecture]
 component: [acta-web]
 owners: [Boris]
