@@ -7,7 +7,7 @@ import { exitFailure, exitUsage, printJson, printLine } from "../output.js";
 export const showCommand = defineCommand({
   meta: {
     name: "show",
-    description: "Show a document by ID",
+    description: "Show metadata, sections, links and backlinks for one document",
   },
   args: {
     id: {

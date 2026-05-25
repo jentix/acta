@@ -69,7 +69,7 @@ async function createDocument(
 
   const content = await renderTemplate(
     kind,
-    { id, title: title.trim(), date: nowIsoDateTime(), status },
+    { id, title: title.trim(), date: nowIsoDateTime(), status, tags: parseTags(opts.tags) },
     config,
   );
 
@@ -80,7 +80,7 @@ async function createDocument(
 export const newCommand = defineCommand({
   meta: {
     name: "new",
-    description: "Create a new ADR or spec from template",
+    description: "Create a new ADR or spec from the configured templates",
   },
   args: {
     config: {
@@ -91,7 +91,7 @@ export const newCommand = defineCommand({
   },
   subCommands: {
     adr: defineCommand({
-      meta: { name: "adr", description: "Create a new ADR" },
+      meta: { name: "adr", description: "Create a new ADR with the next available ID" },
       args: {
         title: {
           type: "positional",
@@ -121,7 +121,7 @@ export const newCommand = defineCommand({
       },
     }),
     spec: defineCommand({
-      meta: { name: "spec", description: "Create a new spec" },
+      meta: { name: "spec", description: "Create a new spec with the next available ID" },
       args: {
         title: {
           type: "positional",
@@ -152,3 +152,16 @@ export const newCommand = defineCommand({
     }),
   },
 });
+
+function parseTags(value: string | undefined): string[] | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  const tags = value
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+
+  return tags.length > 0 ? tags : undefined;
+}

@@ -15,7 +15,7 @@ const main = defineCommand({
   meta: {
     name: "acta",
     version: "0.0.0",
-    description: "TypeScript-first docs-as-code tool for ADR and spec documents",
+    description: "Docs-as-code CLI for authoring, validating and building ADR/spec repositories",
   },
   subCommands: {
     init: initCommand,
