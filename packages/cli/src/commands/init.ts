@@ -207,7 +207,7 @@ async function safeWriteFile(filePath: string, content: string, yes: boolean): P
 export const initCommand = defineCommand({
   meta: {
     name: "init",
-    description: "Initialize Acta docs structure in the current repository",
+    description: "Create Acta config, document folders and templates in the current repository",
   },
   args: {
     yes: {

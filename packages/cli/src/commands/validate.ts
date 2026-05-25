@@ -9,7 +9,7 @@ import { printIssues, printJson, printLine, printValidationSummary } from "../ou
 export const validateCommand = defineCommand({
   meta: {
     name: "validate",
-    description: "Validate documents for schema errors, broken links and rule violations",
+    description: "Validate frontmatter, IDs, links, sections and repository rules",
   },
   args: {
     ci: {

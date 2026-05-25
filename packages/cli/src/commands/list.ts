@@ -27,7 +27,7 @@ function colorStatus(status: string): string {
 export const listCommand = defineCommand({
   meta: {
     name: "list",
-    description: "List documents in the repository",
+    description: "List ADR and spec documents with optional filters",
   },
   args: {
     kind: {

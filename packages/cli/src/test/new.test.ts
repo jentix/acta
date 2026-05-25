@@ -85,6 +85,36 @@ describe("acta new adr", () => {
     }
   });
 
+  it("writes comma-separated tags into the new document frontmatter", async () => {
+    const fixture = await createFixture();
+    try {
+      const origCwd = process.cwd;
+      process.cwd = () => fixture.root;
+
+      const { newCommand } = await import("../commands/new.js");
+      // @ts-expect-error citty internal
+      await newCommand.subCommands.adr.run({
+        args: {
+          title: "Tagged Decision",
+          config: undefined,
+          id: undefined,
+          status: undefined,
+          tags: "platform, database",
+        },
+      });
+
+      const content = await readFile(
+        join(fixture.config.resolvedDocs.adrDir, "ADR-0001-tagged-decision.md"),
+        "utf8",
+      );
+      expect(content).toContain("tags: [platform, database]");
+
+      process.cwd = origCwd;
+    } finally {
+      await fixture.cleanup();
+    }
+  });
+
   it("refuses to create when file already exists", async () => {
     const fixture = await createFixture();
     try {

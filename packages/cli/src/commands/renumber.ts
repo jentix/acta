@@ -109,7 +109,7 @@ async function rewriteDocument(
 export const renumberCommand = defineCommand({
   meta: {
     name: "renumber",
-    description: "Rename a document ID, updating frontmatter, filename and all internal links",
+    description: "Rename a document ID and update its filename plus internal links",
   },
   args: {
     from: {

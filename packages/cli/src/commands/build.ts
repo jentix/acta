@@ -7,8 +7,7 @@ import { printLine, printSuccess, printWarn } from "../output.js";
 export const buildCommand = defineCommand({
   meta: {
     name: "build",
-    description:
-      "Build artifacts: documents.json, graph.json, search-index.json, search-index-full.json, validation.json, manifest.json",
+    description: "Build normalized JSON artifacts for the web viewer, CI and integrations",
   },
   args: {
     config: {

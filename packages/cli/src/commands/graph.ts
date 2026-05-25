@@ -69,7 +69,7 @@ function toMermaid(graph: DocumentGraph): string {
 export const graphCommand = defineCommand({
   meta: {
     name: "graph",
-    description: "Output the document relationship graph",
+    description: "Print the document relationship graph as Mermaid or JSON",
   },
   args: {
     format: {

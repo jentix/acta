@@ -7,6 +7,7 @@ export interface TemplateVars {
   title: string;
   date: string; // ISO 8601 datetime with offset
   status: string;
+  tags?: string[];
 }
 
 /**
@@ -24,11 +25,17 @@ export async function renderTemplate(
 }
 
 function interpolate(raw: string, vars: TemplateVars): string {
-  return raw
+  let rendered = raw
     .replace(/^(id:\s*).*$/m, `$1${vars.id}`)
     .replace(/^(title:\s*).*$/m, `$1${vars.title}`)
     .replace(/^(date:\s*).*$/m, `$1${vars.date}`)
     .replace(/^(status:\s*).*$/m, `$1${vars.status}`);
+
+  if (vars.tags) {
+    rendered = rendered.replace(/^(tags:\s*).*$/m, `$1[${vars.tags.join(", ")}]`);
+  }
+
+  return rendered;
 }
 
 /** Current instant as ISO 8601 datetime with offset, e.g. `2026-05-24T14:32:11.123Z`. */
