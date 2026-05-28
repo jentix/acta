@@ -29,6 +29,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Build CLI and dependencies
         run: pnpm --filter @acta/cli... build
+      - name: Build renderer
+        run: pnpm --filter @acta/renderer build
       - name: Build Acta artifacts
         run: pnpm --filter @acta/cli exec node dist/index.js build
       - name: Build web app
