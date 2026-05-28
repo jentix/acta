@@ -20,7 +20,12 @@ const tSidebar = (key: string, params?: Record<string, unknown>) => t(`sidebar:$
 
 const finalDescription = description ?? tCommon("metaDefault") ?? "Acta document viewer";
 
-const pathname = Astro.url.pathname;
+const base = import.meta.env.BASE_URL; // "/" in dev, "/acta/" in prod
+const basePrefix = base === "/" ? "" : base.replace(/\/$/, ""); // "" or "/acta"
+const rawPathname = Astro.url.pathname;
+const pathname = basePrefix && rawPathname.startsWith(basePrefix)
+  ? rawPathname.slice(basePrefix.length) || "/"
+  : rawPathname;
 const segments = pathname.split("/").filter(Boolean);
 const bareSegments = segments[0] && isLocale(segments[0]) ? segments.slice(1) : segments;
 const barePath = `/${bareSegments.join("/")}${bareSegments.length > 0 ? "/" : ""}` || "/";
@@ -46,7 +51,7 @@ const languageLabels = { en: tSidebar("language.en"), ru: tSidebar("language.ru"
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={finalDescription} />
     <title>{title}</title>
-    <link rel="icon" href="/favicon.png" />
+    <link rel="icon" href={`${base}favicon.png`} />
     <script is:inline>
       (() => {
         try {
@@ -73,8 +78,8 @@ const languageLabels = { en: tSidebar("language.en"), ru: tSidebar("language.ru"
     <div class="app-shell">
       <aside class="sidebar">
         <div class="sidebar-head">
-          <a class="brand" href={localizedHref(locale, "/")}>
-            <span class="brand-mark"><img src="/favicon.png" alt="A" /></span>
+          <a class="brand" href={localizedHref(locale, "/", base)}>
+            <span class="brand-mark"><img src={`${base}favicon.png`} alt="A" /></span>
             <span class="brand-label">
               <strong>Acta</strong>
               <small>{tSidebar("brand.subtitle")}</small>
@@ -94,7 +99,7 @@ const languageLabels = { en: tSidebar("language.en"), ru: tSidebar("language.ru"
               const active = isActive(item.href);
               return (
                 <a
-                  href={localizedHref(locale, item.href)}
+                  href={localizedHref(locale, item.href, base)}
                   title={item.label}
                   class:list={[{ "is-active": active }]}
                   aria-current={active ? "page" : undefined}
@@ -112,6 +117,7 @@ const languageLabels = { en: tSidebar("language.en"), ru: tSidebar("language.ru"
             client:load
             labels={languageLabels}
             legend={tSidebar("language.legend")}
+            base={base}
           />
           <ThemeToggle
             client:load

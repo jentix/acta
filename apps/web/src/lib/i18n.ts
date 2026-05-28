@@ -74,9 +74,15 @@ export function getLocaleFromUrl(url: URL): Locale {
   return defaultLocale;
 }
 
-export function localizedHref(locale: Locale, path: string): string {
+export function localizedHref(locale: Locale, path: string, base = "/"): string {
   const normalized = path.startsWith("/") ? path : `/${path}`;
-  if (locale === defaultLocale) return normalized;
-  if (normalized === "/") return `/${locale}/`;
-  return `/${locale}${normalized}`;
+  const localizedPath =
+    locale === defaultLocale
+      ? normalized
+      : normalized === "/"
+        ? `/${locale}/`
+        : `/${locale}${normalized}`;
+  // BASE_URL is "/" in dev or "/acta/" in prod — strip trailing slash for concat
+  const basePrefix = base === "/" ? "" : base.replace(/\/$/, "");
+  return `${basePrefix}${localizedPath}`;
 }

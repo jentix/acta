@@ -76,7 +76,7 @@ describe("release contract", () => {
     expect(astroConfig).toContain(
       'site: isPagesBuild ? "https://jentix.github.io" : "http://localhost:4321"',
     );
-    expect(astroConfig).toContain('base: isPagesBuild ? "/adr-book" : undefined');
+    expect(astroConfig).toContain('base: isPagesBuild ? "/acta" : undefined');
   });
 
   test("defines a GitHub Pages deployment workflow", () => {
