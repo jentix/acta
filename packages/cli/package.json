@@ -1,7 +1,6 @@
 {
   "name": "@acta/cli",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.1.1",
   "type": "module",
   "bin": {
     "acta": "./dist/index.js"
@@ -15,6 +14,12 @@
   "files": [
     "dist"
   ],
+  "engines": {
+    "node": ">=22.12 <26"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts",
     "dev": "tsup src/index.ts --format esm --dts --watch",

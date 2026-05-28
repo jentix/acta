@@ -111,3 +111,33 @@ Specs must include:
 ```txt
 Summary, Goals, Requirements
 ```
+
+## Release Workflow
+
+Acta uses Changesets for package versioning and changelog generation.
+`@acta/cli` and `@acta/core` are public npm packages; `@acta/renderer` and `@acta/web` remain private implementation packages for the MVP.
+
+Prepare a release:
+
+```sh
+pnpm changeset
+pnpm version-packages
+pnpm install
+pnpm lint
+pnpm format:check
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm exec acta validate
+pnpm exec acta build
+```
+
+Publish after the verification workflow is green and npm authentication is configured:
+
+```sh
+pnpm release
+git tag v0.1.1
+git push origin main --tags
+```
+
+The dogfooding viewer is deployed by `.github/workflows/deploy-pages.yml` on pushes to `main`. The workflow builds the CLI, runs `acta build` for repository artifacts, builds `@acta/web`, and uploads `apps/web/dist` to GitHub Pages.
