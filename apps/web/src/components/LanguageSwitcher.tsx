@@ -39,7 +39,11 @@ function buildTargetUrl(locale: Locale, base: string): string {
 
 type Props = { labels: Record<Locale, string>; legend: string; base?: string };
 
-export default function LanguageSwitcher({ labels, legend, base = "/" }: Props) {
+export default function LanguageSwitcher({
+  labels,
+  legend,
+  base = import.meta.env.BASE_URL,
+}: Props) {
   ensureClientI18n();
   const [current, setCurrent] = useState<Locale>(defaultLocale);
 
