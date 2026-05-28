@@ -15,12 +15,16 @@
     "test": "turbo run test",
     "lint": "biome lint .",
     "format:check": "biome format .",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "changeset publish"
   },
   "devDependencies": {
     "@acta/cli": "workspace:*",
     "@acta/core": "workspace:*",
     "@biomejs/biome": "2.4.15",
+    "@changesets/cli": "^2.31.0",
     "@types/node": "^22.15.3",
     "concurrently": "^9.2.1",
     "lefthook": "^2.1.8",

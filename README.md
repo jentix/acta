@@ -113,6 +113,8 @@ Internal links use typed frontmatter arrays such as `decidedBy`, `dependsOn`, `s
 
 The static viewer lives in `apps/web`. It reads the same normalized project data as the CLI and provides document browsing, metadata, links, backlinks, graph view, validation results and client-side search.
 
+The dogfooding demo is configured for GitHub Pages at [jentix.github.io/adr-book](https://jentix.github.io/adr-book/). Deployment runs from `.github/workflows/deploy-pages.yml` after pushes to `main`.
+
 Run it locally:
 
 ```sh
@@ -173,4 +175,12 @@ pnpm test
 pnpm build
 pnpm exec acta validate
 pnpm exec acta build
+```
+
+Release commands:
+
+```sh
+pnpm changeset
+pnpm version-packages
+pnpm release
 ```
