@@ -72,8 +72,11 @@ describe("release contract", () => {
   test("builds the web app for GitHub Pages", () => {
     const astroConfig = readText("apps/web/astro.config.mjs");
 
-    expect(astroConfig).toContain('site: "https://jentix.github.io"');
-    expect(astroConfig).toContain('base: "/adr-book"');
+    expect(astroConfig).toContain('process.env.GITHUB_PAGES === "true"');
+    expect(astroConfig).toContain(
+      'site: isPagesBuild ? "https://jentix.github.io" : "http://localhost:4321"',
+    );
+    expect(astroConfig).toContain('base: isPagesBuild ? "/adr-book" : undefined');
   });
 
   test("defines a GitHub Pages deployment workflow", () => {
@@ -94,6 +97,7 @@ describe("release contract", () => {
     expect(workflowText).toContain("pnpm --filter @acta/cli... build");
     expect(workflowText).toContain("pnpm --filter @acta/cli exec node dist/index.js build");
     expect(workflowText).toContain("pnpm --filter @acta/web build");
+    expect(workflowText).toContain('GITHUB_PAGES: "true"');
     expect(workflowText).toContain("apps/web/dist");
   });
 });
