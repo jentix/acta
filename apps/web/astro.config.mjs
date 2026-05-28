@@ -6,7 +6,7 @@ const isPagesBuild = process.env.GITHUB_PAGES === "true";
 
 export default defineConfig({
   site: isPagesBuild ? "https://jentix.github.io" : "http://localhost:4321",
-  base: isPagesBuild ? "/adr-book" : undefined,
+  base: isPagesBuild ? "/acta" : undefined,
   output: "static",
   i18n: {
     defaultLocale: "en",
