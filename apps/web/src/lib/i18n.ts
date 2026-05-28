@@ -74,7 +74,11 @@ export function getLocaleFromUrl(url: URL): Locale {
   return defaultLocale;
 }
 
-export function localizedHref(locale: Locale, path: string, base = "/"): string {
+export function localizedHref(
+  locale: Locale,
+  path: string,
+  base = import.meta.env.BASE_URL,
+): string {
   const normalized = path.startsWith("/") ? path : `/${path}`;
   const localizedPath =
     locale === defaultLocale

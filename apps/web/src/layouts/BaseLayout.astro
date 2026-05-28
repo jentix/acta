@@ -51,7 +51,7 @@ const languageLabels = { en: tSidebar("language.en"), ru: tSidebar("language.ru"
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={finalDescription} />
     <title>{title}</title>
-    <link rel="icon" href={`${base}favicon.png`} />
+    <link rel="icon" href={`${basePrefix}/favicon.png`} />
     <script is:inline>
       (() => {
         try {
@@ -79,7 +79,7 @@ const languageLabels = { en: tSidebar("language.en"), ru: tSidebar("language.ru"
       <aside class="sidebar">
         <div class="sidebar-head">
           <a class="brand" href={localizedHref(locale, "/", base)}>
-            <span class="brand-mark"><img src={`${base}favicon.png`} alt="A" /></span>
+            <span class="brand-mark"><img src={`${basePrefix}/favicon.png`} alt="A" /></span>
             <span class="brand-label">
               <strong>Acta</strong>
               <small>{tSidebar("brand.subtitle")}</small>
