@@ -13,28 +13,33 @@ function readLocale(): Locale {
   return isLocale(lang) ? lang : defaultLocale;
 }
 
-function stripLocaleFromPath(path: string): string {
-  const segments = path.split("/").filter(Boolean);
+function stripLocaleFromPath(path: string, base: string): string {
+  // Strip base prefix first ("/acta/" → "/acta", then remove from path start)
+  const basePrefix = base === "/" ? "" : base.replace(/\/$/, "");
+  const withoutBase =
+    basePrefix && path.startsWith(basePrefix) ? path.slice(basePrefix.length) || "/" : path;
+  const segments = withoutBase.split("/").filter(Boolean);
   if (segments[0] && isLocale(segments[0])) {
     return `/${segments.slice(1).join("/")}` || "/";
   }
-  return path || "/";
+  return withoutBase || "/";
 }
 
-function buildTargetUrl(locale: Locale): string {
-  const bare = stripLocaleFromPath(window.location.pathname);
-  const path =
+function buildTargetUrl(locale: Locale, base: string): string {
+  const bare = stripLocaleFromPath(window.location.pathname, base);
+  const basePrefix = base === "/" ? "" : base.replace(/\/$/, "");
+  const localizedPath =
     locale === defaultLocale
       ? bare
       : bare === "/"
         ? `/${locale}/`
         : `/${locale}${bare.startsWith("/") ? bare : `/${bare}`}`;
-  return `${path}${window.location.search}${window.location.hash}`;
+  return `${basePrefix}${localizedPath}${window.location.search}${window.location.hash}`;
 }
 
-type Props = { labels: Record<Locale, string>; legend: string };
+type Props = { labels: Record<Locale, string>; legend: string; base?: string };
 
-export default function LanguageSwitcher({ labels, legend }: Props) {
+export default function LanguageSwitcher({ labels, legend, base = "/" }: Props) {
   ensureClientI18n();
   const [current, setCurrent] = useState<Locale>(defaultLocale);
 
@@ -46,7 +51,7 @@ export default function LanguageSwitcher({ labels, legend }: Props) {
     if (next === current) return;
     window.localStorage.setItem(STORAGE_KEY, next);
     document.cookie = `${COOKIE_KEY}=${next}; path=/; max-age=31536000; samesite=lax`;
-    window.location.assign(buildTargetUrl(next));
+    window.location.assign(buildTargetUrl(next, base));
   };
 
   return (
