@@ -1,6 +1,27 @@
 {
   "name": "@acta/cli",
   "version": "0.1.1",
+  "description": "Acta CLI — TypeScript-first docs-as-code tooling for ADR and spec documents in Git. Provides the `acta` binary.",
+  "keywords": [
+    "adr",
+    "spec",
+    "docs-as-code",
+    "architecture-decision-records",
+    "cli",
+    "documentation",
+    "markdown"
+  ],
+  "license": "MIT",
+  "author": "jentix",
+  "homepage": "https://github.com/jentix/acta#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jentix/acta.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/jentix/acta/issues"
+  },
   "type": "module",
   "bin": {
     "acta": "./dist/index.js"

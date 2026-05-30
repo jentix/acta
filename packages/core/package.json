@@ -1,6 +1,27 @@
 {
   "name": "@acta/core",
   "version": "0.1.1",
+  "description": "Acta core — canonical document pipeline (schema, parser, validator, graph, search index, artifacts) for ADR and spec docs-as-code.",
+  "keywords": [
+    "adr",
+    "spec",
+    "docs-as-code",
+    "architecture-decision-records",
+    "documentation",
+    "markdown",
+    "zod"
+  ],
+  "license": "MIT",
+  "author": "jentix",
+  "homepage": "https://github.com/jentix/acta#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jentix/acta.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/jentix/acta/issues"
+  },
   "type": "module",
   "exports": {
     ".": {

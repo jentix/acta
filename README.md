@@ -27,10 +27,10 @@ pnpm exec acta build
 pnpm dev:web
 ```
 
-After the CLI is published, the same workflow is intended to work as:
+Once installed from npm, the same workflow works as:
 
 ```sh
-npm install -g acta
+npm install -g @acta/cli   # provides the `acta` binary
 acta init
 acta new adr "Adopt Acta"
 acta validate
@@ -113,7 +113,7 @@ Internal links use typed frontmatter arrays such as `decidedBy`, `dependsOn`, `s
 
 The static viewer lives in `apps/web`. It reads the same normalized project data as the CLI and provides document browsing, metadata, links, backlinks, graph view, validation results and client-side search.
 
-The dogfooding demo is configured for GitHub Pages at [jentix.github.io/adr-book](https://jentix.github.io/adr-book/). Deployment runs from `.github/workflows/deploy-pages.yml` after pushes to `main`.
+The dogfooding demo is configured for GitHub Pages at [jentix.github.io/acta](https://jentix.github.io/acta/). Deployment runs from `.github/workflows/deploy-pages.yml` after pushes to `main`.
 
 Run it locally:
 
