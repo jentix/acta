@@ -14,6 +14,23 @@ Exit codes:
 | `1` | Validation error, build failure or document operation failure. |
 | `2` | CLI usage error, such as an invalid argument or flag value. |
 
+### JSON output for tooling and agents
+
+Commands that produce data accept `--json` and write a stable, machine-readable
+payload to **stdout** (human-facing logs and errors go to **stderr**). This lets
+AI agents and scripts drive Acta without scraping formatted text:
+
+| Command | `--json` payload |
+|---|---|
+| `acta new adr\|spec` | `{ id, kind, title, status, path, relativePath }` for the created document. |
+| `acta list` | Array of `{ id, kind, title, status, date, tags, component, owners, summary }`. |
+| `acta show <id>` | The full normalized document, including body, sections, links, backlinks and file metadata. |
+| `acta validate` | The full validation result (`valid`, `errorCount`, `warningCount`, `issues[]`). Exit `1` if invalid. |
+| `acta graph` | Use `--format json` for the relationship graph (nodes + edges). |
+| `acta build` | The build manifest (`documentCount`, `errorCount`, `warningCount`, `builtAt`, `outDir`). Exit `1` on validation errors. |
+
+A typical agent loop: `acta new adr "..." --json` → fill the file → `acta validate --json` → inspect `issues[]` → fix → repeat until `valid` is `true`.
+
 ## `acta init`
 
 Initialize Acta in the current repository.
@@ -62,6 +79,7 @@ Flags:
 | `--id <id>` | Override the next auto-allocated ID, for example `ADR-0007`. |
 | `--status <status>` | Set initial ADR status. Defaults to `proposed`. |
 | `--tags <tags>` | Write comma-separated tags to frontmatter. |
+| `--json` | Print the created document as JSON: `{ id, kind, title, status, path, relativePath }`. |
 | `--config`, `-c` | Path to `acta.config.ts`. |
 
 Valid ADR statuses:
@@ -85,6 +103,7 @@ Flags:
 | `--id <id>` | Override the next auto-allocated ID, for example `SPEC-0005`. |
 | `--status <status>` | Set initial spec status. Defaults to `draft`. |
 | `--tags <tags>` | Write comma-separated tags to frontmatter. |
+| `--json` | Print the created document as JSON: `{ id, kind, title, status, path, relativePath }`. |
 | `--config`, `-c` | Path to `acta.config.ts`. |
 
 Valid spec statuses:
@@ -226,6 +245,7 @@ Flags:
 
 | Flag | Description |
 |---|---|
+| `--json` | Print the build manifest as JSON (`documentCount`, `errorCount`, `warningCount`, `builtAt`, `outDir`). |
 | `--config`, `-c` | Path to `acta.config.ts`. |
 
 The command exits with code `1` if validation errors exist, but it still writes artifacts so CI and the web viewer can inspect the result.

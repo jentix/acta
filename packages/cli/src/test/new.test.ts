@@ -154,6 +154,56 @@ describe("acta new adr", () => {
     }
   });
 
+  it("prints created document as JSON with --json", async () => {
+    const fixture = await createFixture();
+    try {
+      const origCwd = process.cwd;
+      process.cwd = () => fixture.root;
+
+      const chunks: string[] = [];
+      const writeSpy = vi
+        .spyOn(process.stdout, "write")
+        .mockImplementation((chunk: string | Uint8Array) => {
+          chunks.push(typeof chunk === "string" ? chunk : Buffer.from(chunk).toString());
+          return true;
+        });
+
+      const { newCommand } = await import("../commands/new.js");
+      // @ts-expect-error citty internal
+      await newCommand.subCommands.adr.run({
+        args: {
+          title: "Machine Readable",
+          config: undefined,
+          id: undefined,
+          status: undefined,
+          tags: undefined,
+          json: true,
+        },
+      });
+
+      writeSpy.mockRestore();
+
+      const payload = JSON.parse(chunks.join("")) as {
+        id: string;
+        kind: string;
+        title: string;
+        status: string;
+        path: string;
+        relativePath: string;
+      };
+      expect(payload.id).toBe("ADR-0001");
+      expect(payload.kind).toBe("adr");
+      expect(payload.title).toBe("Machine Readable");
+      expect(payload.status).toBe("proposed");
+      expect(payload.path).toMatch(/ADR-0001-machine-readable\.md$/);
+      expect(payload.relativePath).toMatch(/ADR-0001-machine-readable\.md$/);
+
+      process.cwd = origCwd;
+    } finally {
+      await fixture.cleanup();
+    }
+  });
+
   it("creates SPEC with spec kind", async () => {
     const fixture = await createFixture();
     try {
