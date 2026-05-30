@@ -134,6 +134,11 @@
 - **B — generator**: `acta site` рендерит статику из artifacts напрямую (вьювер как библиотека компонентов). Больше контроля, больше работы.
 - Рекомендация: **A** — переиспользует уже готовый `apps/web`, минимум нового кода. Вьювер читает artifacts через env/манифест, а не из фиксированного relative-path.
 
+**Связка с renderer (важно):** `apps/web` — единственный, кто зависит от `@acta/renderer`; core/cli его не импортят, поэтому в Phase 0 он остаётся `private`. Но как только вьювер выходит наружу, его зависимость на `@acta/renderer` должна резолвиться у пользователя. Два пути:
+- **Bundle**: собрать вьювер с `noExternal: ["@acta/renderer", "@acta/core"]` (tsup/astro) → renderer запекается в артефакт вьювера, остаётся `private`. Предпочтительно.
+- **Publish**: снять `private` с `@acta/renderer`, убрать из `.changeset/ignore`, публиковать как public dep. Больше surface, версионирование.
+- Решение принять на старте Phase 3; по умолчанию — bundle.
+
 #### 3.2 Команда
 - `acta site` (или `acta build --site`): `acta build` (artifacts) → инжект в вьювер → статика в `.acta/site/` (configurable `--out`).
 - `acta dev` уже есть для локального preview — выровнять, чтобы dev и site читали один источник.

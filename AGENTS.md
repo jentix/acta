@@ -48,7 +48,9 @@ acta/
 ├── turbo.json                  # Turborepo task pipeline
 ├── biome.json                  # Biome lint/format config
 ├── tsconfig.base.json          # Shared TypeScript base config (NodeNext ESM, strict)
-├── MVP_PLAN_UPDATED.md         # Canonical product roadmap — read before major changes
+├── plans/
+│   ├── wip/                     # Active plans (ADOPTION_PLAN_V4.md — current roadmap)
+│   └── done/                    # Completed plans (MVP_PLAN, MVP_PLAN_UPDATED, MVP_PLAN_V3)
 ├── AGENTS.md                   # This file
 └── README.md                   # Project overview
 ```
@@ -209,7 +211,8 @@ pnpm exec acta graph --format mermaid # visual sanity check
 
 | Topic | Location |
 |---|---|
-| Product roadmap | `MVP_PLAN_UPDATED.md` |
+| Product roadmap (active) | `plans/wip/ADOPTION_PLAN_V4.md` |
+| Past roadmaps (archive) | `plans/done/` |
 | Architecture decisions | `docs/decisions/` |
 | Feature specs | `docs/specs/` |
 | Document templates | `docs/templates/` |
