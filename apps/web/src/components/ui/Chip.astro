@@ -62,6 +62,12 @@ if (kind) dataProps["data-kind"] = kind;
     overflow-wrap: anywhere;
   }
 
+  .ui-chip--interactive {
+    transition:
+      border-color var(--duration-hover) var(--ease-out),
+      color var(--duration-hover) var(--ease-out);
+  }
+
   .ui-chip--interactive:hover {
     border-color: var(--color-accent);
     color: var(--color-accent);

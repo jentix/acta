@@ -84,6 +84,13 @@ const dataProps: Record<string, string> = dataAttr ? { [dataAttr]: "" } : {};
     line-height: 1;
     cursor: pointer;
     box-sizing: border-box;
+    transition:
+      background var(--duration-hover) var(--ease-out),
+      color var(--duration-hover) var(--ease-out);
+  }
+
+  .ui-segmented label:active span {
+    transform: scale(0.97);
   }
 
   .ui-segmented input:checked + span {

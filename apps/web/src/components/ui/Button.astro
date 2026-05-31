@@ -63,12 +63,19 @@ const classes = ["ui-button", `ui-button--${variant}`, `ui-button--${size}`, cla
     text-transform: uppercase;
     text-decoration: none;
     cursor: pointer;
-    transition: background 0.12s, color 0.12s;
+    transition:
+      background var(--duration-hover) var(--ease-out),
+      color var(--duration-hover) var(--ease-out),
+      transform var(--duration-press) var(--ease-out);
   }
 
   .ui-button:hover {
     background: var(--color-text);
     color: var(--color-bg);
+  }
+
+  .ui-button:active {
+    transform: scale(0.97);
   }
 
   .ui-button--sm {
