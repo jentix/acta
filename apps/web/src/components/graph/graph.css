@@ -39,14 +39,14 @@
 .graph-rf-node {
   width: 220px;
   height: 80px;
-  padding: 10px 14px 10px 12px;
+  padding: var(--space-3) var(--space-3-5) var(--space-3) var(--space-3);
   border: 1.5px solid var(--color-border);
   border-left-width: 4px;
   border-radius: var(--radius-lg);
   background: var(--color-panel-muted);
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: var(--space-1);
   cursor: pointer;
   transition:
     border-color 0.15s,

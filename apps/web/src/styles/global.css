@@ -57,7 +57,7 @@ a {
 .ui-field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
   min-width: 0;
   font-family: var(--font-sans);
   font-size: 10px;
@@ -70,7 +70,7 @@ a {
 .ui-input,
 .ui-select {
   width: 100%;
-  padding: 6px 0;
+  padding: var(--space-1-5) 0;
   border: 0;
   border-bottom: 1px solid var(--color-border);
   background: transparent;
@@ -91,7 +91,7 @@ a {
 }
 
 .ui-select {
-  padding-right: 16px;
+  padding-right: var(--space-4);
   appearance: none;
   background-image:
     linear-gradient(45deg, transparent 50%, var(--color-text-muted) 50%),
@@ -126,12 +126,12 @@ a {
   position: sticky;
   top: 0;
   height: 100vh;
-  padding: 28px 22px 22px;
+  padding: var(--space-7) var(--space-6) var(--space-6);
   border-right: 1px solid var(--color-border);
   background: var(--color-panel-muted);
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: var(--space-7);
   overflow: hidden;
 }
 
@@ -140,7 +140,7 @@ a {
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-2);
-  padding-bottom: 18px;
+  padding-bottom: var(--space-4-5);
   border-bottom: 1px solid var(--color-border-soft);
 }
 
@@ -166,7 +166,7 @@ a {
 .brand-label {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
   min-width: 0;
 }
 
@@ -189,7 +189,7 @@ a {
   height: 8px;
   background: var(--color-accent);
   border-radius: 50%;
-  margin-right: 8px;
+  margin-right: var(--space-2);
   transform: translateY(-3px);
 }
 
@@ -236,8 +236,8 @@ a {
 .nav a {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 0;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 500;
@@ -292,14 +292,14 @@ a {
   margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding-top: 14px;
+  gap: var(--space-3-5);
+  padding-top: var(--space-3-5);
   border-top: 1px solid var(--color-border-soft);
 }
 
 /* Collapsed sidebar — hide labels, center the nav numbers */
 :root[data-sidebar="collapsed"] .sidebar {
-  padding: 18px 8px;
+  padding: var(--space-4-5) var(--space-2);
   align-items: center;
 }
 
@@ -341,7 +341,7 @@ a {
 /* ── Main column ──────────────────────────────────────────────────────── */
 .content {
   width: min(1180px, 100%);
-  padding: 40px 48px 60px;
+  padding: var(--space-10) var(--space-11) 60px;
   min-width: 0;
   overflow: hidden;
 }
@@ -356,8 +356,8 @@ a {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 14px;
-  margin: 0 0 14px;
+  gap: var(--space-3-5);
+  margin: 0 0 var(--space-3-5);
   font-family: var(--font-sans);
   font-size: 11px;
   letter-spacing: 0.18em;
@@ -372,12 +372,12 @@ a {
 
 .crumbs > span:not(:last-child):not(.grow)::after {
   content: "·";
-  margin-left: 14px;
+  margin-left: var(--space-3-5);
   opacity: 0.5;
 }
 
 .page-header h1 {
-  margin: 22px 0 26px;
+  margin: var(--space-6) 0 var(--space-6);
   font-family: var(--font-serif);
   font-weight: 500;
   font-size: var(--text-display);
@@ -392,7 +392,7 @@ a {
 }
 
 .page-sub {
-  margin: 14px 0 0;
+  margin: var(--space-3-5) 0 0;
   font-family: var(--font-sans);
   font-size: 13px;
   color: var(--color-text-muted);
@@ -406,13 +406,13 @@ a {
 
 /* ── Filters / toolbar ────────────────────────────────────────────────── */
 .toolbar {
-  margin-top: 32px;
-  padding: 18px 0 16px;
+  margin-top: var(--space-8);
+  padding: var(--space-4-5) 0 var(--space-4);
   border-top: 1.5px solid var(--color-text);
   border-bottom: 1px solid var(--color-border);
   display: grid;
   grid-template-columns: 1.6fr repeat(4, 1fr) auto;
-  gap: 24px;
+  gap: var(--space-6);
   align-items: end;
 }
 
@@ -420,7 +420,7 @@ a {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  margin-top: 12px;
+  margin-top: var(--space-3);
   color: var(--color-text-muted);
   font-family: var(--font-sans);
   font-size: 12px;
@@ -433,7 +433,7 @@ a {
 }
 
 .content-loading {
-  margin-top: 12px;
+  margin-top: var(--space-3);
   font-family: var(--font-sans);
   font-size: 12px;
 }
@@ -441,13 +441,13 @@ a {
 /* ── Document list ────────────────────────────────────────────────────── */
 .document-list {
   display: block;
-  margin-top: 6px;
+  margin-top: var(--space-1-5);
 }
 
 .document-row {
   display: grid;
   grid-template-columns: 96px minmax(0, 1fr) 140px 96px;
-  gap: 28px;
+  gap: var(--space-7);
   align-items: baseline;
   padding: var(--space-5) 0;
   border-bottom: 1px solid var(--color-border-soft);
@@ -466,13 +466,13 @@ a {
 .row-id {
   display: flex;
   align-items: baseline;
-  gap: 6px;
+  gap: var(--space-1-5);
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.06em;
   color: var(--color-text-muted);
   font-weight: 500;
-  padding-top: 4px;
+  padding-top: var(--space-1);
 }
 
 .row-main {
@@ -494,7 +494,7 @@ a {
 }
 
 .row-summary {
-  margin: 6px 0 0;
+  margin: var(--space-1-5) 0 0;
   font-family: var(--font-serif);
   font-size: 14px;
   font-style: italic;
@@ -505,7 +505,7 @@ a {
 
 .row-status {
   align-self: start;
-  padding-top: 6px;
+  padding-top: var(--space-1-5);
 }
 
 .row-date {
@@ -514,7 +514,7 @@ a {
   letter-spacing: 0.04em;
   color: var(--color-text-muted);
   text-align: right;
-  padding-top: 6px;
+  padding-top: var(--space-1-5);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -536,8 +536,8 @@ a {
 .doc-kicker {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 24px;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
   font-family: var(--font-sans);
   font-size: 11px;
   letter-spacing: 0.2em;
@@ -548,14 +548,14 @@ a {
 .doc-status {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1-5);
   border: 1px solid currentColor;
-  padding: 3px 8px;
+  padding: var(--space-1) var(--space-2);
   font-weight: 500;
 }
 
 .doc-title {
-  margin: 22px 0 26px;
+  margin: var(--space-6) 0 var(--space-6);
   font-family: var(--font-serif);
   font-weight: 500;
   font-size: var(--text-3xl);
@@ -567,8 +567,8 @@ a {
 .doc-byline {
   display: flex;
   flex-wrap: wrap;
-  gap: 18px;
-  padding: 12px 0;
+  gap: var(--space-4-5);
+  padding: var(--space-3) 0;
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
   font-family: var(--font-sans);
@@ -588,7 +588,7 @@ a {
 }
 
 .doc-standfirst {
-  margin: 22px 0 0;
+  margin: var(--space-6) 0 0;
   max-width: 62ch;
   font-family: var(--font-serif);
   font-size: 19px;
@@ -600,8 +600,8 @@ a {
 .document-grid {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
-  gap: 56px;
-  margin-top: 28px;
+  gap: var(--space-12);
+  margin-top: var(--space-7);
   align-items: start;
 }
 
@@ -609,9 +609,9 @@ a {
 .metadata-panel {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: var(--space-6);
   position: sticky;
-  top: 24px;
+  top: var(--space-6);
   align-self: start;
   max-height: calc(100vh - 48px);
   overflow-y: auto;
@@ -639,7 +639,7 @@ a {
 .meta-block {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .meta-block dt,
@@ -672,7 +672,7 @@ a {
 .metadata-panel dl {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: var(--space-6);
   margin: 0;
 }
 
@@ -696,13 +696,13 @@ a {
   display: flex;
   flex-direction: column;
   gap: 1px;
-  padding: 7px 0;
+  padding: var(--space-2) 0;
   border-bottom: 1px dotted var(--color-border);
   transition: color 0.12s;
 }
 
 .metalink:first-child {
-  padding-top: 4px;
+  padding-top: var(--space-1);
 }
 
 .metalink:last-child {
@@ -753,7 +753,7 @@ a.metalink:hover .t {
   font-size: 32px;
   letter-spacing: -0.02em;
   line-height: 1.1;
-  margin: 48px 0 14px;
+  margin: var(--space-11) 0 var(--space-3-5);
   position: relative;
 }
 
@@ -764,7 +764,7 @@ a.metalink:hover .t {
   width: 28px;
   height: 2px;
   background: var(--color-accent);
-  margin-bottom: 14px;
+  margin-bottom: var(--space-3-5);
 }
 
 .markdown h3 {
@@ -773,7 +773,7 @@ a.metalink:hover .t {
   font-style: italic;
   font-size: 22px;
   line-height: 1.15;
-  margin: 32px 0 10px;
+  margin: var(--space-8) 0 var(--space-3);
 }
 
 .markdown h4 {
@@ -782,7 +782,7 @@ a.metalink:hover .t {
   font-size: 13px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  margin: 22px 0 4px;
+  margin: var(--space-6) 0 var(--space-1);
 }
 
 .markdown h1:first-child,
@@ -798,7 +798,7 @@ a.metalink:hover .t {
 }
 
 .markdown p {
-  margin: 0 0 16px;
+  margin: 0 0 var(--space-4);
 }
 
 .markdown a {
@@ -832,12 +832,12 @@ a.metalink:hover .t {
 
 .markdown ul,
 .markdown ol {
-  margin: 0 0 18px;
-  padding-left: 26px;
+  margin: 0 0 var(--space-4-5);
+  padding-left: var(--space-6);
 }
 
 .markdown li {
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .markdown ul li::marker {
@@ -852,7 +852,7 @@ a.metalink:hover .t {
 
 .markdown ol li {
   counter-increment: olc;
-  padding-left: 38px;
+  padding-left: var(--space-9);
   position: relative;
 }
 
@@ -869,8 +869,8 @@ a.metalink:hover .t {
 }
 
 .markdown blockquote {
-  margin: 0 0 18px;
-  padding-left: 18px;
+  margin: 0 0 var(--space-4-5);
+  padding-left: var(--space-4-5);
   border-left: 2px solid var(--color-accent);
   color: var(--color-text-muted);
   font-style: italic;
@@ -991,14 +991,14 @@ a.metalink:hover .t {
 
 /* ── Graph view ───────────────────────────────────────────────────────── */
 .graph-toolbar {
-  margin-top: 32px;
+  margin-top: var(--space-8);
   margin-bottom: var(--space-4);
-  padding: 18px 0 16px;
+  padding: var(--space-4-5) 0 var(--space-4);
   border-top: 1.5px solid var(--color-text);
   border-bottom: 1px solid var(--color-border);
   display: grid;
   grid-template-columns: repeat(2, minmax(140px, 220px));
-  gap: 24px;
+  gap: var(--space-6);
   align-items: end;
 }
 
@@ -1050,7 +1050,7 @@ a.metalink:hover .t {
 /* ── Theme + language toggles (sidebar foot) ──────────────────────────── */
 .ui-theme-toggle {
   display: inline-flex;
-  gap: 4px;
+  gap: var(--space-1);
   margin: 0;
   padding: 0;
   border: 0;
@@ -1116,8 +1116,8 @@ a.metalink:hover .t {
 .lang-trigger {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 4px 0;
+  gap: var(--space-2);
+  padding: var(--space-1) 0;
   border: 0;
   background: none;
   cursor: pointer;
@@ -1148,7 +1148,7 @@ a.metalink:hover .t {
 
 .lang-menu {
   position: absolute;
-  bottom: calc(100% + 6px);
+  bottom: calc(100% + var(--space-1-5));
   left: 0;
   z-index: 10;
   min-width: 168px;
@@ -1156,7 +1156,7 @@ a.metalink:hover .t {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  padding: 4px 0;
+  padding: var(--space-1) 0;
   background: var(--color-panel);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-md);
@@ -1165,8 +1165,8 @@ a.metalink:hover .t {
 .lang-menu button {
   display: flex;
   align-items: baseline;
-  gap: 10px;
-  padding: 8px 12px;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
   border: 0;
   background: none;
   text-align: left;
@@ -1229,13 +1229,13 @@ a.metalink:hover .t {
 
 .theme-menu {
   position: absolute;
-  bottom: calc(100% + 6px);
+  bottom: calc(100% + var(--space-1-5));
   left: 0;
   z-index: 10;
   display: flex;
   flex-direction: column;
   min-width: 140px;
-  padding: 4px 0;
+  padding: var(--space-1) 0;
   background: var(--color-panel);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-md);
@@ -1244,8 +1244,8 @@ a.metalink:hover .t {
 .theme-menu button {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
   border: 0;
   background: none;
   text-align: left;
