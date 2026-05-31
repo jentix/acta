@@ -1,5 +1,5 @@
 {
-  "name": "@acta/renderer",
+  "name": "@acta-dev/renderer",
   "version": "0.1.1",
   "private": true,
   "type": "module",

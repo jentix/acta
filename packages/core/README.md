@@ -1,8 +1,8 @@
-# @acta/core
+# @acta-dev/core
 
 Canonical document pipeline for [Acta](https://github.com/jentix/acta) — the docs-as-code tool for **ADR** and **spec** documents.
 
-`@acta/core` powers the `@acta/cli` binary, CI validation, generated JSON artifacts and the web viewer, so validation rules never drift between tools.
+`@acta-dev/core` powers the `@acta-dev/cli` binary, CI validation, generated JSON artifacts and the web viewer, so validation rules never drift between tools.
 
 ## What's inside
 
@@ -16,16 +16,16 @@ Canonical document pipeline for [Acta](https://github.com/jentix/acta) — the d
 ## Install
 
 ```sh
-npm install @acta/core
+npm install @acta-dev/core
 ```
 
 ## Usage
 
-Most users interact via [`@acta/cli`](https://www.npmjs.com/package/@acta/cli). Direct API use is for integrations and the typed config file:
+Most users interact via [`@acta-dev/cli`](https://www.npmjs.com/package/@acta-dev/cli). Direct API use is for integrations and the typed config file:
 
 ```ts
 // acta.config.ts
-import { defineConfig } from "@acta/core";
+import { defineConfig } from "@acta-dev/core";
 
 export default defineConfig({
   docs: {

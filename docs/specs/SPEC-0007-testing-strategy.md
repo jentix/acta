@@ -29,7 +29,7 @@ Acta has three distinct automated check categories: unit tests, an end-to-end fi
 
 # Requirements
 
-- Unit tests cover individual modules in `@acta/core`, `@acta/cli`, `@acta/renderer` and `apps/web` and use isolated tmpdir fixtures created at test time.
+- Unit tests cover individual modules in `@acta-dev/core`, `@acta-dev/cli`, `@acta-dev/renderer` and `apps/web` and use isolated tmpdir fixtures created at test time.
 - A single end-to-end suite (`packages/cli/src/test/e2e.test.ts`) exercises the documented user flow against a static fixture and against a tmpdir scaffolded from CLI commands.
 - A static fixture repo lives at `tests/fixtures/demo-repo/` with its own `acta.config.ts`, templates and seed documents. The fixture is not scanned by the host repo's `acta validate`.
 - CI runs lint, typecheck, tests, build and dogfood-validate as separate jobs. A failure in dogfood-validate must not block engineers from seeing unit test results, and vice versa.
@@ -63,7 +63,7 @@ Acta has three distinct automated check categories: unit tests, an end-to-end fi
 
 - Inputs: the host repo's actual `docs/decisions/` and `docs/specs/`.
 - Purpose: prove that Acta keeps working on its own ADR/spec corpus and catches drift in real authored content (broken typed links, missing required sections, schema regressions after a refactor).
-- Run command: `pnpm --filter @acta/cli exec node dist/index.js validate`.
+- Run command: `pnpm --filter @acta-dev/cli exec node dist/index.js validate`.
 - This is content validation, not unit testing. A failure indicates either a content bug in a real ADR/spec or a code change that broke the contract those documents rely on.
 
 ## CI job layout

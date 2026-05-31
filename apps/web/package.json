@@ -1,5 +1,5 @@
 {
-  "name": "@acta/web",
+  "name": "@acta-dev/web",
   "version": "0.1.1",
   "private": true,
   "type": "module",
@@ -11,8 +11,8 @@
     "typecheck": "ASTRO_TELEMETRY_DISABLED=1 astro check"
   },
   "dependencies": {
-    "@acta/core": "workspace:*",
-    "@acta/renderer": "workspace:*",
+    "@acta-dev/core": "workspace:*",
+    "@acta-dev/renderer": "workspace:*",
     "@astrojs/react": "^5.0.5",
     "@dagrejs/dagre": "^3.0.0",
     "@orama/orama": "^3.1.18",

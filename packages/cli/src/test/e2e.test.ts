@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildArtifacts, loadProject, resolveConfig, validateProject } from "@acta/core";
+import { buildArtifacts, loadProject, resolveConfig, validateProject } from "@acta-dev/core";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Prevent process.exit from killing vitest when commands fail.

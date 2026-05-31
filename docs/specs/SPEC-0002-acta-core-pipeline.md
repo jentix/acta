@@ -18,7 +18,7 @@ links:
 
 # Summary
 
-Phase 1 turns `@acta/core` from a package skeleton into the canonical Acta data layer. It reads Markdown ADR/spec files, normalizes metadata, validates repository rules, derives links and writes artifacts for later consumers.
+Phase 1 turns `@acta-dev/core` from a package skeleton into the canonical Acta data layer. It reads Markdown ADR/spec files, normalizes metadata, validates repository rules, derives links and writes artifacts for later consumers.
 
 # Goals
 

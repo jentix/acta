@@ -29,7 +29,7 @@ const main = defineCommand({
   },
 });
 
-export const actaCliPackage = "@acta/cli";
+export const actaCliPackage = "@acta-dev/cli";
 
 export function getCliBootstrapInfo() {
   return {

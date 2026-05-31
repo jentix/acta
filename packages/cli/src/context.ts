@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { join, resolve } from "node:path";
-import type { ResolvedActaConfig } from "@acta/core";
-import { loadConfig, resolveConfig } from "@acta/core";
+import type { ResolvedActaConfig } from "@acta-dev/core";
+import { loadConfig, resolveConfig } from "@acta-dev/core";
 
 export interface CliContext {
   config: ResolvedActaConfig;

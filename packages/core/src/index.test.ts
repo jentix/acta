@@ -11,9 +11,9 @@ import {
   validateProject,
 } from "./index.js";
 
-describe("@acta/core", () => {
+describe("@acta-dev/core", () => {
   it("exports the package marker", () => {
-    expect(actaCorePackage).toBe("@acta/core");
+    expect(actaCorePackage).toBe("@acta-dev/core");
   });
 
   it("parses valid ADR and spec documents", async () => {

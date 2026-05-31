@@ -1,5 +1,5 @@
 {
-  "name": "@acta/cli",
+  "name": "@acta-dev/cli",
   "version": "0.1.1",
   "description": "Acta CLI — TypeScript-first docs-as-code tooling for ADR and spec documents in Git. Provides the `acta` binary.",
   "keywords": [
@@ -48,7 +48,7 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@acta/core": "workspace:*",
+    "@acta-dev/core": "workspace:*",
     "citty": "^0.2.2",
     "kleur": "^4.1.5",
     "yaml": "^2.8.3"

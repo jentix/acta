@@ -1,5 +1,5 @@
-import type { ActaDocument, ResolvedActaConfig } from "@acta/core";
-import { resolveConfig } from "@acta/core";
+import type { ActaDocument, ResolvedActaConfig } from "@acta-dev/core";
+import { resolveConfig } from "@acta-dev/core";
 import { describe, expect, it } from "vitest";
 import { allocateNextId, parseIdNumber, parseIdPrefix } from "../id.js";
 

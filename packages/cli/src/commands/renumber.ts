@@ -1,7 +1,7 @@
 import { readFile, rename, writeFile } from "node:fs/promises";
 import { basename, dirname, join } from "node:path";
-import type { ActaDocument } from "@acta/core";
-import { internalLinkKeys, loadProject } from "@acta/core";
+import type { ActaDocument } from "@acta-dev/core";
+import { internalLinkKeys, loadProject } from "@acta-dev/core";
 import { defineCommand } from "citty";
 import kleur from "kleur";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
@@ -190,7 +190,7 @@ export const renumberCommand = defineCommand({
     printSuccess(`Renumber complete: ${fromId} → ${toId}`);
 
     // Post-write validation
-    const { validateLoadedProject } = await import("@acta/core");
+    const { validateLoadedProject } = await import("@acta-dev/core");
     const result = await validateLoadedProject({ config });
     if (!result.valid) {
       printLine();

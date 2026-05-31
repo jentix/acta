@@ -1,11 +1,11 @@
 # Acta Configuration
 
-Acta loads `acta.config.ts` from the current working directory by default. Use `defineConfig` from `@acta/core` for type-safe config authoring.
+Acta loads `acta.config.ts` from the current working directory by default. Use `defineConfig` from `@acta-dev/core` for type-safe config authoring.
 
 ## Minimal Config
 
 ```ts
-import { defineConfig } from "@acta/core";
+import { defineConfig } from "@acta-dev/core";
 
 export default defineConfig({});
 ```
@@ -15,7 +15,7 @@ With no fields set, Acta uses the default directory layout and validation settin
 ## Full Config
 
 ```ts
-import { defineConfig } from "@acta/core";
+import { defineConfig } from "@acta-dev/core";
 
 export default defineConfig({
   docs: {

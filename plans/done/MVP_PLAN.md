@@ -115,7 +115,7 @@ acta/
 
 ### apps/web (Astro)
 
-- Content Collections используют **ту же Zod-схему что и core** (импорт из `@acta/core/schema`) — single source of truth
+- Content Collections используют **ту же Zod-схему что и core** (импорт из `@acta-dev/core/schema`) — single source of truth
 - Routes:
   - `/` — dashboard (counts, recent, warnings)
   - `/documents` — list + filters
@@ -303,7 +303,7 @@ links:
 
 1. `pnpm install && pnpm turbo build` — успешный билд монорепо
 2. `pnpm test` — Vitest зелёный (core, cli)
-3. `pnpm --filter @acta/cli build && node packages/cli/dist/index.js init demo-repo/` — scaffold работает
+3. `pnpm --filter @acta-dev/cli build && node packages/cli/dist/index.js init demo-repo/` — scaffold работает
 4. `cd demo-repo && acta new adr "Use Astro for web viewer"` — создаёт корректный файл
 5. `acta validate` — проходит на свежем repo, ловит supersede-cycle если ввести руками
 6. `acta dev` — Astro dev server поднимается, документ виден, граф рендерится

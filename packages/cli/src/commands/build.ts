@@ -1,4 +1,4 @@
-import { buildArtifacts } from "@acta/core";
+import { buildArtifacts } from "@acta-dev/core";
 import { defineCommand } from "citty";
 import kleur from "kleur";
 import { resolveContext } from "../context.js";

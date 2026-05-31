@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { createInterface } from "node:readline";
-import { resolveConfig } from "@acta/core";
+import { resolveConfig } from "@acta-dev/core";
 import { defineCommand } from "citty";
 import { printLine, printSuccess, printWarn } from "../output.js";
 
@@ -83,7 +83,7 @@ Describe the planned design.
 Track unresolved decisions.
 `;
 
-const CONFIG_TEMPLATE = `import { defineConfig } from "@acta/core";
+const CONFIG_TEMPLATE = `import { defineConfig } from "@acta-dev/core";
 
 export default defineConfig({
   docs: {

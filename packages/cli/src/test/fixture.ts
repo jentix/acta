@@ -1,8 +1,8 @@
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { ResolvedActaConfig } from "@acta/core";
-import { resolveConfig } from "@acta/core";
+import type { ResolvedActaConfig } from "@acta-dev/core";
+import { resolveConfig } from "@acta-dev/core";
 
 export interface Fixture {
   root: string;

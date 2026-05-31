@@ -9,9 +9,9 @@
   },
   "scripts": {
     "build": "turbo run build",
-    "build:web": "pnpm --filter @acta/web build",
-    "dev": "concurrently -n core,renderer,cli,web -c blue,magenta,cyan,green \"pnpm --filter @acta/core dev\" \"pnpm --filter @acta/renderer dev\" \"pnpm --filter @acta/cli dev\" \"pnpm --filter @acta/web dev\"",
-    "dev:web": "pnpm --filter @acta/web dev",
+    "build:web": "pnpm --filter @acta-dev/web build",
+    "dev": "concurrently -n core,renderer,cli,web -c blue,magenta,cyan,green \"pnpm --filter @acta-dev/core dev\" \"pnpm --filter @acta-dev/renderer dev\" \"pnpm --filter @acta-dev/cli dev\" \"pnpm --filter @acta-dev/web dev\"",
+    "dev:web": "pnpm --filter @acta-dev/web dev",
     "test": "turbo run test",
     "lint": "biome lint .",
     "format:check": "biome format .",
@@ -21,8 +21,8 @@
     "release": "changeset publish"
   },
   "devDependencies": {
-    "@acta/cli": "workspace:*",
-    "@acta/core": "workspace:*",
+    "@acta-dev/cli": "workspace:*",
+    "@acta-dev/core": "workspace:*",
     "@biomejs/biome": "2.4.15",
     "@changesets/cli": "^2.31.0",
     "@types/node": "^22.15.3",

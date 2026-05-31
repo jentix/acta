@@ -30,7 +30,7 @@ pnpm dev:web
 Once installed from npm, the same workflow works as:
 
 ```sh
-npm install -g @acta/cli   # provides the `acta` binary
+npm install -g @acta-dev/cli   # provides the `acta` binary
 acta init
 acta new adr "Adopt Acta"
 acta validate
@@ -78,7 +78,7 @@ See [docs/configuration.md](docs/configuration.md) for every field, default valu
 Minimal `acta.config.ts`:
 
 ```ts
-import { defineConfig } from "@acta/core";
+import { defineConfig } from "@acta-dev/core";
 
 export default defineConfig({
   docs: {

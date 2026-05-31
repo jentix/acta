@@ -4,7 +4,7 @@
     {
       "name": "web",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "@acta/web", "dev"],
+      "runtimeArgs": ["--filter", "@acta-dev/web", "dev"],
       "port": 4321
     }
   ]

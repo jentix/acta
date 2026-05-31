@@ -8,10 +8,10 @@ importers:
 
   .:
     devDependencies:
-      '@acta/cli':
+      '@acta-dev/cli':
         specifier: workspace:*
         version: link:packages/cli
-      '@acta/core':
+      '@acta-dev/core':
         specifier: workspace:*
         version: link:packages/core
       '@biomejs/biome':
@@ -47,10 +47,10 @@ importers:
 
   apps/web:
     dependencies:
-      '@acta/core':
+      '@acta-dev/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@acta/renderer':
+      '@acta-dev/renderer':
         specifier: workspace:*
         version: link:../../packages/renderer
       '@astrojs/react':
@@ -105,7 +105,7 @@ importers:
 
   packages/cli:
     dependencies:
-      '@acta/core':
+      '@acta-dev/core':
         specifier: workspace:*
         version: link:../core
       citty:

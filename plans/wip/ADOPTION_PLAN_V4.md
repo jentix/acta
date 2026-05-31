@@ -27,9 +27,9 @@
 
 ### Сделано (V1–V3)
 - Монорепо: pnpm + Turbo + Biome + Vitest
-- `@acta/core` — schema, parser, repository, validator, graph, ordering, search index, artifacts, cache
-- `@acta/cli` — `init/new/list/show/validate/graph/build/dev/renumber` (citty)
-- `@acta/renderer` — Markdown→HTML
+- `@acta-dev/core` — schema, parser, repository, validator, graph, ordering, search index, artifacts, cache
+- `@acta-dev/cli` — `init/new/list/show/validate/graph/build/dev/renumber` (citty)
+- `@acta-dev/renderer` — Markdown→HTML
 - `apps/web` — Astro static viewer: dashboard, list, document, graph (React Flow), search (Orama), validation, theming (tokens + light/dark toggle), i18n (en/ru)
 - Lefthook (opt-in), CI (`ci.yml`), GitHub Pages deploy (`deploy-pages.yml`), changesets настроен
 - e2e fixture, разнесённые CI jobs
@@ -65,10 +65,10 @@
 
 Завершить единственный незакрытый пункт V3. Без этого `npx acta` не работает у пользователя.
 
-- `@acta/cli`: проверить `bin`, `files`, `engines`, `publishConfig.access: "public"`. Точка входа `acta`.
-- `@acta/core`: публичный (нужен для `defineConfig` в `acta.config.ts` пользователя и для будущих интеграций).
-- `@acta/renderer`: решить — публичный или приватный. Если `core` его импортирует в рантайме у пользователя → публичный. Иначе bundling в `core`/`cli` через tsup `noExternal`.
-- Проверить, что `acta.config.ts` пользователя резолвит `@acta/core` (peer/normal dep).
+- `@acta-dev/cli`: проверить `bin`, `files`, `engines`, `publishConfig.access: "public"`. Точка входа `acta`.
+- `@acta-dev/core`: публичный (нужен для `defineConfig` в `acta.config.ts` пользователя и для будущих интеграций).
+- `@acta-dev/renderer`: решить — публичный или приватный. Если `core` его импортирует в рантайме у пользователя → публичный. Иначе bundling в `core`/`cli` через tsup `noExternal`.
+- Проверить, что `acta.config.ts` пользователя резолвит `@acta-dev/core` (peer/normal dep).
 - Прогнать `changeset version` → `changeset publish` (dry-run сначала: `npm publish --dry-run` по каждому пакету).
 - Smoke: в **пустой** временной папке `npx acta@latest init && npx acta new adr "Test" && npx acta validate`. Должно работать без монорепо.
 - Обновить README Quick Start: убрать «After the CLI is published…» — теперь `npx acta` это реальность.
@@ -130,13 +130,13 @@
 Проблема: `apps/web` сейчас читает локальные `.acta/dist`. Нужно сделать вьювер consumable вне монорепо.
 
 Варианты (выбрать на этапе реализации, измеряя сложность):
-- **A — prebuilt viewer как dependency**: собрать Astro-вьювер, опубликовать как `@acta/web` (или `@acta/viewer`); `acta site` берёт собранный шаблон, инжектит `.acta/dist` пользователя, выдаёт `.acta/site/`.
+- **A — prebuilt viewer как dependency**: собрать Astro-вьювер, опубликовать как `@acta-dev/web` (или `@acta-dev/viewer`); `acta site` берёт собранный шаблон, инжектит `.acta/dist` пользователя, выдаёт `.acta/site/`.
 - **B — generator**: `acta site` рендерит статику из artifacts напрямую (вьювер как библиотека компонентов). Больше контроля, больше работы.
 - Рекомендация: **A** — переиспользует уже готовый `apps/web`, минимум нового кода. Вьювер читает artifacts через env/манифест, а не из фиксированного relative-path.
 
-**Связка с renderer (важно):** `apps/web` — единственный, кто зависит от `@acta/renderer`; core/cli его не импортят, поэтому в Phase 0 он остаётся `private`. Но как только вьювер выходит наружу, его зависимость на `@acta/renderer` должна резолвиться у пользователя. Два пути:
-- **Bundle**: собрать вьювер с `noExternal: ["@acta/renderer", "@acta/core"]` (tsup/astro) → renderer запекается в артефакт вьювера, остаётся `private`. Предпочтительно.
-- **Publish**: снять `private` с `@acta/renderer`, убрать из `.changeset/ignore`, публиковать как public dep. Больше surface, версионирование.
+**Связка с renderer (важно):** `apps/web` — единственный, кто зависит от `@acta-dev/renderer`; core/cli его не импортят, поэтому в Phase 0 он остаётся `private`. Но как только вьювер выходит наружу, его зависимость на `@acta-dev/renderer` должна резолвиться у пользователя. Два пути:
+- **Bundle**: собрать вьювер с `noExternal: ["@acta-dev/renderer", "@acta-dev/core"]` (tsup/astro) → renderer запекается в артефакт вьювера, остаётся `private`. Предпочтительно.
+- **Publish**: снять `private` с `@acta-dev/renderer`, убрать из `.changeset/ignore`, публиковать как public dep. Больше surface, версионирование.
 - Решение принять на старте Phase 3; по умолчанию — bundle.
 
 #### 3.2 Команда
@@ -159,7 +159,7 @@
 
 Цель: агенты в любом MCP-клиенте используют Acta как структурированные tools (дополняет skill).
 
-- Новый пакет `packages/mcp-server`, bin `acta-mcp`. Тонкий слой над `@acta/core` (как CLI).
+- Новый пакет `packages/mcp-server`, bin `acta-mcp`. Тонкий слой над `@acta-dev/core` (как CLI).
 - `@modelcontextprotocol/sdk@^1.29`.
 - **Transports**: stdio (локальные агенты, дефолт) + Streamable HTTP (`--http --port`, для команд/remote).
 - **Tools**:

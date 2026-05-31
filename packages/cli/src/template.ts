@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { DocumentKind, ResolvedActaConfig } from "@acta/core";
+import type { DocumentKind, ResolvedActaConfig } from "@acta-dev/core";
 
 export interface TemplateVars {
   id: string;

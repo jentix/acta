@@ -1,4 +1,4 @@
-import type { ActaDocument } from "@acta/core";
+import type { ActaDocument } from "@acta-dev/core";
 import { describe, expect, it } from "vitest";
 import {
   buildDocumentHref,

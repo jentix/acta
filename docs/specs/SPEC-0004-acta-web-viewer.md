@@ -21,12 +21,12 @@ links:
 
 # Summary
 
-Phase 3 implements a read-only static Astro web viewer for Acta documents. The viewer loads documents through `@acta/core`, renders Markdown through `@acta/renderer`, and exposes a compact interface for browsing documents, metadata, links, backlinks, search and validation results.
+Phase 3 implements a read-only static Astro web viewer for Acta documents. The viewer loads documents through `@acta-dev/core`, renders Markdown through `@acta-dev/renderer`, and exposes a compact interface for browsing documents, metadata, links, backlinks, search and validation results.
 
 # Goals
 
 - Make the repository's ADRs and specs usable through a local web interface.
-- Keep Markdown and `@acta/core` as the source of truth.
+- Keep Markdown and `@acta-dev/core` as the source of truth.
 - Provide client-side search and filters without adding a server or database.
 - Show validation errors and warnings inside the viewer.
 - Keep the interface minimal, dense and work-focused.
@@ -34,7 +34,7 @@ Phase 3 implements a read-only static Astro web viewer for Acta documents. The v
 # Requirements
 
 - The web app must be an Astro 6 static app under `apps/web`.
-- Astro dev/build must load documents by calling `loadProject` and `validateProject` from `@acta/core`.
+- Astro dev/build must load documents by calling `loadProject` and `validateProject` from `@acta-dev/core`.
 - The web app must not use Astro Content Collections as the canonical parser.
 - The homepage must show repository counts, validation summary, filters, search and a document list.
 - `/search/` must provide the canonical shareable search URL with `q` as the query parameter.
@@ -47,7 +47,7 @@ Phase 3 implements a read-only static Astro web viewer for Acta documents. The v
 
 # Proposed design
 
-`@acta/renderer` exposes `renderMarkdown(markdown)` using unified, remark and rehype. The output is sanitized HTML intended for static rendering by Astro.
+`@acta-dev/renderer` exposes `renderMarkdown(markdown)` using unified, remark and rehype. The output is sanitized HTML intended for static rendering by Astro.
 
 `apps/web` resolves the repository root by walking upward to `acta.config.ts`, loads the project through core, and generates static pages from the normalized document model. The web build exposes `/search-index.json` from the core search artifact shape, and the browser builds an Orama index from that JSON. The homepage and `/search/` share the same document list module; both synchronize `q` in the URL, while `/search?q=<query>` is the canonical shareable search URL.
 
@@ -56,7 +56,7 @@ The visual design uses a restrained two-column layout on desktop and a single-co
 # Acceptance criteria
 
 - `pnpm dev:web` starts the local Astro viewer.
-- `pnpm --filter @acta/web build` emits a static site.
+- `pnpm --filter @acta-dev/web build` emits a static site.
 - Homepage lists current ADR and spec documents.
 - Search and filters narrow the document list without a page reload.
 - `/search/` and `/search-index.json` are emitted in the static site.

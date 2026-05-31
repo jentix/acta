@@ -28,13 +28,13 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Build CLI and dependencies
-        run: pnpm --filter @acta/cli... build
+        run: pnpm --filter @acta-dev/cli... build
       - name: Build renderer
-        run: pnpm --filter @acta/renderer build
+        run: pnpm --filter @acta-dev/renderer build
       - name: Build Acta artifacts
-        run: pnpm --filter @acta/cli exec node dist/index.js build
+        run: pnpm --filter @acta-dev/cli exec node dist/index.js build
       - name: Build web app
-        run: pnpm --filter @acta/web build
+        run: pnpm --filter @acta-dev/web build
         env:
           GITHUB_PAGES: "true"
       - uses: actions/configure-pages@v5

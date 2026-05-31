@@ -7,7 +7,7 @@ date: 2026-05-01T00:00:00.000Z
 tags: [cli, phase-2]
 component: [acta-cli]
 owners: [Boris]
-summary: Defines the command surface, argument contracts, exit codes and output formats for the @acta/cli package in Phase 2.
+summary: Defines the command surface, argument contracts, exit codes and output formats for the @acta-dev/cli package in Phase 2.
 links:
   related: [ADR-0004]
   decidedBy: [ADR-0004]
@@ -18,7 +18,7 @@ links:
 
 # Summary
 
-Phase 2 implements the `acta` CLI binary as a thin orchestration layer over `@acta/core`. This spec defines the complete command surface, argument contracts, output formats, and exit code semantics for the Phase 2 CLI.
+Phase 2 implements the `acta` CLI binary as a thin orchestration layer over `@acta-dev/core`. This spec defines the complete command surface, argument contracts, output formats, and exit code semantics for the Phase 2 CLI.
 
 # Goals
 
@@ -67,11 +67,11 @@ Templates are read from `config.docs.templatesDir`. Placeholders `id`, `title`, 
 
 # Proposed design
 
-All commands are `defineCommand` modules under `packages/cli/src/commands/`. Each command imports from `@acta/core` only — no parsing logic or validation rules in the CLI layer. Helper modules provide config resolution (`context.ts`), output formatting (`output.ts`), slug generation (`slug.ts`), ID allocation (`id.ts`), and template rendering (`template.ts`).
+All commands are `defineCommand` modules under `packages/cli/src/commands/`. Each command imports from `@acta-dev/core` only — no parsing logic or validation rules in the CLI layer. Helper modules provide config resolution (`context.ts`), output formatting (`output.ts`), slug generation (`slug.ts`), ID allocation (`id.ts`), and template rendering (`template.ts`).
 
 Entry point `src/index.ts` registers all subcommands with `runMain` from citty. The `runMain` call is guarded by `import.meta.url` comparison so the module can be safely imported in tests without triggering CLI execution.
 
 # Open questions
 
-- Whether `acta show` should render Markdown body to terminal (requires `@acta/renderer`) or just print raw body text. Currently prints section titles only.
+- Whether `acta show` should render Markdown body to terminal (requires `@acta-dev/renderer`) or just print raw body text. Currently prints section titles only.
 - Whether `acta list` table should support sorting flags in a future iteration.
