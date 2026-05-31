@@ -15,7 +15,7 @@ import { useCallback, useMemo, useState } from "react";
 import "@xyflow/react/dist/style.css";
 import "./graph.css";
 
-import type { DocumentGraph } from "@acta/core";
+import type { DocumentGraph } from "@acta-dev/core";
 import type { FilterOptions } from "@lib/documents.js";
 import { GraphContext } from "./GraphContext.js";
 import { computeLayout } from "./layout.js";

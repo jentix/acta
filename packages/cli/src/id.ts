@@ -1,4 +1,4 @@
-import type { ActaDocument, DocumentKind, ResolvedActaConfig } from "@acta/core";
+import type { ActaDocument, DocumentKind, ResolvedActaConfig } from "@acta-dev/core";
 
 /**
  * Given existing documents of the same kind, return the next numeric id string.

@@ -24,7 +24,7 @@ Acta needs one consistent interpretation of ADR and spec documents. If the CLI, 
 
 # Decision
 
-`@acta/core` will own the canonical document pipeline: config loading, Markdown parsing, schema normalization, validation, graph building, search-index generation and JSON artifact writing. CLI, web, CI and future MCP consumers will call the core library or read generated artifacts instead of reimplementing parsing rules.
+`@acta-dev/core` will own the canonical document pipeline: config loading, Markdown parsing, schema normalization, validation, graph building, search-index generation and JSON artifact writing. CLI, web, CI and future MCP consumers will call the core library or read generated artifacts instead of reimplementing parsing rules.
 
 # Consequences
 

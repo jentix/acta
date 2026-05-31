@@ -31,7 +31,7 @@ The vanilla SVG prototype was implemented and functional. However, it required s
 
 Replace the vanilla SVG graph implementation with a React island (`DocumentGraphIsland`) backed by `@xyflow/react`. Layout computation (`layout.ts`) and custom node rendering (`nodes.tsx`) are extracted into focused modules. The Astro page (`graph.astro`) becomes a thin server-rendered wrapper that passes pre-computed `DocumentGraph` data to the island.
 
-The implementation keeps `@acta/core` as the sole source of graph semantics — layout, filtering, and rendering are concerns of `apps/web` only.
+The implementation keeps `@acta-dev/core` as the sole source of graph semantics — layout, filtering, and rendering are concerns of `apps/web` only.
 
 # Consequences
 

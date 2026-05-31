@@ -79,8 +79,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Build CLI and its dependencies
-        run: pnpm --filter @acta/cli... build
+        run: pnpm --filter @acta-dev/cli... build
       - name: Validate dogfooding ADR/spec content
-        run: pnpm --filter @acta/cli exec node dist/index.js validate
+        run: pnpm --filter @acta-dev/cli exec node dist/index.js validate
       - name: Build Acta artifacts from dogfooding docs
-        run: pnpm --filter @acta/cli exec node dist/index.js build
+        run: pnpm --filter @acta-dev/cli exec node dist/index.js build

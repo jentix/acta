@@ -94,9 +94,9 @@ describe("release contract", () => {
     expect(workflow.permissions?.["id-token"]).toBe("write");
     expect(workflow.jobs).toHaveProperty("build");
     expect(workflow.jobs).toHaveProperty("deploy");
-    expect(workflowText).toContain("pnpm --filter @acta/cli... build");
-    expect(workflowText).toContain("pnpm --filter @acta/cli exec node dist/index.js build");
-    expect(workflowText).toContain("pnpm --filter @acta/web build");
+    expect(workflowText).toContain("pnpm --filter @acta-dev/cli... build");
+    expect(workflowText).toContain("pnpm --filter @acta-dev/cli exec node dist/index.js build");
+    expect(workflowText).toContain("pnpm --filter @acta-dev/web build");
     expect(workflowText).toContain('GITHUB_PAGES: "true"');
     expect(workflowText).toContain("apps/web/dist");
   });

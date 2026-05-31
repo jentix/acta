@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { renderMarkdown } from "./index.js";
 
-describe("@acta/renderer", () => {
+describe("@acta-dev/renderer", () => {
   it("renders common Markdown blocks to sanitized HTML", async () => {
     const result = await renderMarkdown(`# Title
 

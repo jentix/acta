@@ -7,7 +7,7 @@ date: 2026-05-01T00:00:00.000Z
 tags: [cli, architecture]
 component: [acta-cli]
 owners: [Boris]
-summary: Acta CLI uses citty as its argument parsing and subcommand framework, with all business logic delegated to @acta/core.
+summary: Acta CLI uses citty as its argument parsing and subcommand framework, with all business logic delegated to @acta-dev/core.
 links:
   related: [SPEC-0003]
   supersedes: []
@@ -20,15 +20,15 @@ links:
 
 # Context
 
-Phase 2 requires a CLI package (`@acta/cli`) that exposes `acta init`, `acta new`, `acta list`, `acta show`, `acta validate`, `acta graph`, `acta build`, and `acta renumber` commands. The CLI needs argument parsing, subcommand routing, auto-generated help, and clean exit code handling. Multiple CLI frameworks are available for Node.js ESM projects.
+Phase 2 requires a CLI package (`@acta-dev/cli`) that exposes `acta init`, `acta new`, `acta list`, `acta show`, `acta validate`, `acta graph`, `acta build`, and `acta renumber` commands. The CLI needs argument parsing, subcommand routing, auto-generated help, and clean exit code handling. Multiple CLI frameworks are available for Node.js ESM projects.
 
 # Decision
 
-Use `citty` as the CLI framework. `citty` is lightweight, ESM-native, supports nested subcommands via `defineCommand` + `subCommands`, generates help output automatically, and has no heavy dependencies. The `@acta/cli` package is a thin orchestration layer: it parses arguments with citty, calls `@acta/core` APIs for all document logic, formats output for the terminal, and sets process exit codes. No validation rules, parsing logic, or document model live in the CLI package.
+Use `citty` as the CLI framework. `citty` is lightweight, ESM-native, supports nested subcommands via `defineCommand` + `subCommands`, generates help output automatically, and has no heavy dependencies. The `@acta-dev/cli` package is a thin orchestration layer: it parses arguments with citty, calls `@acta-dev/core` APIs for all document logic, formats output for the terminal, and sets process exit codes. No validation rules, parsing logic, or document model live in the CLI package.
 
 # Consequences
 
-- CLI commands are simple `defineCommand` modules that import from `@acta/core`.
+- CLI commands are simple `defineCommand` modules that import from `@acta-dev/core`.
 - The `packages/cli` build is small (single ESM bundle via tsup).
 - Adding new commands requires no framework changes — just a new `defineCommand` module.
 - The thin-layer principle must be enforced: CLI tests verify behavior through core APIs, not by reimplementing rules.

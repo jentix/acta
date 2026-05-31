@@ -18,18 +18,18 @@ links:
 
 # Summary
 
-This spec extends the Acta web viewer with a graph page and dependency-aware document ordering. `@acta/core` remains the source of truth for graph semantics by exposing a reusable ordering projection and by writing `ordering.json` during artifact builds.
+This spec extends the Acta web viewer with a graph page and dependency-aware document ordering. `@acta-dev/core` remains the source of truth for graph semantics by exposing a reusable ordering projection and by writing `ordering.json` during artifact builds.
 
 # Goals
 
 - Let readers inspect ADR/spec relationships visually from the web viewer.
 - Let readers switch the homepage document list between newest-first order and dependency order.
-- Keep ordering semantics in `@acta/core`, not duplicated in `apps/web`.
+- Keep ordering semantics in `@acta-dev/core`, not duplicated in `apps/web`.
 - Preserve static rendering and small client-side behavior without adding a graph visualization dependency.
 
 # Requirements
 
-- `@acta/core` must expose an ordering graph separate from the full internal-link graph.
+- `@acta-dev/core` must expose an ordering graph separate from the full internal-link graph.
 - Ordering must use causal links only: `dependsOn`, `decidedBy`, `validates`, `supersedes`, and `replacedBy`.
 - `related` must remain visible in graph view but must not affect dependency ordering.
 - `references` must remain external-only and must not affect ordering or graph layout.
@@ -40,7 +40,7 @@ This spec extends the Acta web viewer with a graph page and dependency-aware doc
 
 # Proposed design
 
-`@acta/core` adds `buildOrderingGraph`, `sortDocumentsByDependency`, and `buildDependencyLayers`. The ordering graph reverses link direction where needed so every edge points from earlier/foundational document to later/dependent document. `replacedBy` points from the current/old document to the replacement document.
+`@acta-dev/core` adds `buildOrderingGraph`, `sortDocumentsByDependency`, and `buildDependencyLayers`. The ordering graph reverses link direction where needed so every edge points from earlier/foundational document to later/dependent document. `replacedBy` points from the current/old document to the replacement document.
 
 `loadProject` includes `project.ordering`, and `buildArtifacts` writes the same structure to `ordering.json`. Cycles do not fail builds by themselves; ordering remains deterministic using newest-first tie breaking and exposes cycle metadata for future UI or validation improvements.
 
@@ -50,8 +50,8 @@ The graph page uses `project.graph` for all internal edges and `project.ordering
 
 # Acceptance criteria
 
-- `pnpm --filter @acta/core test` verifies ordering graph semantics, sorting, layers, cycles, and artifact output.
-- `pnpm --filter @acta/web test` verifies document ordering utilities.
-- `pnpm --filter @acta/web build` emits `/graph/index.html`.
+- `pnpm --filter @acta-dev/core test` verifies ordering graph semantics, sorting, layers, cycles, and artifact output.
+- `pnpm --filter @acta-dev/web test` verifies document ordering utilities.
+- `pnpm --filter @acta-dev/web build` emits `/graph/index.html`.
 - `pnpm exec acta build` emits `.acta/dist/ordering.json` with zero manifest errors.
 - The graph page is reachable from the sidebar and document nodes link to their document pages.

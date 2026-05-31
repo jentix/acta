@@ -1,4 +1,4 @@
-import type { DocumentGraph } from "@acta/core";
+import type { DocumentGraph } from "@acta-dev/core";
 import dagre from "@dagrejs/dagre";
 import type { Edge, Node } from "@xyflow/react";
 

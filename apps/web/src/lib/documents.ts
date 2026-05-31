@@ -1,4 +1,4 @@
-import type { ActaDocument, InternalLinkKey, ValidationIssue } from "@acta/core";
+import type { ActaDocument, InternalLinkKey, ValidationIssue } from "@acta-dev/core";
 
 export interface DocumentFilters {
   query?: string;

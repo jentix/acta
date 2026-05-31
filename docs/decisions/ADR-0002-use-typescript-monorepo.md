@@ -24,7 +24,7 @@ Acta has several consumers for the same document model: CLI, static web viewer, 
 
 # Decision
 
-Acta will use a pnpm TypeScript monorepo. `@acta/core` will own the document model and future parser/validator pipeline, while `@acta/cli`, `@acta/renderer`, and `@acta/web` remain separate consumers.
+Acta will use a pnpm TypeScript monorepo. `@acta-dev/core` will own the document model and future parser/validator pipeline, while `@acta-dev/cli`, `@acta-dev/renderer`, and `@acta-dev/web` remain separate consumers.
 
 # Consequences
 

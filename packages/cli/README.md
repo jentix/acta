@@ -1,4 +1,4 @@
-# @acta/cli
+# @acta-dev/cli
 
 The `acta` command-line tool — TypeScript-first docs-as-code for **ADR** and **spec** documents in a Git repository.
 
@@ -7,9 +7,9 @@ Markdown stays the source of truth; Acta adds a strict document model, validatio
 ## Install
 
 ```sh
-npm install -g @acta/cli
+npm install -g @acta-dev/cli
 # or run without installing:
-npx @acta/cli init
+npx @acta-dev/cli init
 ```
 
 The installed binary is `acta`.

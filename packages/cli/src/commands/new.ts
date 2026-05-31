@@ -1,8 +1,8 @@
 import { existsSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
 import { join, relative } from "node:path";
-import type { DocumentKind } from "@acta/core";
-import { adrStatuses, specStatuses } from "@acta/core";
+import type { DocumentKind } from "@acta-dev/core";
+import { adrStatuses, specStatuses } from "@acta-dev/core";
 import { defineCommand } from "citty";
 import { resolveContext } from "../context.js";
 import { allocateNextId } from "../id.js";
@@ -28,7 +28,7 @@ async function createDocument(
   const { config } = await resolveContext({ config: opts.config });
 
   // Dynamic import to avoid circular at top level
-  const { loadProject } = await import("@acta/core");
+  const { loadProject } = await import("@acta-dev/core");
   const project = await loadProject({ config });
 
   // Allocate or validate ID

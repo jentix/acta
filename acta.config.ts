@@ -1,4 +1,4 @@
-import { defineConfig } from "@acta/core/config";
+import { defineConfig } from "@acta-dev/core/config";
 
 export default defineConfig({
   docs: {

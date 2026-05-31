@@ -22,11 +22,11 @@ pnpm 11.x
 | Package | Responsibility |
 |---|---|
 | `packages/core` | Canonical document pipeline: config, parser, schema, validation, graph, ordering, search index and artifacts. |
-| `packages/cli` | Thin terminal layer over `@acta/core`: args, output formatting, exit codes and scaffolding. |
+| `packages/cli` | Thin terminal layer over `@acta-dev/core`: args, output formatting, exit codes and scaffolding. |
 | `packages/renderer` | Markdown-to-HTML helpers used by web rendering. |
 | `apps/web` | Static Astro viewer for documents, graph, search and validation results. |
 
-Keep business rules in `@acta/core`. CLI and web code should call core APIs or read core artifacts instead of duplicating parsing or validation behavior.
+Keep business rules in `@acta-dev/core`. CLI and web code should call core APIs or read core artifacts instead of duplicating parsing or validation behavior.
 
 ## Verification
 
@@ -45,11 +45,11 @@ pnpm exec acta build
 Faster package-level commands:
 
 ```sh
-pnpm --filter @acta/core test
-pnpm --filter @acta/cli test
-pnpm --filter @acta/web test
-pnpm --filter @acta/cli typecheck
-pnpm --filter @acta/web build
+pnpm --filter @acta-dev/core test
+pnpm --filter @acta-dev/cli test
+pnpm --filter @acta-dev/web test
+pnpm --filter @acta-dev/cli typecheck
+pnpm --filter @acta-dev/web build
 ```
 
 ## Test Categories
@@ -68,16 +68,16 @@ pnpm --filter @acta/web build
 2. Keep the rule pure: read from the validation context and return `ValidationIssue[]`.
 3. Add focused tests in `packages/core/src/validation.test.ts` or the closest existing core test.
 4. If the rule has configurable severity, add the config field in `packages/core/src/config.ts` and document it in `docs/configuration.md`.
-5. Run `pnpm --filter @acta/core test` and the full verification workflow.
+5. Run `pnpm --filter @acta-dev/core test` and the full verification workflow.
 
 ## Adding a CLI Command
 
 1. Add one command module under `packages/cli/src/commands/`.
 2. Register it in `packages/cli/src/index.ts`.
-3. Keep document logic in `@acta/core`; the CLI should parse args, call core APIs and format output.
+3. Keep document logic in `@acta-dev/core`; the CLI should parse args, call core APIs and format output.
 4. Add tests under `packages/cli/src/test/`.
 5. Update `README.md` and `docs/cli-reference.md`.
-6. Run `pnpm --filter @acta/cli test` and the full verification workflow.
+6. Run `pnpm --filter @acta-dev/cli test` and the full verification workflow.
 
 ## Adding or Changing Document Templates
 
@@ -87,7 +87,7 @@ After changing templates:
 
 ```sh
 pnpm exec acta validate
-pnpm --filter @acta/cli test
+pnpm --filter @acta-dev/cli test
 ```
 
 ## Documentation Workflow
@@ -115,7 +115,7 @@ Summary, Goals, Requirements
 ## Release Workflow
 
 Acta uses Changesets for package versioning and changelog generation.
-`@acta/cli` and `@acta/core` are public npm packages; `@acta/renderer` and `@acta/web` remain private implementation packages for the MVP.
+`@acta-dev/cli` and `@acta-dev/core` are public npm packages; `@acta-dev/renderer` and `@acta-dev/web` remain private implementation packages for the MVP.
 
 Prepare a release:
 
@@ -140,4 +140,4 @@ git tag v0.1.1
 git push origin main --tags
 ```
 
-The dogfooding viewer is deployed by `.github/workflows/deploy-pages.yml` on pushes to `main`. The workflow builds the CLI, runs `acta build` for repository artifacts, builds `@acta/web`, and uploads `apps/web/dist` to GitHub Pages.
+The dogfooding viewer is deployed by `.github/workflows/deploy-pages.yml` on pushes to `main`. The workflow builds the CLI, runs `acta build` for repository artifacts, builds `@acta-dev/web`, and uploads `apps/web/dist` to GitHub Pages.

@@ -1,4 +1,4 @@
-import { buildSearchIndex } from "@acta/core";
+import { buildSearchIndex } from "@acta-dev/core";
 import { loadActaWebData } from "@lib/project.js";
 
 export async function GET() {

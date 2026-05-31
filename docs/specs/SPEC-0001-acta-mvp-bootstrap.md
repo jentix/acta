@@ -30,7 +30,7 @@ Phase 0 establishes Acta as a TypeScript monorepo with explicit package boundari
 # Requirements
 
 - The CLI command name is reserved as `acta`.
-- Package names use the `@acta/*` scope.
+- Package names use the `@acta-dev/*` scope.
 - Generated Acta state uses `.acta/` and is ignored by Git.
 - The repository can install dependencies and run baseline checks.
 
@@ -40,5 +40,5 @@ The root workspace owns shared scripts and tooling. Each package contains a mini
 
 # Open questions
 
-- Whether `@acta/web` remains a private app package or becomes a publishable viewer package after the Astro implementation exists.
-- Whether the initial public npm package should be `acta` or `@acta/cli`.
+- Whether `@acta-dev/web` remains a private app package or becomes a publishable viewer package after the Astro implementation exists.
+- Whether the initial public npm package should be `acta` or `@acta-dev/cli`.

@@ -1,5 +1,5 @@
-import type { ActaDocument } from "@acta/core";
-import { loadProject } from "@acta/core";
+import type { ActaDocument } from "@acta-dev/core";
+import { loadProject } from "@acta-dev/core";
 import { defineCommand } from "citty";
 import kleur from "kleur";
 import { resolveContext } from "../context.js";

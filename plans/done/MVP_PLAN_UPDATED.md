@@ -29,7 +29,7 @@
 | Bundling libs/CLI | tsup | Хороший pragmatic default. |
 | Lint/format | Biome | Хороший выбор для скорости и простоты. |
 | Tests | Vitest | Хорошо подходит для ESM/TS. |
-| Schema | Zod v4 | Оставить single source of truth в `@acta/core/schema`. |
+| Schema | Zod v4 | Оставить single source of truth в `@acta-dev/core/schema`. |
 | Markdown | unified/remark pipeline | Правильно. Лучше не смешивать `gray-matter` и remark-frontmatter без необходимости. |
 | YAML | yaml package через remark-frontmatter payload | Нужна предсказуемая обработка дат, массивов и ошибок. |
 | Web | Astro 6 или текущий stable Astro на момент bootstrap | Идея Astro верная: static-first, islands only where needed. |
@@ -116,19 +116,19 @@ acta/
 
 ### Package boundaries
 
-`@acta/core`:
+`@acta-dev/core`:
 
 - Не зависит от Astro, React, citty, terminal UI.
 - Может зависеть от Zod, unified/remark, yaml, fast-glob, Orama only if search index generation lives here.
 - Экспортирует typed API для CLI, web build adapter и будущего MCP.
 
-`@acta/cli`:
+`@acta-dev/cli`:
 
 - Тонкий слой над core.
 - Отвечает за args, вывод в терминал, exit codes, scaffolding, watch mode.
 - Не содержит собственных validation rules.
 
-`@acta/renderer`:
+`@acta-dev/renderer`:
 
 - Markdown-to-HTML и terminal rendering helpers.
 - Shiki theme handling.
@@ -323,7 +323,7 @@ This makes it easy to add project-specific rules later without changing core eng
 ## 8. Config
 
 ```ts
-import { defineConfig } from "@acta/core/config";
+import { defineConfig } from "@acta-dev/core/config";
 
 export default defineConfig({
   docs: {
@@ -563,9 +563,9 @@ Release:
 Suggested package names:
 
 - `acta` for CLI package if available.
-- `@acta/core`
-- `@acta/renderer`
-- `@acta/web` can remain private app.
+- `@acta-dev/core`
+- `@acta-dev/renderer`
+- `@acta-dev/web` can remain private app.
 
 ---
 

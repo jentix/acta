@@ -11,7 +11,7 @@ acta/
 ├── apps/
 │   └── web/                    # Future static Astro viewer (Phase 3, not yet implemented)
 ├── packages/
-│   ├── core/                   # @acta/core — canonical document pipeline (parser, validator, graph, artifacts, search)
+│   ├── core/                   # @acta-dev/core — canonical document pipeline (parser, validator, graph, artifacts, search)
 │   │   └── src/
 │   │       ├── schema.ts       # Zod schemas, document types, link types
 │   │       ├── config.ts       # defineConfig, resolveConfig, loadConfig
@@ -23,7 +23,7 @@ acta/
 │   │       ├── ordering.ts     # dependency ordering graph, topological sort, layout layers
 │   │       ├── artifacts.ts    # buildArtifacts — writes .acta/dist/*.json
 │   │       └── index.ts        # Public API re-exports
-│   ├── cli/                    # @acta/cli — thin CLI layer over core (bin: acta)
+│   ├── cli/                    # @acta-dev/cli — thin CLI layer over core (bin: acta)
 │   │   └── src/
 │   │       ├── index.ts        # citty runMain entrypoint, subcommand registry
 │   │       ├── context.ts      # Config resolution helper
@@ -33,7 +33,7 @@ acta/
 │   │       ├── template.ts     # Template rendering with placeholder substitution
 │   │       ├── commands/       # One file per command (init, new, list, show, validate, graph, build, renumber)
 │   │       └── test/           # Vitest tests (fixture helper + per-command test files)
-│   ├── renderer/               # @acta/renderer — Markdown-to-HTML helpers (Phase 3, scaffolded)
+│   ├── renderer/               # @acta-dev/renderer — Markdown-to-HTML helpers (Phase 3, scaffolded)
 │   └── mcp-server/             # Future MCP server (Phase 5, not yet created)
 ├── docs/
 │   ├── decisions/              # ADR documents (ADR-NNNN-<slug>.md)
@@ -124,10 +124,10 @@ pnpm exec acta build
 
 ```bash
 # Run only for a specific package (faster iteration)
-pnpm --filter @acta/core test
-pnpm --filter @acta/cli test
-pnpm --filter @acta/cli build
-pnpm --filter @acta/cli typecheck
+pnpm --filter @acta-dev/core test
+pnpm --filter @acta-dev/cli test
+pnpm --filter @acta-dev/cli build
+pnpm --filter @acta-dev/cli typecheck
 ```
 
 ### What each check validates

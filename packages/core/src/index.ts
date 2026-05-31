@@ -86,4 +86,4 @@ export {
   validationRules,
 } from "./validation.js";
 
-export const actaCorePackage = "@acta/core";
+export const actaCorePackage = "@acta-dev/core";

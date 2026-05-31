@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { validateLoadedProject } from "@acta/core";
+import { validateLoadedProject } from "@acta-dev/core";
 import { defineCommand } from "citty";
 import kleur from "kleur";
 import { resolveContext } from "../context.js";

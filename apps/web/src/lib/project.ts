@@ -6,7 +6,7 @@ import {
   loadProject,
   type ValidationResult,
   validateProject,
-} from "@acta/core";
+} from "@acta-dev/core";
 import { sortDocumentsByNewest } from "./documents.js";
 
 export interface ActaWebData {

@@ -1,4 +1,4 @@
-import type { ValidationIssue } from "@acta/core";
+import type { ValidationIssue } from "@acta-dev/core";
 import kleur from "kleur";
 
 // ---------------------------------------------------------------------------

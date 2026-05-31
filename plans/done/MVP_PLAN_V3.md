@@ -8,7 +8,7 @@
 
 ### Сделано
 
-- **Phase 0–3 полностью**: монорепо (pnpm + Turbo + Biome + Vitest), `@acta/core` (schema, parser, repository, validator, graph, ordering, search index, artifacts, cache), `@acta/cli` (`init/new/list/show/validate/graph/build/dev/renumber`), `@acta/renderer`, `apps/web` Astro viewer (dashboard, list, document, graph через React Flow, search через Orama, validation page)
+- **Phase 0–3 полностью**: монорепо (pnpm + Turbo + Biome + Vitest), `@acta-dev/core` (schema, parser, repository, validator, graph, ordering, search index, artifacts, cache), `@acta-dev/cli` (`init/new/list/show/validate/graph/build/dev/renumber`), `@acta-dev/renderer`, `apps/web` Astro viewer (dashboard, list, document, graph через React Flow, search через Orama, validation page)
 - Lefthook (opt-in), GitHub Actions CI, `.acta/dist/*.json` artifact contract
 - Базовая темизация через CSS-переменные + `@media (prefers-color-scheme: dark)` в `apps/web/src/styles/global.css`
 
@@ -311,10 +311,10 @@ acta dev
 ### Phase 8 — Release (1 день)
 
 - **Changesets** setup
-- `package.json` для `@acta/cli`: `bin`, `files`, `engines`, `publishConfig.access: "public"`
-- Решить публичность `@acta/core`, `@acta/renderer` (рекомендация: `@acta/core` публичный — для будущих интеграций; `@acta/renderer` пока приватный)
+- `package.json` для `@acta-dev/cli`: `bin`, `files`, `engines`, `publishConfig.access: "public"`
+- Решить публичность `@acta-dev/core`, `@acta-dev/renderer` (рекомендация: `@acta-dev/core` публичный — для будущих интеграций; `@acta-dev/renderer` пока приватный)
 - `CHANGELOG.md` через changesets
-- **GitHub Pages deploy**: workflow `deploy-pages.yml` — на push в main, `pnpm --filter @acta/web build`, deploy `apps/web/dist`
+- **GitHub Pages deploy**: workflow `deploy-pages.yml` — на push в main, `pnpm --filter @acta-dev/web build`, deploy `apps/web/dist`
   - Astro `site` + `base` сконфигурировать под Pages URL
 - Bump version → publish → tag
 
