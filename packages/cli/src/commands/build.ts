@@ -2,7 +2,7 @@ import { buildArtifacts } from "@acta/core";
 import { defineCommand } from "citty";
 import kleur from "kleur";
 import { resolveContext } from "../context.js";
-import { printLine, printSuccess, printWarn } from "../output.js";
+import { printJson, printLine, printSuccess, printWarn } from "../output.js";
 
 export const buildCommand = defineCommand({
   meta: {
@@ -10,6 +10,11 @@ export const buildCommand = defineCommand({
     description: "Build normalized JSON artifacts for the web viewer, CI and integrations",
   },
   args: {
+    json: {
+      type: "boolean",
+      description: "Print the build manifest as JSON",
+      default: false,
+    },
     config: {
       type: "string",
       alias: "c",
@@ -19,10 +24,18 @@ export const buildCommand = defineCommand({
   async run({ args }) {
     const { config } = await resolveContext({ config: args.config });
 
-    printLine("Building artifacts...");
+    if (!args.json) {
+      printLine("Building artifacts...");
+    }
 
     const result = await buildArtifacts({ config });
     const { manifest, validation } = result;
+
+    if (args.json) {
+      printJson({ ...manifest, outDir: config.resolvedBuild.outDir });
+      process.exit(validation.errorCount > 0 ? 1 : 0);
+      return;
+    }
 
     printLine();
     printSuccess(`Build complete`);

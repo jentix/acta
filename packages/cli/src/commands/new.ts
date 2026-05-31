@@ -1,12 +1,12 @@
 import { existsSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 import type { DocumentKind } from "@acta/core";
 import { adrStatuses, specStatuses } from "@acta/core";
 import { defineCommand } from "citty";
 import { resolveContext } from "../context.js";
 import { allocateNextId } from "../id.js";
-import { exitFailure, exitUsage, printSuccess } from "../output.js";
+import { exitFailure, exitUsage, printJson, printSuccess } from "../output.js";
 import { titleToSlug } from "../slug.js";
 import { nowIsoDateTime, renderTemplate } from "../template.js";
 
@@ -18,6 +18,7 @@ async function createDocument(
     id?: string;
     status?: string;
     tags?: string;
+    json?: boolean;
   },
 ): Promise<void> {
   if (!title || title.trim() === "") {
@@ -74,6 +75,19 @@ async function createDocument(
   );
 
   await writeFile(destPath, content, "utf8");
+
+  if (opts.json) {
+    printJson({
+      id,
+      kind,
+      title: title.trim(),
+      status,
+      path: destPath,
+      relativePath: relative(process.cwd(), destPath),
+    });
+    return;
+  }
+
   printSuccess(`Created ${destPath}`);
 }
 
@@ -110,6 +124,11 @@ export const newCommand = defineCommand({
           type: "string",
           description: "Comma-separated tags",
         },
+        json: {
+          type: "boolean",
+          description: "Print the created document id and path as JSON",
+          default: false,
+        },
         config: {
           type: "string",
           alias: "c",
@@ -139,6 +158,11 @@ export const newCommand = defineCommand({
         tags: {
           type: "string",
           description: "Comma-separated tags",
+        },
+        json: {
+          type: "boolean",
+          description: "Print the created document id and path as JSON",
+          default: false,
         },
         config: {
           type: "string",
