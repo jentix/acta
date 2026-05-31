@@ -11,9 +11,11 @@
 
   /* lines */
   --color-border: initial;
+  --color-border-soft: initial;
 
   /* feedback */
   --color-accent: initial;
+  --color-accent-ink: initial;
   --color-danger: initial;
   --color-warning: initial;
 
@@ -24,6 +26,7 @@
   --text: var(--color-text);
   --muted: var(--color-text-muted);
   --border: var(--color-border);
+  --border-soft: var(--color-border-soft);
   --accent: var(--color-accent);
   --danger: var(--color-danger);
   --warning: var(--color-warning);

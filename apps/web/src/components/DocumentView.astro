@@ -1,0 +1,198 @@
+---
+import type { ActaDocument, ValidationIssue } from "@acta/core";
+import Chip from "./ui/Chip.astro";
+import Tooltip from "./ui/Tooltip.astro";
+import {
+  buildDocumentHref,
+  formatDisplayDate,
+  getDocumentById,
+  hasBacklinks,
+  internalLinkKeys,
+} from "../lib/documents.js";
+import { getT, localizedHref, type Locale } from "../lib/i18n.js";
+
+interface Props {
+  document: ActaDocument;
+  documents: ActaDocument[];
+  issues: ValidationIssue[];
+  rendered: { html: string };
+  locale: Locale;
+}
+
+const { document, documents, issues, rendered, locale } = Astro.props;
+
+const t = await getT(locale);
+const td = (key: string, params?: Record<string, unknown>) => t(`documents:${key}`, params);
+const tc = (key: string) => t(`common:${key}`);
+const linkDesc = (key: string, dir: "outgoing" | "incoming") =>
+  t(`documents:linkTypes.${key}.${dir}`);
+const severityLabel = (sev: string) => t(`validation:severity.${sev}`);
+
+const prettyKey = (key: string) =>
+  key.replace(/([A-Z])/g, " $1").replace(/^./, (c) => c.toUpperCase());
+
+// Outgoing internal links, grouped by type (Related, Depends on, …)
+const linkGroups = internalLinkKeys
+  .filter((key) => document.links[key].length > 0)
+  .map((key) => ({ key, ids: document.links[key] }));
+
+// Backlinks flattened into a single list (deduped) for the meta column
+const backlinkIds = hasBacklinks(document)
+  ? [...new Set(internalLinkKeys.flatMap((key) => document.backlinks[key]))]
+  : [];
+
+const references = document.links.references;
+---
+
+<div class="crumbs">
+  <a href={localizedHref(locale, "/")}>← {td("detail.back")}</a>
+  <span>{document.id}</span>
+  <span class="grow"></span>
+  {
+    references.length > 0 && (
+      <a href={references[0]} target="_blank" rel="noreferrer">
+        ↗ {td("detail.externalReferences")}
+      </a>
+    )
+  }
+</div>
+
+<header class="page-header">
+  <div class="doc-kicker">
+    <Chip kind={document.kind}>{document.kind}</Chip>
+    <Chip status={document.status} class="doc-status">{document.status}</Chip>
+    <span>{formatDisplayDate(document.date)}</span>
+  </div>
+  <h1>{document.title}</h1>
+  <div class="doc-byline">
+    <span><b>{document.id}</b></span>
+    {
+      document.owners.length > 0 && (
+        <span>{td("detail.owners")} <b>{document.owners.join(", ")}</b></span>
+      )
+    }
+    <span><b>{formatDisplayDate(document.date)}</b></span>
+    <span><code>{document.file.relativePath}</code></span>
+  </div>
+  {document.summary && <p class="doc-standfirst">{document.summary}</p>}
+</header>
+
+<div class="document-grid">
+  <aside class="metadata-panel">
+    <dl>
+      <div class="meta-block">
+        <dt>{td("detail.owners")}</dt>
+        <dd>{document.owners.length > 0 ? document.owners.join(", ") : tc("none")}</dd>
+      </div>
+      <div class="meta-block">
+        <dt>{td("detail.tags")}</dt>
+        <dd>{document.tags.length > 0 ? document.tags.join(", ") : tc("none")}</dd>
+      </div>
+      <div class="meta-block">
+        <dt>{td("detail.components")}</dt>
+        <dd>
+          {
+            document.component.length > 0
+              ? document.component.map((component, index) => (
+                  <>
+                    {index > 0 ? ", " : ""}
+                    <code>{component}</code>
+                  </>
+                ))
+              : tc("none")
+          }
+        </dd>
+      </div>
+      <div class="meta-block">
+        <dt>{td("detail.file")}</dt>
+        <dd><code>{document.file.relativePath}</code></dd>
+      </div>
+
+      {
+        linkGroups.map(({ key, ids }) => (
+          <div class="meta-block">
+            <span class="meta-lbl">
+              {prettyKey(key)} <span class="ct">· {ids.length}</span>
+              <Tooltip
+                label={td("linkTypes.tooltipOutgoing", { key })}
+                text={linkDesc(key, "outgoing")}
+              />
+            </span>
+            <div class="meta-links">
+              {ids.map((id) => {
+                const target = getDocumentById(documents, id);
+                return (
+                  <a class="metalink" href={localizedHref(locale, buildDocumentHref(id))}>
+                    <span class="id">{id}</span>
+                    {target && <span class="t">{target.title}</span>}
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        ))
+      }
+
+      <div class="meta-block">
+        <span class="meta-lbl">
+          {td("detail.backlinks")} <span class="ct">· {backlinkIds.length}</span>
+        </span>
+        <div class="meta-links">
+          {
+            backlinkIds.length > 0 ? (
+              backlinkIds.map((id) => {
+                const source = getDocumentById(documents, id);
+                return (
+                  <a class="metalink" href={localizedHref(locale, buildDocumentHref(id))}>
+                    <span class="id">{id}</span>
+                    {source && <span class="t">{source.title}</span>}
+                  </a>
+                );
+              })
+            ) : (
+              <span class="metalink empty">
+                <span class="t">{td("detail.noBacklinks")}</span>
+              </span>
+            )
+          }
+        </div>
+      </div>
+    </dl>
+
+    {
+      issues.length > 0 && (
+        <section class="issue-list compact">
+          <h2>{td("detail.validation")}</h2>
+          {issues.map((issue) => (
+            <p class={`issue severity-${issue.severity}`}>
+              <strong>{severityLabel(issue.severity)}</strong> {issue.message}
+            </p>
+          ))}
+        </section>
+      )
+    }
+  </aside>
+
+  <article class="markdown" set:html={rendered.html} />
+</div>
+
+{
+  references.length > 0 && (
+    <section class="relations">
+      <div class="relation-group-header">
+        <h2>{td("detail.externalReferences")}</h2>
+        <Tooltip
+          label={td("linkTypes.tooltipOutgoing", { key: "references" })}
+          text={linkDesc("references", "outgoing")}
+        />
+      </div>
+      <div class="chip-list">
+        {references.map((reference) => (
+          <Chip as="a" href={reference} interactive>
+            {reference}
+          </Chip>
+        ))}
+      </div>
+    </section>
+  )
+}

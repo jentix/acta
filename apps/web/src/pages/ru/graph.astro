@@ -35,13 +35,13 @@ const graphLabels = {
 
 <BaseLayout title={tg("tab")} description={tg("meta")}>
   <section class="page-header">
-    <div>
-      <p class="eyebrow">{tg("eyebrow")}</p>
-      <h1>{tg("header")}</h1>
-      <p class="muted">
-        {tg("counts", { nodes: project.graph.nodes.length, edges: project.graph.edges.length })}
-      </p>
+    <div class="crumbs">
+      <span>{tg("eyebrow")}</span>
     </div>
+    <h1>{tg("header")}<span class="accent-period">.</span></h1>
+    <p class="page-sub">
+      {tg("counts", { nodes: project.graph.nodes.length, edges: project.graph.edges.length })}
+    </p>
   </section>
 
   <DocumentGraphIsland

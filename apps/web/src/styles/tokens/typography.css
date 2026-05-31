@@ -1,7 +1,10 @@
 :root {
+  /* Press direction: editorial serif body + grotesque sans for UI chrome */
+  --font-serif: "Newsreader", "Source Serif 4", Georgia, serif;
   --font-sans:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    "Inter Tight", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
   --text-xs: 11px;
   --text-sm: 12px;
@@ -10,6 +13,8 @@
   --text-lg: 16px;
   --text-xl: 20px;
   --text-2xl: 30px;
+  --text-3xl: 56px;
+  --text-display: 68px;
 
   --leading-tight: 1.2;
   --leading-snug: 1.35;

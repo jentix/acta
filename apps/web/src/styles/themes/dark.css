@@ -1,54 +1,61 @@
+/* Direction A · Press — dark theme (night-mode treatment, accent unchanged) */
 [data-theme="dark"] {
-  --color-bg: var(--c-night);
-  --color-panel: var(--c-night-soft);
-  --color-panel-muted: var(--c-night-elevated);
-  --color-text: var(--c-night-ink);
-  --color-text-muted: var(--c-night-ink-soft);
-  --color-border: var(--c-night-edge);
-  --color-accent: var(--c-teal-400);
-  --color-danger: var(--c-red-300);
-  --color-warning: var(--c-amber-300);
+  --color-bg: #15130f;
+  --color-panel: #221e17;
+  --color-panel-muted: #1b1813;
+  --color-text: #ede6d2;
+  --color-text-muted: #8a8273;
+  --color-border: #2c2820;
+  --color-border-soft: #23201a;
+  --color-accent: #4cae7d;
+  --color-accent-ink: #15130f;
+  --color-danger: #ff8a80;
+  --color-warning: #e0b15d;
 
-  --kind-adr-color: var(--c-teal-400);
-  --kind-spec-color: var(--c-slate-400);
+  --kind-adr-color: var(--color-text);
+  --kind-spec-color: var(--color-text-muted);
 
-  --status-proposed-fg: var(--c-amber-300);
-  --status-proposed-bg: color-mix(in srgb, var(--c-amber-300) 18%, var(--c-night-soft));
-  --status-proposed-border: color-mix(in srgb, var(--c-amber-300) 45%, var(--c-night-soft));
+  --status-active-fg: #67c089;
+  --status-accepted-fg: #8ab7ff;
+  --status-draft-fg: #e0b15d;
+  --status-implemented-fg: #7ac0e0;
+  --status-proposed-fg: #baa8ff;
+  --status-paused-fg: #e0b15d;
+  --status-rejected-fg: #ff8a80;
+  --status-deprecated-fg: #8a8273;
+  --status-superseded-fg: #8a8273;
+  --status-obsolete-fg: #8a8273;
 
-  --status-accepted-fg: var(--c-teal-400);
-  --status-accepted-bg: color-mix(in srgb, var(--c-teal-400) 18%, var(--c-night-soft));
-  --status-accepted-border: color-mix(in srgb, var(--c-teal-400) 45%, var(--c-night-soft));
-
-  --status-rejected-fg: var(--c-red-300);
-  --status-rejected-bg: color-mix(in srgb, var(--c-red-300) 18%, var(--c-night-soft));
-  --status-rejected-border: color-mix(in srgb, var(--c-red-300) 45%, var(--c-night-soft));
-
-  --status-deprecated-fg: var(--c-slate-400);
-  --status-deprecated-bg: color-mix(in srgb, var(--c-slate-400) 18%, var(--c-night-soft));
-  --status-deprecated-border: color-mix(in srgb, var(--c-slate-400) 45%, var(--c-night-soft));
-
-  --status-superseded-fg: var(--c-slate-400);
-  --status-superseded-bg: color-mix(in srgb, var(--c-slate-400) 18%, var(--c-night-soft));
-  --status-superseded-border: color-mix(in srgb, var(--c-slate-400) 45%, var(--c-night-soft));
-
-  --status-draft-fg: var(--c-blue-400);
-  --status-draft-bg: color-mix(in srgb, var(--c-blue-400) 18%, var(--c-night-soft));
-  --status-draft-border: color-mix(in srgb, var(--c-blue-400) 45%, var(--c-night-soft));
-
-  --status-active-fg: var(--c-teal-400);
-  --status-active-bg: color-mix(in srgb, var(--c-teal-400) 18%, var(--c-night-soft));
-  --status-active-border: color-mix(in srgb, var(--c-teal-400) 45%, var(--c-night-soft));
-
-  --status-paused-fg: var(--c-amber-300);
-  --status-paused-bg: color-mix(in srgb, var(--c-amber-300) 18%, var(--c-night-soft));
-  --status-paused-border: color-mix(in srgb, var(--c-amber-300) 45%, var(--c-night-soft));
-
-  --status-implemented-fg: var(--c-teal-400);
-  --status-implemented-bg: color-mix(in srgb, var(--c-teal-400) 18%, var(--c-night-soft));
-  --status-implemented-border: color-mix(in srgb, var(--c-teal-400) 45%, var(--c-night-soft));
-
-  --status-obsolete-fg: var(--c-slate-400);
-  --status-obsolete-bg: color-mix(in srgb, var(--c-slate-400) 18%, var(--c-night-soft));
-  --status-obsolete-border: color-mix(in srgb, var(--c-slate-400) 45%, var(--c-night-soft));
+  --status-active-bg: color-mix(in srgb, var(--status-active-fg) 18%, var(--color-panel));
+  --status-active-border: color-mix(in srgb, var(--status-active-fg) 45%, var(--color-panel));
+  --status-accepted-bg: color-mix(in srgb, var(--status-accepted-fg) 18%, var(--color-panel));
+  --status-accepted-border: color-mix(in srgb, var(--status-accepted-fg) 45%, var(--color-panel));
+  --status-draft-bg: color-mix(in srgb, var(--status-draft-fg) 18%, var(--color-panel));
+  --status-draft-border: color-mix(in srgb, var(--status-draft-fg) 45%, var(--color-panel));
+  --status-implemented-bg: color-mix(in srgb, var(--status-implemented-fg) 18%, var(--color-panel));
+  --status-implemented-border: color-mix(
+    in srgb,
+    var(--status-implemented-fg) 45%,
+    var(--color-panel)
+  );
+  --status-proposed-bg: color-mix(in srgb, var(--status-proposed-fg) 18%, var(--color-panel));
+  --status-proposed-border: color-mix(in srgb, var(--status-proposed-fg) 45%, var(--color-panel));
+  --status-paused-bg: color-mix(in srgb, var(--status-paused-fg) 18%, var(--color-panel));
+  --status-paused-border: color-mix(in srgb, var(--status-paused-fg) 45%, var(--color-panel));
+  --status-rejected-bg: color-mix(in srgb, var(--status-rejected-fg) 18%, var(--color-panel));
+  --status-rejected-border: color-mix(in srgb, var(--status-rejected-fg) 45%, var(--color-panel));
+  --status-deprecated-bg: color-mix(in srgb, var(--status-deprecated-fg) 18%, var(--color-panel));
+  --status-deprecated-border: color-mix(
+    in srgb,
+    var(--status-deprecated-fg) 45%,
+    var(--color-panel)
+  );
+  --status-superseded-bg: color-mix(in srgb, var(--status-superseded-fg) 18%, var(--color-panel));
+  --status-superseded-border: color-mix(
+    in srgb,
+    var(--status-superseded-fg) 45%,
+    var(--color-panel)
+  );
+  --status-obsolete-bg: color-mix(in srgb, var(--status-obsolete-fg) 18%, var(--color-panel));
+  --status-obsolete-border: color-mix(in srgb, var(--status-obsolete-fg) 45%, var(--color-panel));
 }

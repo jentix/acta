@@ -15,10 +15,15 @@ const classes = ["ui-field", className].filter(Boolean).join(" ");
 
 <style>
   .ui-field {
-    display: grid;
-    gap: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+    font-family: var(--font-sans);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
     color: var(--color-text-muted);
-    font-size: var(--text-sm);
-    font-weight: var(--weight-semibold);
+    font-weight: 500;
   }
 </style>

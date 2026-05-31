@@ -17,20 +17,21 @@ const t = await getT(locale);
 
 <BaseLayout title={t("dashboard:tab")} description={t("dashboard:meta")}>
   <section class="page-header">
-    <div>
-      <p class="eyebrow">{t("dashboard:eyebrow")}</p>
-      <h1>{t("dashboard:header")}</h1>
-      <p class="muted">
-        {t("dashboard:counts", { count: documents.length, adrs: adrCount, specs: specCount })}
-      </p>
+    <div class="crumbs">
+      <span>{t("dashboard:eyebrow")}</span>
+      <span class="grow"></span>
+      <Pill
+        as="a"
+        href={localizedHref(locale, "/validation/")}
+        tone={validation.valid ? "success" : "danger"}
+      >
+        {t("dashboard:issuesPill", { errors: validation.errorCount, warnings: validation.warningCount })}
+      </Pill>
     </div>
-    <Pill
-      as="a"
-      href={localizedHref(locale, "/validation/")}
-      tone={validation.valid ? "success" : "danger"}
-    >
-      {t("dashboard:issuesPill", { errors: validation.errorCount, warnings: validation.warningCount })}
-    </Pill>
+    <h1>{t("dashboard:header")}<span class="accent-period">.</span></h1>
+    <p class="page-sub">
+      {t("dashboard:counts", { count: documents.length, adrs: adrCount, specs: specCount })}
+    </p>
   </section>
 
   <DocumentSearchList
