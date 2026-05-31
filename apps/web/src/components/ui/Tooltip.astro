@@ -46,6 +46,9 @@ const classes = ["ui-tooltip", className].filter(Boolean).join(" ");
     font-weight: var(--weight-bold);
     line-height: 1;
     cursor: help;
+    transition:
+      color var(--duration-hover) var(--ease-out),
+      border-color var(--duration-hover) var(--ease-out);
   }
 
   .ui-tooltip__trigger:hover,
@@ -76,11 +79,16 @@ const classes = ["ui-tooltip", className].filter(Boolean).join(" ");
     letter-spacing: 0;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.12s;
+    transform: translateX(-50%) scale(0.97);
+    transform-origin: bottom center;
+    transition:
+      opacity var(--duration-popover) var(--ease-out),
+      transform var(--duration-popover) var(--ease-out);
   }
 
   .ui-tooltip__trigger:hover + .ui-tooltip__bubble,
   .ui-tooltip__trigger:focus-visible + .ui-tooltip__bubble {
     opacity: 1;
+    transform: translateX(-50%) scale(1);
   }
 </style>

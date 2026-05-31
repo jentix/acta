@@ -218,6 +218,10 @@ a {
   line-height: 1;
   cursor: pointer;
   flex: none;
+  transition:
+    color var(--duration-hover) var(--ease-out),
+    border-color var(--duration-hover) var(--ease-out),
+    transform var(--duration-press) var(--ease-out);
 }
 
 .ui-sidebar-toggle:hover,
@@ -225,6 +229,10 @@ a {
   color: var(--color-text);
   border-color: var(--color-text);
   outline: none;
+}
+
+.ui-sidebar-toggle:active {
+  transform: scale(0.94);
 }
 
 .nav {
@@ -451,6 +459,7 @@ a {
   align-items: baseline;
   padding: var(--space-5) 0;
   border-bottom: 1px solid var(--color-border-soft);
+  transition: background var(--duration-hover) var(--ease-out);
 }
 
 .document-row:hover {
@@ -487,6 +496,7 @@ a {
   line-height: 1.2;
   letter-spacing: -0.01em;
   color: var(--color-text);
+  transition: color var(--duration-hover) var(--ease-out);
 }
 
 .document-title:hover {
@@ -1090,6 +1100,15 @@ a.metalink:hover .t {
   cursor: pointer;
   font-family: var(--font-sans);
   font-size: var(--text-md);
+  transition:
+    background var(--duration-hover) var(--ease-out),
+    color var(--duration-hover) var(--ease-out),
+    border-color var(--duration-hover) var(--ease-out),
+    transform var(--duration-press) var(--ease-out);
+}
+
+.ui-theme-toggle label:active span {
+  transform: scale(0.92);
 }
 
 .ui-theme-toggle input:checked + span {
@@ -1160,6 +1179,15 @@ a.metalink:hover .t {
   background: var(--color-panel);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-md);
+  transform-origin: bottom left;
+  transition:
+    opacity var(--duration-popover) var(--ease-out),
+    transform var(--duration-popover) var(--ease-out);
+
+  @starting-style {
+    opacity: 0;
+    transform: scale(0.96) translateY(4px);
+  }
 }
 
 .lang-menu button {
@@ -1171,6 +1199,7 @@ a.metalink:hover .t {
   background: none;
   text-align: left;
   cursor: pointer;
+  transition: background var(--duration-hover) var(--ease-out);
 }
 
 .lang-menu button:hover {
@@ -1225,6 +1254,11 @@ a.metalink:hover .t {
   font-family: var(--font-sans);
   font-size: var(--text-md);
   cursor: pointer;
+  transition: transform var(--duration-press) var(--ease-out);
+}
+
+.theme-trigger:active {
+  transform: scale(0.94);
 }
 
 .theme-menu {
@@ -1239,6 +1273,15 @@ a.metalink:hover .t {
   background: var(--color-panel);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-md);
+  transform-origin: bottom left;
+  transition:
+    opacity var(--duration-popover) var(--ease-out),
+    transform var(--duration-popover) var(--ease-out);
+
+  @starting-style {
+    opacity: 0;
+    transform: scale(0.96) translateY(4px);
+  }
 }
 
 .theme-menu button {
@@ -1251,6 +1294,9 @@ a.metalink:hover .t {
   text-align: left;
   cursor: pointer;
   color: var(--color-text-muted);
+  transition:
+    background var(--duration-hover) var(--ease-out),
+    color var(--duration-hover) var(--ease-out);
 }
 
 .theme-menu button:hover {
@@ -1328,5 +1374,18 @@ a.metalink:hover .t {
   .row-date {
     grid-column: 1 / -1;
     text-align: left;
+  }
+}
+
+/* ── Reduced motion ───────────────────────────────────────────────────── */
+/* Keep opacity/color transitions (aid comprehension); drop movement. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
   }
 }
