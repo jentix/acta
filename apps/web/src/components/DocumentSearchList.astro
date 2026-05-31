@@ -79,6 +79,8 @@ const tc = (key: string) => t(`common:${key}`);
         { value: "dependency", label: td("filters.sortDependency") },
       ]}
     />
+  </section>
+  <div class="toolbar-sub">
     <label class="content-search">
       <input type="checkbox" data-search-content />
       <span>{td("filters.searchContent")}</span>
@@ -86,7 +88,7 @@ const tc = (key: string) => t(`common:${key}`);
     <span class="content-loading muted" data-search-content-loading hidden>
       {td("filters.searchingContent")}
     </span>
-  </section>
+  </div>
 
   <section
     class="document-list"
@@ -107,18 +109,20 @@ const tc = (key: string) => t(`common:${key}`);
           data-newest-order={newestOrder[document.id]}
           data-dependency-order={dependencyOrder[document.id] ?? newestOrder[document.id]}
         >
+          <div class="row-id">
+            <Chip kind={document.kind}>{document.kind}</Chip>
+            <span>{document.id.replace(/^(?:adr|spec)-/i, "")}</span>
+          </div>
           <div class="row-main">
             <a class="document-title" href={localizedHref(locale, buildDocumentHref(document.id))}>
-              <span class="document-id">{document.id}</span>
               {document.title}
             </a>
-            {document.summary && <p>{document.summary}</p>}
+            {document.summary && <p class="row-summary">{document.summary}</p>}
           </div>
-          <div class="row-chips">
-            <Chip kind={document.kind}>{document.kind}</Chip>
+          <div class="row-status">
             <Chip status={document.status}>{document.status}</Chip>
           </div>
-          <span class="muted row-date">{formatDisplayDate(document.date)}</span>
+          <span class="row-date">{formatDisplayDate(document.date)}</span>
         </article>
       ))
     }
@@ -138,19 +142,9 @@ const tc = (key: string) => t(`common:${key}`);
 </script>
 
 <style>
-  .content-search {
+  .toolbar-sub {
+    display: flex;
     align-items: center;
-    color: var(--color-text-muted);
-    display: inline-flex;
-    font-size: var(--text-sm);
-    gap: var(--space-2);
-    min-height: 2.25rem;
-  }
-
-  .content-loading {
-    align-self: end;
-    font-size: var(--text-sm);
-    min-height: 2.25rem;
-    padding-block: var(--space-2);
+    gap: var(--space-4);
   }
 </style>

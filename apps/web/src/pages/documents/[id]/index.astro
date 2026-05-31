@@ -1,20 +1,10 @@
 ---
 import { renderMarkdown } from "@acta/renderer";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
-import Button from "../../../components/ui/Button.astro";
-import Chip from "../../../components/ui/Chip.astro";
-import Tooltip from "../../../components/ui/Tooltip.astro";
-import {
-  buildDocumentHref,
-  formatDisplayDate,
-  getDocumentById,
-  getIssuesForDocument,
-  hasBacklinks,
-  hasInternalLinks,
-  internalLinkKeys,
-} from "@lib/documents.js";
+import DocumentView from "../../../components/DocumentView.astro";
+import { getIssuesForDocument } from "@lib/documents.js";
 import { loadActaWebData } from "@lib/project.js";
-import { defaultLocale, getT, isLocale, localizedHref, type Locale } from "@lib/i18n.js";
+import { defaultLocale, isLocale, type Locale } from "@lib/i18n.js";
 
 export async function getStaticPaths() {
   const { project, validation } = await loadActaWebData();
@@ -36,158 +26,14 @@ const { document, documents, issues, rendered } = Astro.props;
 
 const rawLocale = Astro.currentLocale ?? defaultLocale;
 const locale: Locale = isLocale(rawLocale) ? rawLocale : defaultLocale;
-const t = await getT(locale);
-const td = (key: string, params?: Record<string, unknown>) => t(`documents:${key}`, params);
-const tc = (key: string) => t(`common:${key}`);
-const linkDesc = (key: string, dir: "outgoing" | "incoming") =>
-  t(`documents:linkTypes.${key}.${dir}`);
-const severityLabel = (sev: string) => t(`validation:severity.${sev}`);
 ---
 
 <BaseLayout title={`${document.id} · ${document.title}`} description={document.summary}>
-  <section class="page-header document-header">
-    <div>
-      <p class="eyebrow">
-        {document.kind.toUpperCase()} ·
-        <Chip status={document.status}>{document.status}</Chip>
-      </p>
-      <h1>{document.title}</h1>
-      <p class="muted">{document.id} · {formatDisplayDate(document.date)}</p>
-    </div>
-    <Button as="a" href={localizedHref(locale, "/")}>{td("detail.back")}</Button>
-  </section>
-
-  <div class="document-grid">
-    <aside class="metadata-panel">
-      {document.summary && <p class="summary">{document.summary}</p>}
-      <dl>
-        <div>
-          <dt>{td("detail.file")}</dt>
-          <dd>{document.file.relativePath}</dd>
-        </div>
-        <div>
-          <dt>{td("detail.owners")}</dt>
-          <dd>{document.owners.length > 0 ? document.owners.join(", ") : tc("none")}</dd>
-        </div>
-        <div>
-          <dt>{td("detail.tags")}</dt>
-          <dd>{document.tags.length > 0 ? document.tags.join(", ") : tc("none")}</dd>
-        </div>
-        <div>
-          <dt>{td("detail.components")}</dt>
-          <dd>{document.component.length > 0 ? document.component.join(", ") : tc("none")}</dd>
-        </div>
-      </dl>
-
-      {
-        issues.length > 0 && (
-          <section class="issue-list compact">
-            <h2>{td("detail.validation")}</h2>
-            {issues.map((issue) => (
-              <p class={`issue severity-${issue.severity}`}>
-                <strong>{severityLabel(issue.severity)}</strong> {issue.message}
-              </p>
-            ))}
-          </section>
-        )
-      }
-    </aside>
-
-    <article class="markdown" set:html={rendered.html} />
-  </div>
-
-  <section class="relations">
-    <div>
-      <h2>{td("detail.links")}</h2>
-      {
-        hasInternalLinks(document) ? (
-          internalLinkKeys.map(
-            (key) =>
-              document.links[key].length > 0 && (
-                <div class="relation-group">
-                  <div class="relation-group-header">
-                    <h3>{key}</h3>
-                    <Tooltip
-                      label={td("linkTypes.tooltipOutgoing", { key })}
-                      text={linkDesc(key, "outgoing")}
-                    />
-                  </div>
-                  <div class="chip-list">
-                    {document.links[key].map((id) => {
-                      const target = getDocumentById(documents, id);
-                      return (
-                        <Chip as="a" href={localizedHref(locale, buildDocumentHref(id))} interactive>
-                          {id}
-                          {target ? ` · ${target.title}` : ""}
-                        </Chip>
-                      );
-                    })}
-                  </div>
-                </div>
-              ),
-          )
-        ) : (
-          <p class="muted">{td("detail.noOutgoing")}</p>
-        )
-      }
-    </div>
-
-    <div>
-      <h2>{td("detail.backlinks")}</h2>
-      {
-        hasBacklinks(document) ? (
-          internalLinkKeys.map(
-            (key) =>
-              document.backlinks[key].length > 0 && (
-                <div class="relation-group">
-                  <div class="relation-group-header">
-                    <h3>{key}</h3>
-                    <Tooltip
-                      label={td("linkTypes.tooltipIncoming", { key })}
-                      text={linkDesc(key, "incoming")}
-                    />
-                  </div>
-                  <div class="chip-list">
-                    {document.backlinks[key].map((id) => {
-                      const source = getDocumentById(documents, id);
-                      return (
-                        <Chip as="a" href={localizedHref(locale, buildDocumentHref(id))} interactive>
-                          {id}
-                          {source ? ` · ${source.title}` : ""}
-                        </Chip>
-                      );
-                    })}
-                  </div>
-                </div>
-              ),
-          )
-        ) : (
-          <p class="muted">{td("detail.noBacklinks")}</p>
-        )
-      }
-    </div>
-  </section>
-
-  {
-    document.links.references.length > 0 && (
-      <section class="relations single">
-        <div>
-          <div class="relation-group-header">
-            <h2>{td("detail.externalReferences")}</h2>
-            <Tooltip
-              label={td("linkTypes.tooltipOutgoing", { key: "references" })}
-              text={linkDesc("references", "outgoing")}
-            />
-          </div>
-          <div class="chip-list">
-            {document.links.references.map((reference) => (
-              <Chip as="a" href={reference} interactive>
-                {reference}
-              </Chip>
-            ))}
-          </div>
-        </div>
-      </section>
-    )
-  }
+  <DocumentView
+    document={document}
+    documents={documents}
+    issues={issues}
+    rendered={rendered}
+    locale={locale}
+  />
 </BaseLayout>

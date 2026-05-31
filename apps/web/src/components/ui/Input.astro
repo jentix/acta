@@ -12,19 +12,23 @@ const classes = ["ui-input", className].filter(Boolean).join(" ");
 <style>
   .ui-input {
     width: 100%;
-    height: 34px;
-    padding: 0 var(--space-3);
+    padding: 6px 0;
     box-sizing: border-box;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    background: var(--color-panel);
+    border: 0;
+    border-bottom: 1px solid var(--color-border);
+    background: transparent;
     color: var(--color-text);
-    font: inherit;
-    font-size: var(--text-base);
+    font-family: var(--font-serif);
+    font-size: 16px;
+    outline: none;
+  }
+
+  .ui-input::placeholder {
+    color: var(--color-text-muted);
+    font-style: italic;
   }
 
   .ui-input:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 1px;
+    border-bottom-color: var(--color-accent);
   }
 </style>

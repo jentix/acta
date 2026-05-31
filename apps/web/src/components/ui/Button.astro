@@ -51,48 +51,48 @@ const classes = ["ui-button", `ui-button--${variant}`, `ui-button--${size}`, cla
     align-items: center;
     justify-content: center;
     gap: var(--space-2);
-    padding: var(--space-2) var(--space-3);
-    min-height: 32px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    background: var(--color-panel);
+    padding: 8px 14px;
+    border: 1px solid var(--color-text);
+    border-radius: 0;
+    background: transparent;
     color: var(--color-text);
-    font: inherit;
-    font-size: var(--text-base);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
     text-decoration: none;
     cursor: pointer;
-    transition: border-color 0.12s, color 0.12s, background 0.12s;
+    transition: background 0.12s, color 0.12s;
   }
 
   .ui-button:hover {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
+    background: var(--color-text);
+    color: var(--color-bg);
   }
 
   .ui-button--sm {
-    min-height: 26px;
-    padding: var(--space-1) var(--space-2);
-    font-size: var(--text-sm);
+    padding: 6px 10px;
+    font-size: 10px;
   }
 
   .ui-button--primary {
     background: var(--color-accent);
     border-color: var(--color-accent);
-    color: var(--color-panel);
+    color: var(--color-accent-ink);
   }
 
   .ui-button--primary:hover {
     background: color-mix(in srgb, var(--color-accent) 85%, var(--color-text));
-    color: var(--color-panel);
+    color: var(--color-accent-ink);
   }
 
   .ui-button--ghost {
-    background: transparent;
     border-color: transparent;
   }
 
   .ui-button--ghost:hover {
-    background: var(--color-panel-muted);
+    background: transparent;
     color: var(--color-accent);
   }
 </style>

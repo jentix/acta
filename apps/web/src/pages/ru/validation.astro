@@ -16,20 +16,21 @@ const severityLabel = (sev: string) => t(`validation:severity.${sev}`);
 
 <BaseLayout title={t("validation:tab")} description={t("validation:meta")}>
   <section class="page-header">
-    <div>
-      <p class="eyebrow">{t("validation:eyebrow")}</p>
-      <h1>{t("validation:header")}</h1>
-      <p class="muted">
-        {t("validation:counts", { errors: validation.errorCount, warnings: validation.warningCount })}
-      </p>
+    <div class="crumbs">
+      <span>{t("validation:eyebrow")}</span>
+      <span class="grow"></span>
+      <Pill
+        as="a"
+        href={localizedHref(locale, "/validation/")}
+        tone={validation.valid ? "success" : "danger"}
+      >
+        {validation.valid ? t("common:valid") : t("common:needsAttention")}
+      </Pill>
     </div>
-    <Pill
-      as="a"
-      href={localizedHref(locale, "/validation/")}
-      tone={validation.valid ? "success" : "danger"}
-    >
-      {validation.valid ? t("common:valid") : t("common:needsAttention")}
-    </Pill>
+    <h1>{t("validation:header")}<span class="accent-period">.</span></h1>
+    <p class="page-sub">
+      {t("validation:counts", { errors: validation.errorCount, warnings: validation.warningCount })}
+    </p>
   </section>
 
   {

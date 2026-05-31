@@ -36,9 +36,9 @@ const isActive = (href: string) => {
 };
 
 const navItems = [
-  { href: "/", label: tSidebar("nav.documents"), icon: "▤" },
-  { href: "/graph/", label: tSidebar("nav.graph"), icon: "◇" },
-  { href: "/validation/", label: tSidebar("nav.validation"), icon: "✓" },
+  { href: "/", label: tSidebar("nav.documents"), num: "01" },
+  { href: "/graph/", label: tSidebar("nav.graph"), num: "02" },
+  { href: "/validation/", label: tSidebar("nav.validation"), num: "03" },
 ];
 
 const languageLabels = { en: tSidebar("language.en"), ru: tSidebar("language.ru") };
@@ -52,6 +52,12 @@ const languageLabels = { en: tSidebar("language.en"), ru: tSidebar("language.ru"
     <meta name="description" content={finalDescription} />
     <title>{title}</title>
     <link rel="icon" href={`${basePrefix}/favicon.png`} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    />
     <script is:inline>
       (() => {
         try {
@@ -81,8 +87,8 @@ const languageLabels = { en: tSidebar("language.en"), ru: tSidebar("language.ru"
           <a class="brand" href={localizedHref(locale, "/", base)}>
             <span class="brand-mark"><img src={`${basePrefix}/favicon.png`} alt="A" /></span>
             <span class="brand-label">
-              <strong>Acta</strong>
-              <small>{tSidebar("brand.subtitle")}</small>
+              <strong class="brand-wordmark">Acta</strong>
+              <small class="brand-kicker">{tSidebar("brand.subtitle")}</small>
             </span>
           </a>
           <SidebarToggle
@@ -101,11 +107,14 @@ const languageLabels = { en: tSidebar("language.en"), ru: tSidebar("language.ru"
                 <a
                   href={localizedHref(locale, item.href, base)}
                   title={item.label}
+                  aria-label={item.label}
                   class:list={[{ "is-active": active }]}
                   aria-current={active ? "page" : undefined}
                 >
-                  <span class="nav-icon" aria-hidden="true">{item.icon}</span>
+                  <span class="nav-num" aria-hidden="true">{item.num}</span>
+                  <span class="nav-letter" aria-hidden="true">{item.label.charAt(0)}</span>
                   <span class="nav-label">{item.label}</span>
+                  <span class="nav-bar" aria-hidden="true"></span>
                 </a>
               );
             })
