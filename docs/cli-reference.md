@@ -54,6 +54,7 @@ Flags:
 | `--yes`, `-y` | Skip prompts and overwrite existing generated files. |
 | `--hooks` | Write a Lefthook workflow template. |
 | `--github-action` | Write a GitHub Actions workflow template. |
+| `--skill` | Install the `acta-document` agent skill at `.claude/skills/acta-document/SKILL.md` and add an Acta guidance block to `AGENTS.md`. See [skill.md](skill.md). |
 | `--config`, `-c` | Accepted for consistency; init currently writes `acta.config.ts` in the current directory. |
 
 Examples:
@@ -61,7 +62,8 @@ Examples:
 ```sh
 acta init --hooks
 acta init --github-action
-acta init --hooks --github-action --yes
+acta init --skill
+acta init --hooks --github-action --skill --yes
 ```
 
 ## `acta new adr <title>`

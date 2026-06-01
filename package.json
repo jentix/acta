@@ -16,6 +16,7 @@
     "lint": "biome lint .",
     "format:check": "biome format .",
     "typecheck": "turbo run typecheck",
+    "gen:skill": "tsx scripts/gen-skill.mts",
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "changeset publish"

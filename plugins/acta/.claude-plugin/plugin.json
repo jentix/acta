@@ -1,0 +1,10 @@
+{
+  "name": "acta",
+  "version": "0.1.0",
+  "description": "Document architectural decisions and specs with the Acta docs-as-code CLI. Bundles the acta-document skill so agents create, fill, and validate ADR/spec documents autonomously.",
+  "author": { "name": "jentix" },
+  "homepage": "https://github.com/jentix/acta",
+  "repository": "https://github.com/jentix/acta",
+  "license": "MIT",
+  "keywords": ["adr", "spec", "docs-as-code", "documentation"]
+}
