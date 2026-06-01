@@ -1,6 +1,6 @@
 {
   "name": "@acta-dev/cli",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Acta CLI — TypeScript-first docs-as-code tooling for ADR and spec documents in Git. Provides the `acta` binary.",
   "keywords": [
     "adr",

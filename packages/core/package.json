@@ -1,6 +1,6 @@
 {
   "name": "@acta-dev/core",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Acta core — canonical document pipeline (schema, parser, validator, graph, search index, artifacts) for ADR and spec docs-as-code.",
   "keywords": [
     "adr",
