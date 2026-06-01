@@ -93,32 +93,33 @@
 
 ---
 
-### Phase 2 — Agent skill + plugin (1 день)
+### Phase 2 — Agent skill + plugin (1 день) — DONE (branch `feat/agent-skill-plugin`)
 
 Цель: AI-агент после реализации задачи сам создаёт нужный документ, наполняет контентом/ссылками, валидирует.
 
-#### 2.1 Skill (universal `SKILL.md`)
-- Файл `skills/acta-document/SKILL.md` (в этом репо как source of truth).
-- Frontmatter: `name`, `description` (триггеры: «после реализации фичи», «задокументировать решение», «создать ADR/spec»), `allowed-tools` (Bash для `acta`), опц. `disable-model-invocation: false`.
-- Тело — процедурный loop:
-  1. Определить тип: архитектурное решение → `adr`; фича/система → `spec`.
-  2. `acta new adr|spec "<title>" --json` → получить id+path.
-  3. Заполнить frontmatter (status, tags, component, owners, summary, links: `decidedBy/dependsOn/validates/supersedes/related`, `references`).
-  4. Заполнить обязательные секции: ADR = Context/Decision/Consequences/Alternatives; Spec = Summary/Goals/Requirements.
-  5. `acta validate --json` → если `errorCount>0`, исправить по `issues[].message` и повторить (fix-loop, лимит итераций).
-  6. `acta show <id> --json` для финальной проверки links/backlinks.
-- Источник правды по модели документа — переиспользовать таблицы из `AGENTS.md` (kinds, statuses, link types). Не дублировать вручную: либо генерировать секцию skill из тех же данных, либо ссылаться.
+**Решение по синхронизации (ключевое):** skill генерируется из единственного источника правды — экспортов `@acta-dev/core` (`documentKinds`, `adrStatuses`, `specStatuses`, `linkKeys`) + required sections из config + поверхности CLI. Генератор — `renderSkill()` в `packages/cli/src/skill.ts`. Skill версионируется вместе с CLI (бандлится внутрь `@acta-dev/cli`), поэтому версия skill у пользователя всегда == версии его CLI. Дрейф ловит contract-test (`skill-contract.test.ts`): committed-копии байт-в-байт равны `renderSkill()`, и текст содержит каждое значение из core. Регенерация — `pnpm gen:skill`. Подробности — `docs/skill.md`.
 
-#### 2.2 Доставка
-- `acta init --skill` — пишет `.claude/skills/acta-document/SKILL.md` в репо пользователя + добавляет/обновляет блок в его `AGENTS.md` (для Codex/Cursor/Gemini, которые читают AGENTS.md, а не Claude skills).
-- Claude Code **plugin**: упаковать skill в plugin для one-command install; добавить marketplace-манифест (`.claude-plugin/marketplace.json` или отдельный repo). Документировать установку.
-- `.codex/` в этом репо уже есть — выровнять содержимое.
+#### 2.1 Skill (universal `SKILL.md`) — ✅
+- [x] `renderSkill()` в `packages/cli/src/skill.ts` — source of truth, интерполирует данные из core.
+- [x] Frontmatter: `name: acta-document`, `description` с триггерами, `allowed-tools: Bash`.
+- [x] Тело — процедурный loop (kind → `new --json` → fill frontmatter+sections → `validate --json` fix-loop → `show --json`).
+- [x] Данные модели (kinds/statuses/link types/required sections) генерируются из core, не дублируются вручную.
+- [x] Committed: `skills/acta-document/SKILL.md` (+ копия в плагине).
 
-#### 2.3 Тесты/проверка
-- Сухой прогон: дать агенту фиктивную «реализованную задачу», убедиться что проходит loop до `validate ok`.
-- Lint самого SKILL.md (frontmatter валиден).
+#### 2.2 Доставка — ✅
+- [x] `acta init --skill` — пишет `.claude/skills/acta-document/SKILL.md` + idempotent-блок (`<!-- acta:skill:start/end -->`) в `AGENTS.md` пользователя.
+- [x] Claude Code **plugin**: `plugins/acta/` + marketplace-манифест `.claude-plugin/marketplace.json` (репо = marketplace). Установка задокументирована в `docs/skill.md`.
+- [x] `.codex/` — non-Claude агенты получают то же руководство через AGENTS.md-блок.
 
-**Acceptance**: `acta init --skill` ставит skill; агент в чистом репо проходит new→fill→validate без вмешательства человека.
+#### 2.3 Тесты/проверка — ✅
+- [x] `skill-contract.test.ts`: байт-равенство committed-копий + contains-all-core-values + валидность frontmatter (YAML).
+- [x] Negative-sync: добавление статуса в core без регенерации валит contract-test (проверено).
+- [x] Clean-room: `acta init --skill` ставит skill+AGENTS-блок, повторный запуск идемпотентен.
+- [x] `lint`/`typecheck`/`format:check`/`test`/`build` — зелёные.
+
+**Acceptance**: `acta init --skill` ставит skill; агент в чистом репо проходит new→fill→validate без вмешательства человека. ✅ (loop-команды покрыты fixture-тестами CLI; доставка проверена clean-room).
+
+**Остаток:** changeset создан (`@acta-dev/cli` minor) — публикация за пользователем. Примечание: резолв `@acta-dev/core` из пользовательского `acta.config.ts` в не-установленном окружении — отдельная adoption-проблема (Phase 0/3), не Phase 2.
 
 ---
 

@@ -1,0 +1,16 @@
+{
+  "name": "acta",
+  "owner": { "name": "jentix", "url": "https://github.com/jentix" },
+  "metadata": {
+    "description": "Acta — docs-as-code tooling for ADR and spec documents.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "acta",
+      "source": "./plugins/acta",
+      "description": "Document decisions and specs with the Acta CLI. Bundles the acta-document agent skill.",
+      "category": "documentation"
+    }
+  ]
+}

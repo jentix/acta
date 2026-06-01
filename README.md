@@ -129,6 +129,21 @@ pnpm build:web
 
 The CLI currently builds the shared JSON artifacts with `acta build`. The repository-level web scripts build and preview the Astro app.
 
+## Use With AI Agents
+
+Acta ships an `acta-document` agent skill so an AI coding agent can document
+finished work on its own — create the ADR/spec, fill it in, and run the
+`acta validate` fix-loop until it passes.
+
+```sh
+acta init --skill   # writes .claude/skills/acta-document/SKILL.md + AGENTS.md guidance
+```
+
+It is also available as a Claude Code plugin (`/plugin marketplace add jentix/acta`
+then `/plugin install acta`). The skill is generated from the live CLI/core surface
+and guarded by a contract test, so it never drifts from the tool. See
+[docs/skill.md](docs/skill.md).
+
 ## CI Integration
 
 `acta init --github-action` writes `.github/workflows/acta-ci.yml` with the expected verification flow for this monorepo:
@@ -161,6 +176,8 @@ apps/web          Astro static web viewer
 packages/core     Schemas, parser, validator, graph, search index and artifacts
 packages/cli      CLI package with the acta binary
 packages/renderer Markdown-to-HTML rendering helpers
+skills/           Generated acta-document agent skill (source of truth: packages/cli/src/skill.ts)
+plugins/acta      Claude Code plugin bundling the skill
 docs/             Dogfooding ADR/spec documents and templates
 ```
 

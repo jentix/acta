@@ -31,10 +31,14 @@ acta/
 │   │       ├── slug.ts         # title → kebab-case slug
 │   │       ├── id.ts           # Auto-allocate next document ID
 │   │       ├── template.ts     # Template rendering with placeholder substitution
+│   │       ├── skill.ts        # renderSkill/renderAgentsBlock — agent-skill source of truth
 │   │       ├── commands/       # One file per command (init, new, list, show, validate, graph, build, renumber)
 │   │       └── test/           # Vitest tests (fixture helper + per-command test files)
 │   ├── renderer/               # @acta-dev/renderer — Markdown-to-HTML helpers (Phase 3, scaffolded)
-│   └── mcp-server/             # Future MCP server (Phase 5, not yet created)
+│   └── mcp-server/             # Future MCP server (Phase 4, not yet created)
+├── skills/                     # Generated acta-document agent skill (source: packages/cli/src/skill.ts)
+├── plugins/acta/               # Claude Code plugin bundling the skill (+ marketplace at .claude-plugin/)
+├── scripts/gen-skill.mts       # `pnpm gen:skill` — regenerates the committed skill copies
 ├── docs/
 │   ├── decisions/              # ADR documents (ADR-NNNN-<slug>.md)
 │   ├── specs/                  # Spec documents (SPEC-NNNN-<slug>.md)

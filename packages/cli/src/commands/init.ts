@@ -5,6 +5,7 @@ import { createInterface } from "node:readline";
 import { resolveConfig } from "@acta-dev/core";
 import { defineCommand } from "citty";
 import { printLine, printSuccess, printWarn } from "../output.js";
+import { renderSkill, upsertAgentsBlock } from "../skill.js";
 
 // Built-in bundled templates (inline defaults) used when no existing template found
 const ADR_TEMPLATE = `---
@@ -226,6 +227,11 @@ export const initCommand = defineCommand({
       description: "Install GitHub Actions workflow template",
       default: false,
     },
+    skill: {
+      type: "boolean",
+      description: "Install the acta-document agent skill and AGENTS.md guidance",
+      default: false,
+    },
     config: {
       type: "string",
       alias: "c",
@@ -293,6 +299,21 @@ export const initCommand = defineCommand({
       const workflowPath = join(workflowsDir, "acta-ci.yml");
       const workflowWritten = await safeWriteFile(workflowPath, GITHUB_ACTION_TEMPLATE, yes);
       if (workflowWritten) printSuccess(`Created ${workflowPath}`);
+    }
+
+    // 6. Optional agent skill + AGENTS.md guidance
+    if (args.skill) {
+      const skillDir = join(cwd, ".claude", "skills", "acta-document");
+      await mkdir(skillDir, { recursive: true });
+      const skillPath = join(skillDir, "SKILL.md");
+      const skillWritten = await safeWriteFile(skillPath, renderSkill(), yes);
+      if (skillWritten) printSuccess(`Created ${skillPath}`);
+
+      const { readFile } = await import("node:fs/promises");
+      const agentsPath = join(cwd, "AGENTS.md");
+      const existing = existsSync(agentsPath) ? await readFile(agentsPath, "utf8") : "";
+      await writeFile(agentsPath, upsertAgentsBlock(existing), "utf8");
+      printSuccess(`Updated ${agentsPath} with Acta agent guidance`);
     }
 
     printLine();
