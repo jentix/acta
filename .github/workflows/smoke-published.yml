@@ -1,0 +1,29 @@
+name: Smoke (published)
+
+# Verifies the packages actually published to npm work for an external user.
+# Runs after a GitHub Release is published, and on demand for any version.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version/dist-tag of @acta-dev/cli to test"
+        required: false
+        default: "latest"
+
+jobs:
+  smoke:
+    name: Install from npm and run init -> site
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Smoke test published packages
+        run: node scripts/smoke-published.mjs "${{ github.event.inputs.version || 'latest' }}"

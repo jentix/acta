@@ -7,5 +7,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@acta-dev/renderer", "@acta-dev/web"]
+  "ignore": []
 }

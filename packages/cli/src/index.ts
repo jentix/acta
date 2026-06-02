@@ -9,6 +9,7 @@ import { listCommand } from "./commands/list.js";
 import { newCommand } from "./commands/new.js";
 import { renumberCommand } from "./commands/renumber.js";
 import { showCommand } from "./commands/show.js";
+import { siteCommand } from "./commands/site.js";
 import { validateCommand } from "./commands/validate.js";
 
 const main = defineCommand({
@@ -25,6 +26,7 @@ const main = defineCommand({
     validate: validateCommand,
     graph: graphCommand,
     build: buildCommand,
+    site: siteCommand,
     renumber: renumberCommand,
   },
 });

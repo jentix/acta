@@ -49,8 +49,11 @@ describe("release contract", () => {
     expect(corePackage.engines?.node).toBe(">=22.12 <26");
     expect(corePackage.publishConfig?.access).toBe("public");
 
-    expect(rendererPackage.private).toBe(true);
-    expect(webPackage.private).toBe(true);
+    // renderer + web are now published publicly (consumed by `acta site`).
+    expect(rendererPackage.private).not.toBe(true);
+    expect(rendererPackage.publishConfig?.access).toBe("public");
+    expect(webPackage.private).not.toBe(true);
+    expect(webPackage.publishConfig?.access).toBe("public");
   });
 
   test("configures Changesets and a root changelog", () => {
@@ -73,10 +76,14 @@ describe("release contract", () => {
     const astroConfig = readText("apps/web/astro.config.mjs");
 
     expect(astroConfig).toContain('process.env.GITHUB_PAGES === "true"');
+    // GitHub Pages defaults are preserved, with `acta site` env overrides on top.
     expect(astroConfig).toContain(
-      'site: isPagesBuild ? "https://jentix.github.io" : "http://localhost:4321"',
+      'isPagesBuild ? "https://jentix.github.io" : "http://localhost:4321"',
     );
-    expect(astroConfig).toContain('base: isPagesBuild ? "/acta" : undefined');
+    expect(astroConfig).toContain('isPagesBuild ? "/acta" : undefined');
+    expect(astroConfig).toContain("process.env.ACTA_SITE");
+    expect(astroConfig).toContain("process.env.ACTA_BASE");
+    expect(astroConfig).toContain("process.env.ACTA_SITE_OUT");
   });
 
   test("defines a GitHub Pages deployment workflow", () => {

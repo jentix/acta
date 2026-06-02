@@ -127,6 +127,18 @@
 
 Цель: пользователь публикует веб-вьювер против своих docs одним флагом + коммитом, без монорепо.
 
+**Статус:** 3.1 + 3.2 — DONE (вариант **A**). 3.3 (deploy workflows) — отложено по запросу. Бонус: post-publish smoke-workflow (`.github/workflows/smoke-published.yml` + `scripts/smoke-published.mjs`).
+
+Реализовано:
+- Вьювер теперь читает артефакты `.acta/dist` (`apps/web/src/lib/project.ts` → `resolveDistDir`/`readArtifact`), а не `loadProject`. Источник пути — `ACTA_DIST_DIR` (ставит `acta site`) → `ACTA_PROJECT_ROOT`/`findActaRoot` fallback (монорепо dev).
+- `@acta-dev/web` + `@acta-dev/renderer` сняты с `private`, публикуются public (нужны для consume-time astro build). Убраны из `.changeset` ignore.
+- `acta site` (`packages/cli/src/commands/site.ts`): `buildArtifacts` → резолв `@acta-dev/web` + astro bin → spawn `astro build` с env (`ACTA_DIST_DIR`/`ACTA_SITE_OUT`/`ACTA_BASE`/`ACTA_SITE`) → `.acta/site/`. Флаги `--out/--base/--site/--skip-build/--config/--json`.
+- `astro.config.mjs` читает env-оверрайды поверх Pages-дефолтов. Config-блок `site { outDir, base, url }` в core.
+- `dev`/`build` вьювера выровнены: оба идут через `scripts/build-artifacts.mjs` (один источник = `.acta/dist`).
+- Тесты: `site.test.ts` (option/env resolution + резолв пакета и astro bin), обновлён `release-contract.test.ts`. E2e против собственных docs репо: `acta site` → 14 docs → `.acta/site/index.html` ✓.
+
+Решение по renderer (зафиксировано): **publish public** (не bundle) — consume-time astro build резолвит renderer/core у пользователя как обычные deps.
+
 #### 3.1 Decouple вьювера
 Проблема: `apps/web` сейчас читает локальные `.acta/dist`. Нужно сделать вьювер consumable вне монорепо.
 
