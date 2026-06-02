@@ -1,8 +1,8 @@
 ---
 "@acta-dev/cli": minor
 "@acta-dev/core": minor
-"@acta-dev/renderer": minor
-"@acta-dev/web": minor
+"@acta-dev/renderer": major
+"@acta-dev/web": major
 ---
 
 Add `acta site` to build a deployable static web viewer from your docs outside the monorepo.
