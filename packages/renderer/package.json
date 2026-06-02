@@ -1,8 +1,24 @@
 {
   "name": "@acta-dev/renderer",
   "version": "0.1.1",
-  "private": true,
+  "description": "Markdown-to-HTML renderer for the Acta docs-as-code viewer",
+  "license": "MIT",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jentix/acta.git",
+    "directory": "packages/renderer"
+  },
+  "homepage": "https://github.com/jentix/acta#readme",
+  "keywords": [
+    "acta",
+    "markdown",
+    "renderer",
+    "docs-as-code"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

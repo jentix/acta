@@ -252,6 +252,45 @@ Flags:
 
 The command exits with code `1` if validation errors exist, but it still writes artifacts so CI and the web viewer can inspect the result.
 
+## `acta site`
+
+Build a deployable static web viewer from your docs, with **no monorepo clone required**. It runs `acta build` to refresh `.acta/dist`, then builds the prebuilt `@acta-dev/web` viewer against those artifacts and writes the static site to `.acta/site/`.
+
+```sh
+acta site
+```
+
+Output:
+
+```txt
+.acta/site/        # static HTML/CSS/JS — deploy to any static host
+```
+
+Flags:
+
+| Flag | Description |
+|---|---|
+| `--out` | Output directory for the site (default: `.acta/site`, or `site.outDir` in config). |
+| `--base` | Base path for hosting under a subpath, e.g. `/my-repo` for GitHub project pages. Falls back to `site.base`. |
+| `--site` | Absolute site URL for canonical links/sitemaps. Falls back to `site.url`. |
+| `--skip-build` | Reuse existing `.acta/dist` artifacts instead of rebuilding first. |
+| `--config`, `-c` | Path to `acta.config.ts`. |
+| `--json` | Print `{ ok, outDir, base, site, documentCount }` as JSON. |
+
+Config defaults live under the `site` block in `acta.config.ts`:
+
+```ts
+export default defineConfig({
+  site: {
+    outDir: ".acta/site",
+    base: "/my-repo",            // optional, for project pages
+    url: "https://docs.example", // optional, canonical URL
+  },
+});
+```
+
+> The viewer is built on demand from the published `@acta-dev/web` package, so the first `acta site` run downloads Astro and its build dependencies. Deploy the contents of the output directory with any static host or CI workflow.
+
 ## `acta renumber <from> <to>`
 
 Rename a document ID, update the filename and rewrite all internal links that referenced the old ID.

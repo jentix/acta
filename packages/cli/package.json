@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "@acta-dev/core": "workspace:*",
+    "@acta-dev/web": "workspace:*",
     "citty": "^0.2.2",
     "kleur": "^4.1.5",
     "yaml": "^2.8.3"

@@ -9,4 +9,4 @@ pnpm install
 pnpm release
 ```
 
-`@acta-dev/cli` and `@acta-dev/core` are public packages. `@acta-dev/renderer` and `@acta-dev/web` are intentionally ignored because they are internal for the MVP release.
+All four packages are public: `@acta-dev/cli`, `@acta-dev/core`, `@acta-dev/renderer`, and `@acta-dev/web` (the prebuilt viewer consumed by `acta site`).

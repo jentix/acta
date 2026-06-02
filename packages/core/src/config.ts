@@ -28,6 +28,9 @@ const defaultBuild = {
   outDir: ".acta/dist",
   cacheDir: ".acta/cache",
 };
+const defaultSite = {
+  outDir: ".acta/site",
+};
 
 export const actaConfigSchema = z.object({
   docs: z
@@ -64,6 +67,13 @@ export const actaConfigSchema = z.object({
       cacheDir: z.string().default(".acta/cache"),
     })
     .default(defaultBuild),
+  site: z
+    .object({
+      outDir: z.string().default(".acta/site"),
+      base: z.string().optional(),
+      url: z.string().optional(),
+    })
+    .default(defaultSite),
 });
 
 export type ActaConfigInput = z.input<typeof actaConfigSchema>;
@@ -80,6 +90,9 @@ export interface ResolvedActaConfig extends ActaConfig {
   resolvedBuild: {
     outDir: string;
     cacheDir: string;
+  };
+  resolvedSite: {
+    outDir: string;
   };
 }
 
@@ -110,6 +123,9 @@ export function resolveConfig(
     resolvedBuild: {
       outDir: resolveFromRoot(parsed.build.outDir),
       cacheDir: resolveFromRoot(parsed.build.cacheDir),
+    },
+    resolvedSite: {
+      outDir: resolveFromRoot(parsed.site.outDir),
     },
   };
 }

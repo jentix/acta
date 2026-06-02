@@ -1,11 +1,38 @@
 {
   "name": "@acta-dev/web",
   "version": "0.1.1",
-  "private": true,
+  "description": "Prebuilt Astro viewer for Acta docs-as-code repositories, built on demand by `acta site`",
+  "license": "MIT",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jentix/acta.git",
+    "directory": "apps/web"
+  },
+  "homepage": "https://github.com/jentix/acta#readme",
+  "keywords": [
+    "acta",
+    "adr",
+    "docs-as-code",
+    "astro",
+    "viewer"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "src",
+    "public",
+    "astro.config.mjs",
+    "tsconfig.json"
+  ],
+  "exports": {
+    "./package.json": "./package.json"
+  },
   "scripts": {
-    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev --host 127.0.0.1",
-    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "artifacts": "node scripts/build-artifacts.mjs",
+    "dev": "node scripts/build-artifacts.mjs && ASTRO_TELEMETRY_DISABLED=1 astro dev --host 127.0.0.1",
+    "build": "node scripts/build-artifacts.mjs && ASTRO_TELEMETRY_DISABLED=1 astro build",
     "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
     "test": "vitest run",
     "typecheck": "ASTRO_TELEMETRY_DISABLED=1 astro check"
