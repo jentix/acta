@@ -1,8 +1,8 @@
-# @acta-dev/core
+# @acta-dev/web
 
-## 1.1.0
+## 1.0.0
 
-### Minor Changes
+### Major Changes
 
 - 2fe460c: Add `acta site` to build a deployable static web viewer from your docs outside the monorepo.
 
@@ -11,8 +11,8 @@
   - `@acta-dev/web` and `@acta-dev/renderer` are now published publicly (required by the consume-time viewer build).
   - New `site` config block (`outDir`, `base`, `url`) in `acta.config.ts`.
 
-## 1.0.0
+### Patch Changes
 
-### Major Changes
-
-- e25251e: First release of core packages, now them support json output
+- Updated dependencies [2fe460c]
+  - @acta-dev/core@1.1.0
+  - @acta-dev/renderer@1.0.0

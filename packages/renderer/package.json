@@ -1,6 +1,6 @@
 {
   "name": "@acta-dev/renderer",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Markdown-to-HTML renderer for the Acta docs-as-code viewer",
   "license": "MIT",
   "type": "module",
