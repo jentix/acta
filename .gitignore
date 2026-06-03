@@ -18,6 +18,7 @@ dist
 /.astro
 **/.astro
 /.acta
+plans/
 .turbo
 
 # misc
