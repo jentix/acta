@@ -1,5 +1,11 @@
 # @acta-dev/cli
 
+## 1.2.0
+
+### Minor Changes
+
+- ce31589: Add local preview server for `acta site --serve`
+
 ## 1.1.0
 
 ### Minor Changes
