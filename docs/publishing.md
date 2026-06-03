@@ -1,18 +1,18 @@
 # Publishing to npm
 
-Acta ships two public packages under the **`@acta-dev`** npm org:
+Acta ships four public packages under the **`@acta-dev`** npm org:
 
 | Package | Purpose | Published |
 |---|---|---|
 | `@acta-dev/cli` | The `acta` binary | ✅ public |
 | `@acta-dev/core` | Pipeline/library used by the CLI | ✅ public |
-| `@acta-dev/renderer` | Internal renderer | ❌ ignored (changeset `ignore`) |
-| `apps/web` (`@acta-dev/web`) | Astro viewer | ❌ private app |
+| `@acta-dev/renderer` | Markdown-to-HTML renderer used by the viewer | ✅ public |
+| `@acta-dev/web` | Prebuilt Astro viewer used by `acta site` | ✅ public |
 
 > **Scope note:** the unscoped name `acta` and the org `acta` were both taken on
-> npm, so packages live under the org **`acta-dev`**. The published install is
-> `npm i -g @acta-dev/cli`, but the **command stays `acta`** (bin name is
-> independent of package name).
+> npm, so packages live under the org **`acta-dev`**. The recommended project
+> install is `npm i -D @acta-dev/cli`, but the **command stays `acta`** (bin
+> name is independent of package name).
 
 ---
 
@@ -25,7 +25,7 @@ Acta ships two public packages under the **`@acta-dev`** npm org:
    npm whoami            # confirm logged-in user
    npm org ls acta-dev   # confirm you're a member/owner
    ```
-3. Scoped packages default to **private**. Both publishable packages already set
+3. Scoped packages default to **private**. All publishable packages already set
    `publishConfig.access = public`, and `.changeset/config.json` has
    `"access": "public"`. No `--access` flag needed, but it's harmless to pass.
 
@@ -49,8 +49,9 @@ pnpm -r test          # all green before publishing
 pnpm changeset
 ```
 
-Pick the bumped packages (`@acta-dev/cli`, `@acta-dev/core`), choose
-patch/minor/major, write a summary. This writes a file under `.changeset/`.
+Pick the bumped packages (`@acta-dev/cli`, `@acta-dev/core`,
+`@acta-dev/renderer`, `@acta-dev/web` as applicable), choose patch/minor/major,
+and write a summary. This writes a file under `.changeset/`.
 
 ### 3. Apply versions
 
@@ -73,17 +74,26 @@ pnpm -r publish --access public
 ```
 
 `pnpm -r publish`:
-- publishes in **topological order** (`@acta-dev/core` before `@acta-dev/cli`),
+- publishes in **topological order** (dependencies before dependents),
 - converts `workspace:*` deps into the real published version range,
 - skips packages whose version already exists on npm,
-- skips `private: true` packages (root, `apps/web`).
+- skips `private: true` packages (root only).
 
 ### 5. Verify from outside the monorepo
 
 ```bash
-cd /tmp && npx @acta-dev/cli@latest --version
-npx @acta-dev/cli@latest new adr "test"   # smoke test in a temp dir
+mkdir /tmp/acta-smoke && cd /tmp/acta-smoke
+npm init -y
+npm i -D @acta-dev/cli@latest
+npx acta init
+npx acta new adr "Smoke test"
+npx acta validate
+npx acta site --serve
 ```
+
+Use a local dev dependency for the smoke test. `acta.config.ts` imports
+`@acta-dev/core`, so the project should have Acta installed locally even when
+the `acta` binary is also available globally.
 
 ### 6. Push tags + changelog
 

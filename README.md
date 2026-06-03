@@ -14,30 +14,27 @@ Use Acta when you want ADRs and specs to be reviewable in pull requests, searcha
 
 ## Quick Start
 
-From this repository:
+Install Acta in your project:
 
 ```sh
-pnpm install
-pnpm build
+pnpm add -D @acta-dev/cli
+```
+
+Initialize the document system, create a document, then validate it:
+
+```sh
 pnpm exec acta init
 pnpm exec acta new adr "Adopt Acta"
-pnpm exec acta new spec "Document workflow"
 pnpm exec acta validate
-pnpm exec acta build
-pnpm dev:web
 ```
 
-Once installed from npm, the same workflow works as:
+Build the static viewer and preview it locally:
 
 ```sh
-npm install -g @acta-dev/cli   # provides the `acta` binary
-acta init
-acta new adr "Adopt Acta"
-acta validate
-acta build
+pnpm exec acta site --serve
 ```
 
-`acta init` creates `acta.config.ts`, `docs/decisions/`, `docs/specs/` and starter templates under `docs/templates/`.
+`acta init` creates `acta.config.ts`, `docs/decisions/`, `docs/specs/` and starter templates under `docs/templates/`. `acta site --serve` builds `.acta/dist`, emits the static viewer into `.acta/site/`, and starts a local preview server.
 
 ## Commands
 
@@ -53,6 +50,7 @@ See [docs/cli-reference.md](docs/cli-reference.md) for the full flag reference, 
 | `acta validate` | Validate frontmatter, IDs, links, sections and graph rules. | `acta validate --ci` |
 | `acta graph` | Print the relationship graph as Mermaid or JSON. | `acta graph --format json` |
 | `acta build` | Write `.acta/dist` JSON artifacts for the viewer and integrations. | `acta build` |
+| `acta site` | Build the static web viewer and optionally serve it locally. | `acta site --serve` |
 | `acta renumber <from> <to>` | Rename an ID and update internal links. | `acta renumber ADR-0001 ADR-0042 --dry-run` |
 
 Common authoring loop:

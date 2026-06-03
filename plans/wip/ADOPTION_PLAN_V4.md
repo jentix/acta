@@ -157,6 +157,12 @@
 - `acta dev` уже есть для локального preview — выровнять, чтобы dev и site читали один источник.
 - `site` пробрасывает `base` (для project-pages вроде `/<repo>/`), `site` URL, тему/локаль из `acta.config.ts`.
 
+#### 3.2.1 Local static preview
+- Добавить `acta site --serve`: после успешного build команда поднимает встроенный Node.js static server для `.acta/site/` и держит процесс до `Ctrl+C`.
+- Флаги: `--host` (default `127.0.0.1`) и `--port` (default `4321`). Внешние зависимости не нужны — достаточно Node `http` + filesystem APIs.
+- Сервер нужен только для локального preview: `GET`/`HEAD`, directory `index.html`, корректные MIME для web assets, `site.base` как URL prefix, защита от path traversal, понятная ошибка при занятом порте.
+- `--json` несовместим с `--serve`, потому что preview — long-running режим и не должен смешивать machine-readable stdout с серверными логами.
+
 #### 3.3 Deploy workflows
 - `acta init --deploy=pages|cloudflare|vercel|netlify` пишет готовый workflow в `.github/workflows/`:
   - `pages`: build → `acta site` → upload `.acta/site` → `actions/deploy-pages`.

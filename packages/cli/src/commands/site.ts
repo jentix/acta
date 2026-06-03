@@ -1,17 +1,46 @@
 import { spawn } from "node:child_process";
+import { createReadStream } from "node:fs";
+import { stat } from "node:fs/promises";
+import { createServer, type Server } from "node:http";
 import { createRequire } from "node:module";
-import { dirname, join, resolve } from "node:path";
+import { dirname, extname, join, relative, resolve, sep } from "node:path";
 import type { ResolvedActaConfig } from "@acta-dev/core";
 import { buildArtifacts } from "@acta-dev/core";
 import { defineCommand } from "citty";
 import kleur from "kleur";
 import { resolveContext } from "../context.js";
-import { exitFailure, printJson, printLine, printSuccess, printWarn } from "../output.js";
+import {
+  exitFailure,
+  exitUsage,
+  printJson,
+  printLine,
+  printSuccess,
+  printWarn,
+} from "../output.js";
 
 export interface SiteOptions {
   outDir: string;
   base?: string;
   site?: string;
+}
+
+export interface SiteServeOptions {
+  host: string;
+  port: number;
+}
+
+export interface StaticSiteServer {
+  server: Server;
+  url: string;
+  close(): Promise<void>;
+}
+
+export interface StaticSiteResponse {
+  status: number;
+  contentType: string;
+  contentLength?: number;
+  path?: string;
+  text?: string;
 }
 
 /** Resolve the effective site output dir + hosting options from config + flags. */
@@ -24,6 +53,22 @@ export function resolveSiteOptions(
     outDir: args.out ? resolve(cwd, args.out) : config.resolvedSite.outDir,
     base: args.base ?? config.site.base,
     site: args.site ?? config.site.url,
+  };
+}
+
+export function resolveSiteServeOptions(args: {
+  host?: string;
+  port?: string | number;
+}): SiteServeOptions {
+  const port = args.port === undefined ? 4321 : Number(args.port);
+
+  if (!Number.isInteger(port) || port < 0 || port > 65_535) {
+    throw new Error("Expected --port to be an integer between 0 and 65535.");
+  }
+
+  return {
+    host: args.host ?? "127.0.0.1",
+    port,
   };
 }
 
@@ -64,6 +109,19 @@ export const siteCommand = defineCommand({
       description: "Reuse existing artifacts instead of running `acta build` first",
       default: false,
     },
+    serve: {
+      type: "boolean",
+      description: "Serve the generated site locally after building it",
+      default: false,
+    },
+    host: {
+      type: "string",
+      description: "Host for --serve (default: 127.0.0.1)",
+    },
+    port: {
+      type: "string",
+      description: "Port for --serve (default: 4321)",
+    },
     config: {
       type: "string",
       alias: "c",
@@ -78,6 +136,20 @@ export const siteCommand = defineCommand({
   async run({ args }) {
     const { config } = await resolveContext({ config: args.config });
     const json = Boolean(args.json);
+    const serve = Boolean(args.serve);
+
+    if (json && serve) {
+      return exitUsage("`acta site --serve` cannot be combined with --json.");
+    }
+
+    let serveOptions: SiteServeOptions | undefined;
+    if (serve) {
+      try {
+        serveOptions = resolveSiteServeOptions(args);
+      } catch (error) {
+        return exitUsage(error instanceof Error ? error.message : String(error));
+      }
+    }
 
     // 1. Produce fresh artifacts in .acta/dist (the viewer's data source).
     let documentCount = 0;
@@ -131,6 +203,25 @@ export const siteCommand = defineCommand({
     printSuccess("Site built");
     printLine(`  ${kleur.bold("Output:")}  ${options.outDir}`);
     if (options.base) printLine(`  ${kleur.bold("Base:")}    ${options.base}`);
+
+    if (serveOptions) {
+      try {
+        const preview = await serveStaticSite({
+          root: options.outDir,
+          base: options.base,
+          ...serveOptions,
+        });
+        printLine(`  ${kleur.bold("Serving:")} ${preview.url}`);
+        printLine();
+        printLine(kleur.dim("Press Ctrl+C to stop the preview server."));
+        await waitForShutdown(preview);
+        return;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        return exitFailure(message);
+      }
+    }
+
     printLine();
     printLine(kleur.dim("Deploy the contents of the output directory to any static host."));
   },
@@ -174,4 +265,211 @@ function runAstroBuild(
     child.on("close", (code) => resolvePromise(code ?? 1));
     child.on("error", () => resolvePromise(1));
   });
+}
+
+const mimeTypes: Record<string, string> = {
+  ".css": "text/css; charset=utf-8",
+  ".html": "text/html; charset=utf-8",
+  ".ico": "image/x-icon",
+  ".jpeg": "image/jpeg",
+  ".jpg": "image/jpeg",
+  ".js": "text/javascript; charset=utf-8",
+  ".json": "application/json; charset=utf-8",
+  ".mjs": "text/javascript; charset=utf-8",
+  ".png": "image/png",
+  ".svg": "image/svg+xml",
+  ".txt": "text/plain; charset=utf-8",
+  ".wasm": "application/wasm",
+  ".webp": "image/webp",
+};
+
+export function previewUrl(host: string, port: number, base?: string): string {
+  const basePath = normalizeBasePath(base);
+  const path = basePath === "/" ? "/" : `${basePath}/`;
+  return `http://${host}:${port}${path}`;
+}
+
+export async function serveStaticSite(options: {
+  root: string;
+  host: string;
+  port: number;
+  base?: string;
+}): Promise<StaticSiteServer> {
+  const root = resolve(options.root);
+  const basePath = normalizeBasePath(options.base);
+
+  const server = createServer(async (request, response) => {
+    const result = await resolveStaticSiteResponse({
+      root,
+      base: basePath,
+      method: request.method ?? "GET",
+      url: request.url ?? "/",
+    });
+
+    if (!result.path) {
+      if (request.method === "HEAD") {
+        response.statusCode = result.status;
+        response.setHeader("Content-Type", result.contentType);
+        response.end();
+        return;
+      }
+      sendText(response, result.status, result.text ?? "Not Found");
+      return;
+    }
+
+    response.statusCode = result.status;
+    response.setHeader("Content-Type", result.contentType);
+    if (result.contentLength !== undefined) {
+      response.setHeader("Content-Length", String(result.contentLength));
+    }
+
+    if (request.method === "HEAD") {
+      response.end();
+      return;
+    }
+
+    createReadStream(result.path).pipe(response);
+  });
+
+  await new Promise<void>((resolvePromise, reject) => {
+    server.once("error", reject);
+    server.listen(options.port, options.host, () => {
+      server.off("error", reject);
+      resolvePromise();
+    });
+  }).catch((error) => {
+    if (isAddressInUse(error)) {
+      throw new Error(
+        `Port ${options.port} is already in use on ${options.host}. Try a different --port.`,
+      );
+    }
+    throw error;
+  });
+
+  const address = server.address();
+  const port = typeof address === "object" && address ? address.port : options.port;
+
+  return {
+    server,
+    url: previewUrl(options.host, port, options.base),
+    close: () =>
+      new Promise((resolvePromise, reject) => {
+        server.close((error) => (error ? reject(error) : resolvePromise()));
+      }),
+  };
+}
+
+export async function resolveStaticSiteResponse(options: {
+  root: string;
+  base?: string;
+  method: string;
+  url: string;
+}): Promise<StaticSiteResponse> {
+  if (options.method !== "GET" && options.method !== "HEAD") {
+    return {
+      status: 405,
+      contentType: "text/plain; charset=utf-8",
+      text: "Method Not Allowed",
+    };
+  }
+
+  const root = resolve(options.root);
+  const basePath = normalizeBasePath(options.base);
+  const filePath = await resolveRequestPath(root, basePath, options.url);
+  if (!filePath) {
+    return { status: 404, contentType: "text/plain; charset=utf-8", text: "Not Found" };
+  }
+
+  try {
+    const fileStat = await stat(filePath);
+    const finalPath = fileStat.isDirectory() ? join(filePath, "index.html") : filePath;
+    const finalStat = fileStat.isDirectory() ? await stat(finalPath) : fileStat;
+
+    if (!finalStat.isFile()) {
+      return { status: 404, contentType: "text/plain; charset=utf-8", text: "Not Found" };
+    }
+
+    return {
+      status: 200,
+      contentType: mimeTypes[extname(finalPath)] ?? "application/octet-stream",
+      contentLength: finalStat.size,
+      path: finalPath,
+    };
+  } catch {
+    return { status: 404, contentType: "text/plain; charset=utf-8", text: "Not Found" };
+  }
+}
+
+async function resolveRequestPath(
+  root: string,
+  basePath: string,
+  requestUrl: string,
+): Promise<string | undefined> {
+  let pathname: string;
+  try {
+    pathname = decodeURIComponent(new URL(requestUrl, "http://localhost").pathname);
+  } catch {
+    return undefined;
+  }
+
+  if (basePath !== "/") {
+    if (pathname === basePath) {
+      pathname = "/";
+    } else if (pathname.startsWith(`${basePath}/`)) {
+      pathname = pathname.slice(basePath.length);
+    } else {
+      return undefined;
+    }
+  }
+
+  const normalized = pathname.startsWith("/") ? pathname : `/${pathname}`;
+  const candidate = resolve(root, `.${normalized}`);
+  const rel = relative(root, candidate);
+  if (
+    rel === ".." ||
+    rel.startsWith(`..${sep}`) ||
+    rel === "" ||
+    rel.startsWith("/") ||
+    rel === "."
+  ) {
+    return rel === "." || rel === "" ? root : undefined;
+  }
+
+  return candidate;
+}
+
+function sendText(
+  response: import("node:http").ServerResponse,
+  status: number,
+  text: string,
+): void {
+  response.statusCode = status;
+  response.setHeader("Content-Type", "text/plain; charset=utf-8");
+  response.end(text);
+}
+
+function normalizeBasePath(base?: string): string {
+  if (!base || base === "/") return "/";
+  const withLeading = base.startsWith("/") ? base : `/${base}`;
+  return withLeading.replace(/\/+$/, "") || "/";
+}
+
+function waitForShutdown(preview: StaticSiteServer): Promise<void> {
+  return new Promise((resolvePromise) => {
+    const shutdown = async () => {
+      process.off("SIGINT", shutdown);
+      process.off("SIGTERM", shutdown);
+      await preview.close();
+      resolvePromise();
+    };
+
+    process.once("SIGINT", shutdown);
+    process.once("SIGTERM", shutdown);
+  });
+}
+
+function isAddressInUse(error: unknown): boolean {
+  return (
+    typeof error === "object" && error !== null && "code" in error && error.code === "EADDRINUSE"
+  );
 }

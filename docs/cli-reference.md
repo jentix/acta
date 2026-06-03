@@ -258,6 +258,7 @@ Build a deployable static web viewer from your docs, with **no monorepo clone re
 
 ```sh
 acta site
+acta site --serve
 ```
 
 Output:
@@ -274,6 +275,9 @@ Flags:
 | `--base` | Base path for hosting under a subpath, e.g. `/my-repo` for GitHub project pages. Falls back to `site.base`. |
 | `--site` | Absolute site URL for canonical links/sitemaps. Falls back to `site.url`. |
 | `--skip-build` | Reuse existing `.acta/dist` artifacts instead of rebuilding first. |
+| `--serve` | Serve the generated site locally after building. |
+| `--host` | Host for `--serve`. Defaults to `127.0.0.1`. |
+| `--port` | Port for `--serve`. Defaults to `4321`. |
 | `--config`, `-c` | Path to `acta.config.ts`. |
 | `--json` | Print `{ ok, outDir, base, site, documentCount }` as JSON. |
 
@@ -290,6 +294,8 @@ export default defineConfig({
 ```
 
 > The viewer is built on demand from the published `@acta-dev/web` package, so the first `acta site` run downloads Astro and its build dependencies. Deploy the contents of the output directory with any static host or CI workflow.
+
+Use `acta site --serve` for a local preview. The built-in server is intended for development only and keeps running until `Ctrl+C`.
 
 ## `acta renumber <from> <to>`
 
