@@ -1,22 +1,26 @@
 # @acta-dev/cli
 
-## 1.2.0
+## 1.3.0
 
 ### Minor Changes
 
-- ce31589: Add local preview server for `acta site --serve`
 - Add `acta skill --init` for skill-only installation. The command installs the
   bundled `acta-document` skill for Codex (`.agents/skills`) and Claude Code
   (`.claude/skills`) by default, with `--format codex|claude|both` for explicit
   targets. `acta init --skill` remains as compatibility behavior after project
   scaffolding.
 
+## 1.2.0
+
+### Minor Changes
+
+- ce31589: Add local preview server for `acta site --serve`
+
 ## 1.1.0
 
 ### Minor Changes
 
 - 2fe460c: Add `acta site` to build a deployable static web viewer from your docs outside the monorepo.
-
   - New `acta site` command: runs `acta build`, then builds the prebuilt `@acta-dev/web` viewer against your `.acta/dist` artifacts into `.acta/site/` (`--out`, `--base`, `--site`, `--skip-build`, `--json`).
   - The viewer now reads `acta build` artifacts (`.acta/dist`) instead of loading the project directly, so it is consumable outside this repo.
   - `@acta-dev/web` and `@acta-dev/renderer` are now published publicly (required by the consume-time viewer build).
