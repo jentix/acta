@@ -5,6 +5,11 @@
 ### Minor Changes
 
 - ce31589: Add local preview server for `acta site --serve`
+- Add `acta skill --init` for skill-only installation. The command installs the
+  bundled `acta-document` skill for Codex (`.agents/skills`) and Claude Code
+  (`.claude/skills`) by default, with `--format codex|claude|both` for explicit
+  targets. `acta init --skill` remains as compatibility behavior after project
+  scaffolding.
 
 ## 1.1.0
 

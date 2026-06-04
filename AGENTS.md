@@ -65,10 +65,10 @@ acta/
 
 ### Kinds
 
-| Kind | Prefix | Dir |
-|---|---|---|
-| `adr` | `ADR` | `docs/decisions/` |
-| `spec` | `SPEC` | `docs/specs/` |
+| Kind   | Prefix | Dir               |
+| ------ | ------ | ----------------- |
+| `adr`  | `ADR`  | `docs/decisions/` |
+| `spec` | `SPEC` | `docs/specs/`     |
 
 ### ID format
 
@@ -83,17 +83,24 @@ Filename must start with the id and include a slug: `ADR-0001-use-markdown.md`.
 
 ### Link types
 
-| Key | Meaning | Internal / External |
-|---|---|---|
-| `related` | Loosely related documents | internal |
-| `supersedes` | This document supersedes the target (must be mirrored by `replacedBy`) | internal |
-| `replacedBy` | This document is replaced by the target | internal |
-| `decidedBy` | This spec was decided by an ADR | internal |
-| `dependsOn` | This document depends on the target | internal |
-| `validates` | This spec validates an ADR decision | internal |
-| `references` | External URLs only | external (must be valid http/https) |
+| Key          | Meaning                                                                | Internal / External                 |
+| ------------ | ---------------------------------------------------------------------- | ----------------------------------- |
+| `related`    | Loosely related documents                                              | internal                            |
+| `supersedes` | This document supersedes the target (must be mirrored by `replacedBy`) | internal                            |
+| `replacedBy` | This document is replaced by the target                                | internal                            |
+| `decidedBy`  | This spec was decided by an ADR                                        | internal                            |
+| `dependsOn`  | This document depends on the target                                    | internal                            |
+| `validates`  | This spec validates an ADR decision                                    | internal                            |
+| `references` | External URLs only                                                     | external (must be valid http/https) |
 
 ---
+
+## Development Workflow
+
+1. Make changes
+2. Run verifying completed tasks workflow
+3. Create specs/ADRs for completed work if necessary
+4. Create branch and make commit
 
 ## Workflow: verifying completed tasks
 
@@ -176,17 +183,18 @@ pnpm exec acta new spec "Feature name"
 Open the created file and update:
 
 ```yaml
-status: accepted          # or: proposed, rejected, deprecated, superseded (ADR)
-                          # or: active, draft, paused, implemented, obsolete (spec)
+status:
+  accepted # or: proposed, rejected, deprecated, superseded (ADR)
+  # or: active, draft, paused, implemented, obsolete (spec)
 tags: [tag1, tag2]
-component: [acta-core]    # which package(s) this touches
+component: [acta-core] # which package(s) this touches
 owners: [YourName]
 summary: One-sentence description.
 links:
-  decidedBy: [ADR-NNNN]   # which ADR decided this (spec only)
-  dependsOn: [ADR-NNNN]   # prior decisions this builds on
-  validates: [ADR-NNNN]   # which ADR this spec implements/validates
-  related: [SPEC-NNNN]    # loosely related docs
+  decidedBy: [ADR-NNNN] # which ADR decided this (spec only)
+  dependsOn: [ADR-NNNN] # prior decisions this builds on
+  validates: [ADR-NNNN] # which ADR this spec implements/validates
+  related: [SPEC-NNNN] # loosely related docs
 ```
 
 ### Step 3 — Fill required sections
@@ -213,15 +221,15 @@ pnpm exec acta graph --format mermaid # visual sanity check
 
 ## Reference: where to look
 
-| Topic | Location |
-|---|---|
-| Product roadmap (active) | `plans/wip/ADOPTION_PLAN_V4.md` |
-| Past roadmaps (archive) | `plans/done/` |
-| Architecture decisions | `docs/decisions/` |
-| Feature specs | `docs/specs/` |
-| Document templates | `docs/templates/` |
-| Core public API | `packages/core/src/index.ts` |
-| CLI command implementations | `packages/cli/src/commands/` |
-| CLI tests | `packages/cli/src/test/` |
-| Build artifacts (gitignored) | `.acta/dist/` |
-| Build manifest | `.acta/dist/manifest.json` |
+| Topic                        | Location                        |
+| ---------------------------- | ------------------------------- |
+| Product roadmap (active)     | `plans/wip/ADOPTION_PLAN_V4.md` |
+| Past roadmaps (archive)      | `plans/done/`                   |
+| Architecture decisions       | `docs/decisions/`               |
+| Feature specs                | `docs/specs/`                   |
+| Document templates           | `docs/templates/`               |
+| Core public API              | `packages/core/src/index.ts`    |
+| CLI command implementations  | `packages/cli/src/commands/`    |
+| CLI tests                    | `packages/cli/src/test/`        |
+| Build artifacts (gitignored) | `.acta/dist/`                   |
+| Build manifest               | `.acta/dist/manifest.json`      |
