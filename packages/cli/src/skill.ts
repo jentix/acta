@@ -1,3 +1,6 @@
+import { existsSync } from "node:fs";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 import {
   adrStatuses,
   documentKinds,
@@ -18,6 +21,9 @@ import {
 // ---------------------------------------------------------------------------
 
 export const SKILL_NAME = "acta-document";
+
+export const skillFormats = ["codex", "claude", "both"] as const;
+export type SkillFormat = (typeof skillFormats)[number];
 
 // Human descriptions for each link key. Keyed by core's `linkKeys` so the
 // contract test can assert every link key has a description (add a link key to
@@ -184,4 +190,43 @@ export function upsertAgentsBlock(existing: string): string {
   }
   const trimmed = existing.replace(/\s+$/, "");
   return trimmed.length > 0 ? `${trimmed}\n\n${block}\n` : `${block}\n`;
+}
+
+export interface InstalledSkillTargets {
+  skillPaths: string[];
+  agentsPath?: string;
+}
+
+export async function installAgentSkill(
+  cwd: string,
+  format: SkillFormat,
+): Promise<InstalledSkillTargets> {
+  const skillPaths: string[] = [];
+  const skillContent = renderSkill();
+
+  if (format === "codex" || format === "both") {
+    const skillDir = join(cwd, ".agents", "skills", SKILL_NAME);
+    await mkdir(skillDir, { recursive: true });
+    const skillPath = join(skillDir, "SKILL.md");
+    await writeFile(skillPath, skillContent, "utf8");
+    skillPaths.push(skillPath);
+
+    const agentsPath = join(cwd, "AGENTS.md");
+    const existing = existsSync(agentsPath) ? await readFile(agentsPath, "utf8") : "";
+    await writeFile(agentsPath, upsertAgentsBlock(existing), "utf8");
+
+    if (format === "codex") {
+      return { skillPaths, agentsPath };
+    }
+  }
+
+  if (format === "claude" || format === "both") {
+    const skillDir = join(cwd, ".claude", "skills", SKILL_NAME);
+    await mkdir(skillDir, { recursive: true });
+    const skillPath = join(skillDir, "SKILL.md");
+    await writeFile(skillPath, skillContent, "utf8");
+    skillPaths.push(skillPath);
+  }
+
+  return format === "both" ? { skillPaths, agentsPath: join(cwd, "AGENTS.md") } : { skillPaths };
 }

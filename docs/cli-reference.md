@@ -54,7 +54,7 @@ Flags:
 | `--yes`, `-y` | Skip prompts and overwrite existing generated files. |
 | `--hooks` | Write a Lefthook workflow template. |
 | `--github-action` | Write a GitHub Actions workflow template. |
-| `--skill` | Install the `acta-document` agent skill at `.claude/skills/acta-document/SKILL.md` and add an Acta guidance block to `AGENTS.md`. See [skill.md](skill.md). |
+| `--skill` | Compatibility alias that also runs `acta skill --init` after scaffolding. Prefer the dedicated command for skill-only installation. |
 | `--config`, `-c` | Accepted for consistency; init currently writes `acta.config.ts` in the current directory. |
 
 Examples:
@@ -62,8 +62,40 @@ Examples:
 ```sh
 acta init --hooks
 acta init --github-action
-acta init --skill
-acta init --hooks --github-action --skill --yes
+acta init --hooks --github-action --yes
+```
+
+## `acta skill`
+
+Install or refresh the bundled `acta-document` agent skill without scaffolding an
+Acta project.
+
+```sh
+acta skill --init
+```
+
+By default this writes both supported project-level skill locations:
+
+- `.agents/skills/acta-document/SKILL.md` for Codex-compatible repo skills.
+- `.claude/skills/acta-document/SKILL.md` for Claude Code project skills.
+
+When installing the Codex format, Acta also creates or updates the marked
+guidance block in `AGENTS.md`.
+
+Flags:
+
+| Flag | Description |
+|---|---|
+| `--init` | Install or overwrite the bundled `acta-document` skill. |
+| `--format <format>` | Choose `codex`, `claude`, or `both`. Defaults to `both`. |
+
+Examples:
+
+```sh
+acta skill --init
+acta skill --init --format codex
+acta skill --init --format claude
+acta skill --init --format both
 ```
 
 ## `acta new adr <title>`

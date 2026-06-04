@@ -5,7 +5,7 @@ import { createInterface } from "node:readline";
 import { resolveConfig } from "@acta-dev/core";
 import { defineCommand } from "citty";
 import { printLine, printSuccess, printWarn } from "../output.js";
-import { renderSkill, upsertAgentsBlock } from "../skill.js";
+import { installAgentSkill } from "../skill.js";
 
 // Built-in bundled templates (inline defaults) used when no existing template found
 const ADR_TEMPLATE = `---
@@ -229,7 +229,7 @@ export const initCommand = defineCommand({
     },
     skill: {
       type: "boolean",
-      description: "Install the acta-document agent skill and AGENTS.md guidance",
+      description: "Compatibility alias for `acta skill --init` after scaffolding",
       default: false,
     },
     config: {
@@ -303,17 +303,13 @@ export const initCommand = defineCommand({
 
     // 6. Optional agent skill + AGENTS.md guidance
     if (args.skill) {
-      const skillDir = join(cwd, ".claude", "skills", "acta-document");
-      await mkdir(skillDir, { recursive: true });
-      const skillPath = join(skillDir, "SKILL.md");
-      const skillWritten = await safeWriteFile(skillPath, renderSkill(), yes);
-      if (skillWritten) printSuccess(`Created ${skillPath}`);
-
-      const { readFile } = await import("node:fs/promises");
-      const agentsPath = join(cwd, "AGENTS.md");
-      const existing = existsSync(agentsPath) ? await readFile(agentsPath, "utf8") : "";
-      await writeFile(agentsPath, upsertAgentsBlock(existing), "utf8");
-      printSuccess(`Updated ${agentsPath} with Acta agent guidance`);
+      const result = await installAgentSkill(cwd, "both");
+      for (const skillPath of result.skillPaths) {
+        printSuccess(`Installed ${skillPath}`);
+      }
+      if (result.agentsPath) {
+        printSuccess(`Updated ${result.agentsPath} with Acta agent guidance`);
+      }
     }
 
     printLine();

@@ -10,6 +10,7 @@ import { newCommand } from "./commands/new.js";
 import { renumberCommand } from "./commands/renumber.js";
 import { showCommand } from "./commands/show.js";
 import { siteCommand } from "./commands/site.js";
+import { skillCommand } from "./commands/skill.js";
 import { validateCommand } from "./commands/validate.js";
 
 const main = defineCommand({
@@ -27,6 +28,7 @@ const main = defineCommand({
     graph: graphCommand,
     build: buildCommand,
     site: siteCommand,
+    skill: skillCommand,
     renumber: renumberCommand,
   },
 });
