@@ -150,6 +150,10 @@ pnpm --filter @acta-dev/cli typecheck
 - `acta validate` — frontmatter schema, ID uniqueness, broken links, supersession cycles, required sections
 - `acta build` — full artifact pipeline; errorCount in manifest must be 0 for a clean build
 
+### Dogfooding document test upkeep
+
+When adding, removing, or renumbering files in `docs/decisions/` or `docs/specs/`, update the expected ID list in `packages/core/src/index.test.ts` test `loads and validates the repository dogfooding documents`. That test intentionally pins Acta's own ADR/spec corpus so document changes are explicit in code review.
+
 ### Negative test (confirming validation catches errors)
 
 Temporarily break a link to confirm exit code 1:

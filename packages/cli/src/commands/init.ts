@@ -4,8 +4,13 @@ import { join, resolve } from "node:path";
 import { createInterface } from "node:readline";
 import { resolveConfig } from "@acta-dev/core";
 import { defineCommand } from "citty";
-import { printLine, printSuccess, printWarn } from "../output.js";
+import { exitUsage, printLine, printSuccess, printWarn } from "../output.js";
 import { installAgentSkill } from "../skill.js";
+import {
+  DEPLOY_PROVIDERS,
+  DEPLOY_WORKFLOW_TEMPLATES,
+  isDeployProvider,
+} from "./deploy-workflows.js";
 
 // Built-in bundled templates (inline defaults) used when no existing template found
 const ADR_TEMPLATE = `---
@@ -227,6 +232,10 @@ export const initCommand = defineCommand({
       description: "Install GitHub Actions workflow template",
       default: false,
     },
+    deploy: {
+      type: "string",
+      description: "Install a deploy workflow template: pages, cloudflare, vercel or netlify",
+    },
     skill: {
       type: "boolean",
       description: "Compatibility alias for `acta skill --init` after scaffolding",
@@ -241,6 +250,11 @@ export const initCommand = defineCommand({
   async run({ args }) {
     const cwd = resolve(process.cwd());
     const yes = args.yes;
+    const deploy = args.deploy;
+
+    if (deploy !== undefined && !isDeployProvider(deploy)) {
+      return exitUsage(`Expected --deploy to be one of: ${DEPLOY_PROVIDERS.join(", ")}.`);
+    }
 
     // Resolve config to get dir paths
     const config = resolveConfig({}, { rootDir: cwd });
@@ -298,6 +312,19 @@ export const initCommand = defineCommand({
 
       const workflowPath = join(workflowsDir, "acta-ci.yml");
       const workflowWritten = await safeWriteFile(workflowPath, GITHUB_ACTION_TEMPLATE, yes);
+      if (workflowWritten) printSuccess(`Created ${workflowPath}`);
+    }
+
+    if (deploy !== undefined) {
+      const workflowsDir = join(cwd, ".github", "workflows");
+      await mkdir(workflowsDir, { recursive: true });
+
+      const workflowPath = join(workflowsDir, `acta-deploy-${deploy}.yml`);
+      const workflowWritten = await safeWriteFile(
+        workflowPath,
+        DEPLOY_WORKFLOW_TEMPLATES[deploy],
+        yes,
+      );
       if (workflowWritten) printSuccess(`Created ${workflowPath}`);
     }
 
