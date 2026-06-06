@@ -4,7 +4,7 @@ import { join, resolve } from "node:path";
 import { createInterface } from "node:readline";
 import { resolveConfig } from "@acta-dev/core";
 import { defineCommand } from "citty";
-import { printLine, printSuccess, printWarn } from "../output.js";
+import { exitUsage, printLine, printSuccess, printWarn } from "../output.js";
 import { installAgentSkill } from "../skill.js";
 
 // Built-in bundled templates (inline defaults) used when no existing template found
@@ -179,6 +179,190 @@ jobs:
         run: pnpm exec acta build
 `;
 
+const DEPLOY_PROVIDERS = ["pages", "cloudflare", "vercel", "netlify"] as const;
+
+type DeployProvider = (typeof DEPLOY_PROVIDERS)[number];
+
+const DEPLOY_WORKFLOW_TEMPLATES: Record<DeployProvider, string> = {
+  pages: `name: Deploy Acta Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: acta-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Acta static viewer
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build Acta site
+        run: pnpm dlx @acta-dev/cli site --base "/\${{ github.event.repository.name }}"
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .acta/site
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: \${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+`,
+  cloudflare: `name: Deploy Acta to Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy Acta static viewer
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build Acta site
+        run: pnpm dlx @acta-dev/cli site
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: \${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: \${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy .acta/site --project-name="\${{ vars.CLOUDFLARE_PROJECT_NAME }}"
+`,
+  vercel: `name: Deploy Acta to Vercel
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy Acta static viewer
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build Acta site
+        run: pnpm dlx @acta-dev/cli site
+
+      - name: Deploy to Vercel
+        run: pnpm dlx vercel .acta/site --prod --yes --token="\${{ secrets.VERCEL_TOKEN }}"
+        env:
+          VERCEL_ORG_ID: \${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: \${{ secrets.VERCEL_PROJECT_ID }}
+`,
+  netlify: `name: Deploy Acta to Netlify
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy Acta static viewer
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build Acta site
+        run: pnpm dlx @acta-dev/cli site
+
+      - name: Deploy to Netlify
+        run: pnpm dlx netlify-cli deploy --dir=.acta/site --prod
+        env:
+          NETLIFY_AUTH_TOKEN: \${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: \${{ secrets.NETLIFY_SITE_ID }}
+`,
+};
+
+function isDeployProvider(value: string): value is DeployProvider {
+  return DEPLOY_PROVIDERS.includes(value as DeployProvider);
+}
+
 async function confirm(message: string): Promise<boolean> {
   return new Promise((resolvePromise) => {
     const rl = createInterface({ input: process.stdin, output: process.stdout });
@@ -227,6 +411,10 @@ export const initCommand = defineCommand({
       description: "Install GitHub Actions workflow template",
       default: false,
     },
+    deploy: {
+      type: "string",
+      description: "Install a deploy workflow template: pages, cloudflare, vercel or netlify",
+    },
     skill: {
       type: "boolean",
       description: "Compatibility alias for `acta skill --init` after scaffolding",
@@ -241,6 +429,11 @@ export const initCommand = defineCommand({
   async run({ args }) {
     const cwd = resolve(process.cwd());
     const yes = args.yes;
+    const deploy = args.deploy;
+
+    if (deploy !== undefined && !isDeployProvider(deploy)) {
+      return exitUsage(`Expected --deploy to be one of: ${DEPLOY_PROVIDERS.join(", ")}.`);
+    }
 
     // Resolve config to get dir paths
     const config = resolveConfig({}, { rootDir: cwd });
@@ -298,6 +491,19 @@ export const initCommand = defineCommand({
 
       const workflowPath = join(workflowsDir, "acta-ci.yml");
       const workflowWritten = await safeWriteFile(workflowPath, GITHUB_ACTION_TEMPLATE, yes);
+      if (workflowWritten) printSuccess(`Created ${workflowPath}`);
+    }
+
+    if (deploy !== undefined) {
+      const workflowsDir = join(cwd, ".github", "workflows");
+      await mkdir(workflowsDir, { recursive: true });
+
+      const workflowPath = join(workflowsDir, `acta-deploy-${deploy}.yml`);
+      const workflowWritten = await safeWriteFile(
+        workflowPath,
+        DEPLOY_WORKFLOW_TEMPLATES[deploy],
+        yes,
+      );
       if (workflowWritten) printSuccess(`Created ${workflowPath}`);
     }
 

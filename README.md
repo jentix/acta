@@ -157,6 +157,25 @@ pnpm exec acta validate
 pnpm exec acta build
 ```
 
+## Publish the web viewer in your own CI
+
+`acta init --deploy=pages` writes `.github/workflows/acta-deploy-pages.yml`.
+On every push to `main`, that workflow builds the static viewer with
+`pnpm dlx @acta-dev/cli site`, uploads `.acta/site`, and deploys it through
+GitHub Pages.
+
+Other static hosts are scaffolded too:
+
+```sh
+acta init --deploy=cloudflare
+acta init --deploy=vercel
+acta init --deploy=netlify
+```
+
+Those provider workflows build the same `.acta/site` output and include the
+required secret names/placeholders for the host-specific deploy step. See
+[docs/deploy.md](docs/deploy.md) for setup details.
+
 `acta init --hooks` writes a Lefthook template for local pre-commit and pre-push checks. Hooks are opt-in:
 
 ```sh

@@ -18,6 +18,7 @@ async function runInit(
     yes?: boolean;
     hooks?: boolean;
     "github-action"?: boolean;
+    deploy?: string;
     config?: string;
   },
 ): Promise<void> {
@@ -36,6 +37,7 @@ async function runInit(
         y: args.yes ?? true,
         hooks: args.hooks ?? false,
         "github-action": args["github-action"] ?? false,
+        deploy: args.deploy,
         config: args.config,
         c: args.config,
       },
@@ -53,6 +55,9 @@ describe("acta init workflow templates", () => {
 
       expect(await exists(join(fixture.root, "lefthook.yml"))).toBe(false);
       expect(await exists(join(fixture.root, ".github/workflows/acta-ci.yml"))).toBe(false);
+      expect(await exists(join(fixture.root, ".github/workflows/acta-deploy-pages.yml"))).toBe(
+        false,
+      );
     } finally {
       await fixture.cleanup();
     }
@@ -119,6 +124,88 @@ describe("acta init workflow templates", () => {
       expect(await readFile(join(fixture.root, ".github/workflows/acta-ci.yml"), "utf8")).not.toBe(
         "old workflow",
       );
+    } finally {
+      await fixture.cleanup();
+    }
+  });
+
+  it("writes a GitHub Pages deploy workflow when --deploy=pages is set", async () => {
+    const fixture = await createFixture();
+    try {
+      await runInit(fixture.root, { deploy: "pages" });
+
+      const workflow = await readFile(
+        join(fixture.root, ".github/workflows/acta-deploy-pages.yml"),
+        "utf8",
+      );
+      expect(workflow).toContain("pnpm dlx @acta-dev/cli site");
+      expect(workflow).toContain(`--base "/\${{ github.event.repository.name }}"`);
+      expect(workflow).toContain(".acta/site");
+      expect(workflow).toContain("actions/upload-pages-artifact");
+      expect(workflow).toContain("actions/deploy-pages");
+      expect(workflow).toContain("pages: write");
+      expect(workflow).toContain("id-token: write");
+    } finally {
+      await fixture.cleanup();
+    }
+  });
+
+  it.each([
+    ["cloudflare", "CLOUDFLARE_API_TOKEN"],
+    ["vercel", "VERCEL_TOKEN"],
+    ["netlify", "NETLIFY_AUTH_TOKEN"],
+  ])("writes a %s deploy scaffold with required secrets", async (provider, secretName) => {
+    const fixture = await createFixture();
+    try {
+      await runInit(fixture.root, { deploy: provider });
+
+      const workflow = await readFile(
+        join(fixture.root, `.github/workflows/acta-deploy-${provider}.yml`),
+        "utf8",
+      );
+      expect(workflow).toContain("pnpm dlx @acta-dev/cli site");
+      expect(workflow).toContain(".acta/site");
+      expect(workflow).toContain(secretName);
+    } finally {
+      await fixture.cleanup();
+    }
+  });
+
+  it("rejects unknown deploy providers with a usage error", async () => {
+    const fixture = await createFixture();
+    const originalExit = process.exit;
+    const originalStderrWrite = process.stderr.write;
+    const stderr: string[] = [];
+
+    process.exit = ((code?: number | string | null) => {
+      throw new Error(`process.exit:${code ?? 0}`);
+    }) as typeof process.exit;
+    process.stderr.write = ((chunk: string | Uint8Array) => {
+      stderr.push(String(chunk));
+      return true;
+    }) as typeof process.stderr.write;
+
+    try {
+      await expect(runInit(fixture.root, { deploy: "ftp" })).rejects.toThrow("process.exit:2");
+      expect(stderr.join("")).toContain("Expected --deploy to be one of");
+    } finally {
+      process.exit = originalExit;
+      process.stderr.write = originalStderrWrite;
+      await fixture.cleanup();
+    }
+  });
+
+  it("overwrites an existing deploy workflow when --yes is set", async () => {
+    const fixture = await createFixture();
+    try {
+      await mkdir(join(fixture.root, ".github/workflows"), { recursive: true });
+      await fixture.writeFile(".github/workflows/acta-deploy-pages.yml", "old deploy workflow");
+
+      await runInit(fixture.root, { deploy: "pages", yes: true });
+
+      expect(
+        await readFile(join(fixture.root, ".github/workflows/acta-deploy-pages.yml"), "utf8"),
+      ).not.toBe("old deploy workflow");
     } finally {
       await fixture.cleanup();
     }

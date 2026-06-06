@@ -54,6 +54,7 @@ Flags:
 | `--yes`, `-y` | Skip prompts and overwrite existing generated files. |
 | `--hooks` | Write a Lefthook workflow template. |
 | `--github-action` | Write a GitHub Actions workflow template. |
+| `--deploy <provider>` | Write a deploy workflow template. Valid providers: `pages`, `cloudflare`, `vercel`, `netlify`. |
 | `--skill` | Compatibility alias that also runs `acta skill --init` after scaffolding. Prefer the dedicated command for skill-only installation. |
 | `--config`, `-c` | Accepted for consistency; init currently writes `acta.config.ts` in the current directory. |
 
@@ -62,6 +63,10 @@ Examples:
 ```sh
 acta init --hooks
 acta init --github-action
+acta init --deploy=pages
+acta init --deploy=cloudflare
+acta init --deploy=vercel
+acta init --deploy=netlify
 acta init --hooks --github-action --yes
 ```
 
