@@ -1,5 +1,12 @@
 # @acta-dev/cli
 
+## 1.5.1
+
+### Patch Changes
+
+- Updated dependencies [cc42a0f]
+  - @acta-dev/web@1.1.0
+
 ## 1.5.0
 
 ### Minor Changes

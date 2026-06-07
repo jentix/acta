@@ -1,6 +1,6 @@
 {
   "name": "@acta-dev/web",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Prebuilt Astro viewer for Acta docs-as-code repositories, built on demand by `acta site`",
   "license": "MIT",
   "type": "module",
