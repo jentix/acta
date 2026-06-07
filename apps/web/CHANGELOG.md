@@ -1,5 +1,11 @@
 # @acta-dev/web
 
+## 1.1.0
+
+### Minor Changes
+
+- cc42a0f: Refactor all web app styles, add sidebar menu for mobiles
+
 ## 1.0.1
 
 ### Patch Changes
