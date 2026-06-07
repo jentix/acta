@@ -1,0 +1,58 @@
+/* ── Form primitives ──────────────────────────────────────────────────── */
+/* Bare-class versions of the Field / Input / Select components, for React */
+/* islands (the graph view) that can't pull in Astro-scoped component styles. */
+
+.ui-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.ui-input,
+.ui-select {
+  width: 100%;
+  padding: var(--space-1-5) 0;
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  outline: none;
+}
+
+.ui-input {
+  font-family: var(--font-serif);
+  font-size: 16px;
+}
+
+.ui-input::placeholder {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.ui-select {
+  padding-right: var(--space-4);
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--color-text-muted) 50%),
+    linear-gradient(135deg, var(--color-text-muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 6px) 12px,
+    calc(100% - 2px) 12px;
+  background-size: 4px 4px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.ui-input:focus-visible,
+.ui-select:focus-visible {
+  border-bottom-color: var(--color-accent);
+}

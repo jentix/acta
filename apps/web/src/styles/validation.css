@@ -1,0 +1,55 @@
+/* ── Validation issues ────────────────────────────────────────────────── */
+/* Shared by the validation page and the document view's compact panel. */
+.issue-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.issue-list.compact {
+  gap: var(--space-2);
+}
+
+.issue-list h2 {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.issue {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-left: 2px solid var(--color-border);
+  background: var(--color-panel);
+}
+
+.issue div {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.issue p {
+  margin: var(--space-2) 0;
+}
+
+.issue a {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-accent);
+}
+
+.severity-error {
+  border-left-color: var(--color-danger);
+}
+
+.severity-warning {
+  border-left-color: var(--color-warning);
+}

@@ -3,6 +3,7 @@ import "../styles/global.css";
 import ThemeToggle from "../components/ThemeToggle.tsx";
 import SidebarToggle from "../components/SidebarToggle.tsx";
 import LanguageSwitcher from "../components/LanguageSwitcher.tsx";
+import MobileMenuToggle from "../components/MobileMenuToggle.tsx";
 import { defaultLocale, getT, isLocale, localizedHref, type Locale } from "@lib/i18n.js";
 
 interface Props {
@@ -82,7 +83,19 @@ const languageLabels = { en: tSidebar("language.en"), ru: tSidebar("language.ru"
   </head>
   <body>
     <div class="app-shell">
-      <aside class="sidebar">
+      <div class="mobile-bar">
+        <a class="brand" href={localizedHref(locale, "/", base)}>
+          <strong class="brand-wordmark">Acta</strong>
+        </a>
+        <MobileMenuToggle
+          client:load
+          labels={{
+            open: tSidebar("menu.open"),
+            close: tSidebar("menu.close"),
+          }}
+        />
+      </div>
+      <aside class="sidebar" id="app-sidebar">
         <div class="sidebar-head">
           <a class="brand" href={localizedHref(locale, "/", base)}>
             <span class="brand-mark"><img src={`${basePrefix}/favicon.png`} alt="A" /></span>

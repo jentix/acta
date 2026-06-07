@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import "./ThemeToggle.css";
 
 type Pref = "system" | "light" | "dark";
 

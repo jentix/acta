@@ -1,0 +1,268 @@
+---
+import type { ActaDocument, ValidationIssue } from "@acta-dev/core";
+import Tooltip from "./ui/Tooltip.astro";
+import {
+  buildDocumentHref,
+  getDocumentById,
+  hasBacklinks,
+  internalLinkKeys,
+} from "../lib/documents.js";
+import { getT, localizedHref, type Locale } from "../lib/i18n.js";
+
+interface Props {
+  document: ActaDocument;
+  documents: ActaDocument[];
+  issues: ValidationIssue[];
+  locale: Locale;
+}
+
+const { document, documents, issues, locale } = Astro.props;
+
+const t = await getT(locale);
+const td = (key: string, params?: Record<string, unknown>) => t(`documents:${key}`, params);
+const tc = (key: string) => t(`common:${key}`);
+const linkDesc = (key: string, dir: "outgoing" | "incoming") =>
+  t(`documents:linkTypes.${key}.${dir}`);
+const severityLabel = (sev: string) => t(`validation:severity.${sev}`);
+
+const prettyKey = (key: string) =>
+  key.replace(/([A-Z])/g, " $1").replace(/^./, (c) => c.toUpperCase());
+
+// Outgoing internal links, grouped by type (Related, Depends on, …)
+const linkGroups = internalLinkKeys
+  .filter((key) => document.links[key].length > 0)
+  .map((key) => ({ key, ids: document.links[key] }));
+
+// Backlinks flattened into a single list (deduped) for the meta column
+const backlinkIds = hasBacklinks(document)
+  ? [...new Set(internalLinkKeys.flatMap((key) => document.backlinks[key]))]
+  : [];
+---
+
+<aside class="metadata-panel">
+  <dl>
+    <div class="meta-block">
+      <dt>{td("detail.owners")}</dt>
+      <dd>{document.owners.length > 0 ? document.owners.join(", ") : tc("none")}</dd>
+    </div>
+    <div class="meta-block">
+      <dt>{td("detail.tags")}</dt>
+      <dd>{document.tags.length > 0 ? document.tags.join(", ") : tc("none")}</dd>
+    </div>
+    <div class="meta-block">
+      <dt>{td("detail.components")}</dt>
+      <dd>
+        {
+          document.component.length > 0
+            ? document.component.map((component, index) => (
+                <>
+                  {index > 0 ? ", " : ""}
+                  <code>{component}</code>
+                </>
+              ))
+            : tc("none")
+        }
+      </dd>
+    </div>
+    <div class="meta-block">
+      <dt>{td("detail.file")}</dt>
+      <dd><code>{document.file.relativePath}</code></dd>
+    </div>
+
+    {
+      linkGroups.map(({ key, ids }) => (
+        <div class="meta-block">
+          <span class="meta-lbl">
+            {prettyKey(key)} <span class="ct">· {ids.length}</span>
+            <Tooltip
+              label={td("linkTypes.tooltipOutgoing", { key })}
+              text={linkDesc(key, "outgoing")}
+            />
+          </span>
+          <div class="meta-links">
+            {ids.map((id) => {
+              const target = getDocumentById(documents, id);
+              return (
+                <a class="metalink" href={localizedHref(locale, buildDocumentHref(id))}>
+                  <span class="id">{id}</span>
+                  {target && <span class="t">{target.title}</span>}
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      ))
+    }
+
+    <div class="meta-block">
+      <span class="meta-lbl">
+        {td("detail.backlinks")} <span class="ct">· {backlinkIds.length}</span>
+      </span>
+      <div class="meta-links">
+        {
+          backlinkIds.length > 0 ? (
+            backlinkIds.map((id) => {
+              const source = getDocumentById(documents, id);
+              return (
+                <a class="metalink" href={localizedHref(locale, buildDocumentHref(id))}>
+                  <span class="id">{id}</span>
+                  {source && <span class="t">{source.title}</span>}
+                </a>
+              );
+            })
+          ) : (
+            <span class="metalink empty">
+              <span class="t">{td("detail.noBacklinks")}</span>
+            </span>
+          )
+        }
+      </div>
+    </div>
+  </dl>
+
+  {
+    issues.length > 0 && (
+      <section class="issue-list compact">
+        <h2>{td("detail.validation")}</h2>
+        {issues.map((issue) => (
+          <p class={`issue severity-${issue.severity}`}>
+            <strong>{severityLabel(issue.severity)}</strong> {issue.message}
+          </p>
+        ))}
+      </section>
+    )
+  }
+</aside>
+
+<style>
+  .metadata-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    position: sticky;
+    top: var(--space-6);
+    align-self: start;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    /* Recede while reading the body; restore on hover */
+    opacity: 0.55;
+    transition: opacity 0.4s ease;
+  }
+
+  .metadata-panel:hover,
+  .metadata-panel:focus-within {
+    opacity: 1;
+    transition: opacity 0.15s ease;
+  }
+
+  .metadata-panel dl {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    margin: 0;
+  }
+
+  .meta-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .meta-block dt,
+  .meta-lbl {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .meta-block dd,
+  .meta-val {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 14px;
+    color: var(--color-text);
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+  }
+
+  .meta-val code,
+  .meta-block dd code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    word-break: break-all;
+  }
+
+  /* Connections list inside meta sidebar */
+  .meta-lbl .ct {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0;
+    color: var(--color-text-muted);
+    font-weight: 400;
+    opacity: 0.8;
+  }
+
+  .meta-links {
+    display: flex;
+    flex-direction: column;
+    margin-top: 2px;
+  }
+
+  .metalink {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding: var(--space-2) 0;
+    border-bottom: 1px dotted var(--color-border);
+    transition: color 0.12s;
+  }
+
+  .metalink:first-child {
+    padding-top: var(--space-1);
+  }
+
+  .metalink:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .metalink .id {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .metalink .t {
+    font-family: var(--font-serif);
+    font-size: 13px;
+    line-height: 1.3;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    color: var(--color-text);
+  }
+
+  a.metalink:hover .t {
+    color: var(--color-accent);
+  }
+
+  .metalink.empty .t {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--color-text-muted);
+  }
+
+  @media (max-width: 960px) {
+    .metadata-panel {
+      position: static;
+      max-height: none;
+      overflow: visible;
+      opacity: 1;
+    }
+  }
+</style>

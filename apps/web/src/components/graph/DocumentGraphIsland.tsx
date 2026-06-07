@@ -13,6 +13,7 @@ import {
 import type React from "react";
 import { useCallback, useMemo, useState } from "react";
 import "@xyflow/react/dist/style.css";
+import "../../styles/form-controls.css";
 import "./graph.css";
 
 import type { DocumentGraph } from "@acta-dev/core";
