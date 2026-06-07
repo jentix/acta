@@ -30,6 +30,7 @@ describe("release contract", () => {
     const rootPackage = readJson<PackageJson>("package.json");
     const cliPackage = readJson<PackageJson>("packages/cli/package.json");
     const corePackage = readJson<PackageJson>("packages/core/package.json");
+    const mcpPackage = readJson<PackageJson>("packages/mcp-server/package.json");
     const rendererPackage = readJson<PackageJson>("packages/renderer/package.json");
     const webPackage = readJson<PackageJson>("apps/web/package.json");
 
@@ -48,6 +49,12 @@ describe("release contract", () => {
     expect(corePackage.files).toContain("dist");
     expect(corePackage.engines?.node).toBe(">=22.12 <26");
     expect(corePackage.publishConfig?.access).toBe("public");
+
+    expect(mcpPackage.private).not.toBe(true);
+    expect(mcpPackage.bin).toEqual({ "acta-mcp": "./dist/index.js" });
+    expect(mcpPackage.files).toContain("dist");
+    expect(mcpPackage.engines?.node).toBe(">=22.12 <26");
+    expect(mcpPackage.publishConfig?.access).toBe("public");
 
     // renderer + web are now published publicly (consumed by `acta site`).
     expect(rendererPackage.private).not.toBe(true);

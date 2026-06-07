@@ -142,6 +142,19 @@ then `/plugin install acta`). The skill is generated from the live CLI/core surf
 and guarded by a contract test, so it never drifts from the tool. See
 [docs/skill.md](docs/skill.md).
 
+Acta also ships an MCP server for clients that prefer structured tools and
+resources over shell commands:
+
+```sh
+acta init --mcp
+acta-mcp                    # stdio transport
+acta-mcp --http --port 3333 # Streamable HTTP transport
+```
+
+The server exposes `acta_new`, `acta_validate`, `acta_list`, `acta_show`,
+`acta_graph`, `acta_search`, `acta_build`, plus `acta://docs` and
+`acta://doc/{id}` resources. See [docs/mcp.md](docs/mcp.md).
+
 ## CI Integration
 
 `acta init --github-action` writes `.github/workflows/acta-ci.yml` with the expected verification flow for this monorepo:

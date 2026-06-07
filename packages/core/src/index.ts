@@ -73,6 +73,8 @@ export {
   specFrontmatterSchema,
   specStatuses,
 } from "./schema.js";
+export type { SearchFilters } from "./search.js";
+export { searchDocuments } from "./search.js";
 export type {
   ProjectLike,
   ValidationContext,

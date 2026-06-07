@@ -20,6 +20,7 @@ async function runInit(
     "github-action"?: boolean;
     deploy?: string;
     config?: string;
+    mcp?: boolean;
   },
 ): Promise<void> {
   const origCwd = process.cwd;
@@ -40,6 +41,7 @@ async function runInit(
         deploy: args.deploy,
         config: args.config,
         c: args.config,
+        mcp: args.mcp ?? false,
       },
     } as never);
   } finally {
@@ -206,6 +208,62 @@ describe("acta init workflow templates", () => {
       expect(
         await readFile(join(fixture.root, ".github/workflows/acta-deploy-pages.yml"), "utf8"),
       ).not.toBe("old deploy workflow");
+    } finally {
+      await fixture.cleanup();
+    }
+  });
+
+  it("writes an MCP server config when --mcp is set", async () => {
+    const fixture = await createFixture();
+    try {
+      await runInit(fixture.root, { mcp: true });
+
+      const config = JSON.parse(await readFile(join(fixture.root, ".mcp.json"), "utf8"));
+      expect(config).toEqual({
+        mcpServers: {
+          acta: {
+            command: "npx",
+            args: ["-y", "@acta-dev/mcp-server"],
+            env: {},
+          },
+        },
+      });
+    } finally {
+      await fixture.cleanup();
+    }
+  });
+
+  it("preserves unrelated MCP servers when --mcp is set", async () => {
+    const fixture = await createFixture();
+    try {
+      await fixture.writeFile(
+        ".mcp.json",
+        `${JSON.stringify(
+          {
+            mcpServers: {
+              existing: {
+                command: "node",
+                args: ["server.js"],
+              },
+            },
+          },
+          null,
+          2,
+        )}\n`,
+      );
+
+      await runInit(fixture.root, { mcp: true, yes: true });
+
+      const config = JSON.parse(await readFile(join(fixture.root, ".mcp.json"), "utf8"));
+      expect(config.mcpServers.existing).toEqual({
+        command: "node",
+        args: ["server.js"],
+      });
+      expect(config.mcpServers.acta).toEqual({
+        command: "npx",
+        args: ["-y", "@acta-dev/mcp-server"],
+        env: {},
+      });
     } finally {
       await fixture.cleanup();
     }

@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { createInterface } from "node:readline";
 import { resolveConfig } from "@acta-dev/core";
@@ -184,6 +184,12 @@ jobs:
         run: pnpm exec acta build
 `;
 
+const ACTA_MCP_SERVER_CONFIG = {
+  command: "npx",
+  args: ["-y", "@acta-dev/mcp-server"],
+  env: {},
+};
+
 async function confirm(message: string): Promise<boolean> {
   return new Promise((resolvePromise) => {
     const rl = createInterface({ input: process.stdin, output: process.stdout });
@@ -241,6 +247,11 @@ export const initCommand = defineCommand({
       description: "Compatibility alias for `acta skill --init` after scaffolding",
       default: false,
     },
+    mcp: {
+      type: "boolean",
+      description: "Install an MCP server config for acta-mcp",
+      default: false,
+    },
     config: {
       type: "string",
       alias: "c",
@@ -291,7 +302,7 @@ export const initCommand = defineCommand({
     // 4. Add .acta/ to .gitignore if present
     const gitignorePath = join(cwd, ".gitignore");
     if (existsSync(gitignorePath)) {
-      const { readFile, appendFile } = await import("node:fs/promises");
+      const { appendFile } = await import("node:fs/promises");
       const content = await readFile(gitignorePath, "utf8");
       if (!content.includes(".acta/")) {
         await appendFile(gitignorePath, "\n# Acta build artifacts\n.acta/\n");
@@ -339,7 +350,30 @@ export const initCommand = defineCommand({
       }
     }
 
+    if (args.mcp) {
+      const mcpPath = join(cwd, ".mcp.json");
+      await installMcpConfig(mcpPath);
+      printSuccess(`Updated ${mcpPath} with Acta MCP server config`);
+    }
+
     printLine();
     printSuccess("Acta initialized. Run `acta validate` to check your documents.");
   },
 });
+
+async function installMcpConfig(path: string): Promise<void> {
+  const existing = existsSync(path) ? JSON.parse(await readFile(path, "utf8")) : {};
+  const next = {
+    ...existing,
+    mcpServers: {
+      ...(isRecord(existing.mcpServers) ? existing.mcpServers : {}),
+      acta: ACTA_MCP_SERVER_CONFIG,
+    },
+  };
+
+  await writeFile(path, `${JSON.stringify(next, null, 2)}\n`, "utf8");
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}

@@ -6,8 +6,11 @@ import { describe, expect, it } from "vitest";
 import {
   actaCorePackage,
   buildArtifacts,
+  buildFullSearchIndex,
+  buildSearchIndex,
   loadProject,
   resolveConfig,
+  searchDocuments,
   validateProject,
 } from "./index.js";
 
@@ -221,6 +224,28 @@ describe("@acta-dev/core", () => {
     });
   });
 
+  it("searches metadata and optional full document content", async () => {
+    await withFixture(async (fixture) => {
+      await fixture.writeAdr("ADR-0001-use-core.md", validAdr());
+      await fixture.writeSpec("SPEC-0001-core-pipeline.md", validSpec());
+
+      const project = await loadProject({ config: fixture.config });
+
+      await expect(
+        searchDocuments(buildSearchIndex(project.documents), "pipeline"),
+      ).resolves.toMatchObject([{ id: "SPEC-0001" }]);
+      await expect(
+        searchDocuments(buildSearchIndex(project.documents), "Decision here"),
+      ).resolves.toEqual([]);
+      await expect(
+        searchDocuments(buildFullSearchIndex(project.documents), "Decision here"),
+      ).resolves.toMatchObject([{ id: "ADR-0001" }]);
+      await expect(
+        searchDocuments(buildSearchIndex(project.documents), "core", { kind: "spec" }),
+      ).resolves.toMatchObject([{ id: "SPEC-0001" }]);
+    });
+  });
+
   it("updates cache entries when content hashes change", async () => {
     await withFixture(async (fixture) => {
       const path = "ADR-0001-cache.md";
@@ -310,6 +335,7 @@ describe("@acta-dev/core", () => {
       "SPEC-0007",
       "SPEC-0008",
       "SPEC-0009",
+      "SPEC-0010",
     ]);
     expect(validation.errors).toEqual([]);
   });
