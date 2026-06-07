@@ -1,5 +1,11 @@
 # @acta-dev/cli
 
+## 1.4.0
+
+### Minor Changes
+
+- 25634eb: Added commands for creating a github workflow for publishing to pages
+
 ## 1.3.0
 
 ### Minor Changes
