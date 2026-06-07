@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { defaultLocale, isLocale, type Locale, locales } from "../lib/i18n.js";
 import { ensureClientI18n } from "../lib/i18n-client.js";
+import "./LanguageSwitcher.css";
 
 const STORAGE_KEY = "acta-locale";
 const COOKIE_KEY = "acta-locale";

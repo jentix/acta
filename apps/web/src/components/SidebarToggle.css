@@ -1,0 +1,39 @@
+.ui-sidebar-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  line-height: 1;
+  cursor: pointer;
+  flex: none;
+  transition:
+    color var(--duration-hover) var(--ease-out),
+    border-color var(--duration-hover) var(--ease-out),
+    transform var(--duration-press) var(--ease-out);
+}
+
+.ui-sidebar-toggle:hover,
+.ui-sidebar-toggle:focus-visible {
+  color: var(--color-text);
+  border-color: var(--color-text);
+  outline: none;
+}
+
+.ui-sidebar-toggle:active {
+  transform: scale(0.94);
+}
+
+/* On mobile the burger replaces the desktop collapse toggle */
+@media (max-width: 860px) {
+  .ui-sidebar-toggle {
+    display: none;
+  }
+}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./SidebarToggle.css";
 
 const STORAGE_KEY = "acta-sidebar";
 

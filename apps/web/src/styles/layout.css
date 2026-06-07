@@ -1,0 +1,271 @@
+/* ── Shell ────────────────────────────────────────────────────────────── */
+.app-shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-width, 220px) minmax(0, 1fr);
+  min-height: 100vh;
+  transition: grid-template-columns 0.18s ease;
+}
+
+:root[data-sidebar="collapsed"] .app-shell {
+  --sidebar-width: 64px;
+}
+
+/* ── Sidebar ──────────────────────────────────────────────────────────── */
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: var(--space-7) var(--space-6) var(--space-6);
+  border-right: 1px solid var(--color-border);
+  background: var(--color-panel-muted);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+  overflow: hidden;
+}
+
+.sidebar-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding-bottom: var(--space-4-5);
+  border-bottom: 1px solid var(--color-border-soft);
+}
+
+.brand {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  min-width: 0;
+}
+
+.brand-mark {
+  display: none;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+}
+
+.brand-mark > img {
+  width: 28px;
+  height: 28px;
+}
+
+.brand-label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.brand-wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-style: italic;
+  font-size: 30px;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  color: var(--color-text);
+}
+
+.brand-wordmark::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--color-accent);
+  border-radius: 50%;
+  margin-right: var(--space-2);
+  transform: translateY(-3px);
+}
+
+.brand-kicker {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  letter-spacing: 0.005em;
+  transition: color 0.15s;
+}
+
+.nav-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  width: 18px;
+  flex: none;
+  color: var(--color-text-muted);
+  opacity: 0.55;
+}
+
+.nav-letter {
+  display: none;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.nav-bar {
+  width: 0;
+  height: 1.5px;
+  margin-left: auto;
+  background: var(--color-border);
+  transition:
+    width 0.15s,
+    background 0.15s;
+}
+
+.nav a:hover {
+  color: var(--color-text);
+}
+
+.nav a.is-active {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.nav a.is-active .nav-bar {
+  width: 18px;
+  background: var(--color-accent);
+}
+
+.sidebar-foot {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3-5);
+  padding-top: var(--space-3-5);
+  border-top: 1px solid var(--color-border-soft);
+}
+
+/* Collapsed sidebar — desktop only; on mobile the sidebar is a drawer that */
+/* always shows its full (expanded) contents. */
+@media (min-width: 861px) {
+  :root[data-sidebar="collapsed"] .sidebar {
+    padding: var(--space-4-5) var(--space-2);
+    align-items: center;
+  }
+
+  :root[data-sidebar="collapsed"] .brand-label,
+  :root[data-sidebar="collapsed"] .nav-label,
+  :root[data-sidebar="collapsed"] .nav-bar {
+    display: none;
+  }
+
+  :root[data-sidebar="collapsed"] .brand-mark {
+    display: grid;
+  }
+
+  :root[data-sidebar="collapsed"] .sidebar-head {
+    border-bottom: 0;
+    padding-bottom: 0;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  :root[data-sidebar="collapsed"] .nav {
+    width: 100%;
+  }
+
+  :root[data-sidebar="collapsed"] .nav a {
+    justify-content: center;
+  }
+
+  :root[data-sidebar="collapsed"] .nav-num {
+    display: none;
+  }
+
+  :root[data-sidebar="collapsed"] .nav-letter {
+    display: inline-grid;
+    place-items: center;
+  }
+
+  :root[data-sidebar="collapsed"] .sidebar-foot {
+    align-items: center;
+  }
+}
+
+/* ── Mobile bar (burger header) ───────────────────────────────────────── */
+.mobile-bar {
+  display: none;
+}
+
+/* ── Main column ──────────────────────────────────────────────────────── */
+.content {
+  width: min(1180px, 100%);
+  padding: var(--space-10) var(--space-11) 60px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ── Responsive — sidebar becomes an off-canvas drawer ────────────────── */
+@media (max-width: 860px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  /* Sticky header holding the brand + burger */
+  .mobile-bar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-6);
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .mobile-bar .brand-wordmark {
+    font-size: 24px;
+  }
+
+  /* Drawer: off-canvas to the left, slides in when open */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 50;
+    width: min(280px, 80vw);
+    height: 100dvh;
+    border-right: 1px solid var(--color-border);
+    transform: translateX(-100%);
+    transition: transform 0.25s var(--ease-out);
+  }
+
+  :root[data-mobile-nav="open"] .sidebar {
+    transform: translateX(0);
+    box-shadow: var(--shadow-md);
+  }
+
+  .content {
+    padding: var(--space-6);
+  }
+}

@@ -17,6 +17,10 @@
     "collapse": "Collapse sidebar",
     "expand": "Expand sidebar"
   },
+  "menu": {
+    "open": "Open menu",
+    "close": "Close menu"
+  },
   "language": {
     "legend": "Language",
     "en": "English",

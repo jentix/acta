@@ -1,0 +1,91 @@
+/* Burger button — lives in the mobile bar, hidden on desktop via the bar. */
+.mobile-burger {
+  position: relative;
+  z-index: 60;
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-hover) var(--ease-out),
+    transform var(--duration-press) var(--ease-out);
+}
+
+.mobile-burger:hover,
+.mobile-burger:focus-visible {
+  border-color: var(--color-text);
+  outline: none;
+}
+
+.mobile-burger:active {
+  transform: scale(0.94);
+}
+
+/* Three-line glyph drawn from one bar + its two pseudo-elements. */
+.mobile-burger__lines,
+.mobile-burger__lines::before,
+.mobile-burger__lines::after {
+  width: 18px;
+  height: 1.5px;
+  background: currentColor;
+  transition:
+    transform var(--duration-popover) var(--ease-out),
+    opacity var(--duration-popover) var(--ease-out);
+}
+
+.mobile-burger__lines {
+  position: relative;
+  display: block;
+}
+
+.mobile-burger__lines::before,
+.mobile-burger__lines::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+
+.mobile-burger__lines::before {
+  transform: translateY(-6px);
+}
+
+.mobile-burger__lines::after {
+  transform: translateY(6px);
+}
+
+/* Morph to an X while the drawer is open */
+:root[data-mobile-nav="open"] .mobile-burger__lines {
+  background: transparent;
+}
+
+:root[data-mobile-nav="open"] .mobile-burger__lines::before {
+  transform: translateY(0) rotate(45deg);
+}
+
+:root[data-mobile-nav="open"] .mobile-burger__lines::after {
+  transform: translateY(0) rotate(-45deg);
+}
+
+/* Backdrop — hidden on desktop (its parent .mobile-bar is display:none), and */
+/* on mobile it sits behind the drawer but above the page content. */
+.mobile-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: color-mix(in srgb, var(--color-text) 38%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-popover) var(--ease-out);
+}
+
+:root[data-mobile-nav="open"] .mobile-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+}

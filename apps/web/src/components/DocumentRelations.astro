@@ -1,0 +1,79 @@
+---
+import Chip from "./ui/Chip.astro";
+import Tooltip from "./ui/Tooltip.astro";
+import { getT, type Locale } from "../lib/i18n.js";
+
+interface Props {
+  references: string[];
+  locale: Locale;
+}
+
+const { references, locale } = Astro.props;
+
+const t = await getT(locale);
+const td = (key: string, params?: Record<string, unknown>) => t(`documents:${key}`, params);
+const linkDesc = (key: string, dir: "outgoing" | "incoming") =>
+  t(`documents:linkTypes.${key}.${dir}`);
+---
+
+{
+  references.length > 0 && (
+    <section class="relations">
+      <div class="relation-group-header">
+        <h2>{td("detail.externalReferences")}</h2>
+        <Tooltip
+          label={td("linkTypes.tooltipOutgoing", { key: "references" })}
+          text={linkDesc("references", "outgoing")}
+        />
+      </div>
+      <div class="chip-list">
+        {references.map((reference) => (
+          <Chip as="a" href={reference} interactive>
+            {reference}
+          </Chip>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .relations {
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .relations h2 {
+    margin: 0 0 var(--space-3);
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 22px;
+  }
+
+  .relation-group {
+    margin-top: var(--space-4);
+  }
+
+  .relation-group-header {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0 0 var(--space-2);
+  }
+
+  .relation-group h3 {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+</style>

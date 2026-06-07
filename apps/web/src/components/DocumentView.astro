@@ -1,14 +1,9 @@
 ---
 import type { ActaDocument, ValidationIssue } from "@acta-dev/core";
 import Chip from "./ui/Chip.astro";
-import Tooltip from "./ui/Tooltip.astro";
-import {
-  buildDocumentHref,
-  formatDisplayDate,
-  getDocumentById,
-  hasBacklinks,
-  internalLinkKeys,
-} from "../lib/documents.js";
+import DocumentMeta from "./DocumentMeta.astro";
+import DocumentRelations from "./DocumentRelations.astro";
+import { formatDisplayDate } from "../lib/documents.js";
 import { getT, localizedHref, type Locale } from "../lib/i18n.js";
 
 interface Props {
@@ -23,23 +18,6 @@ const { document, documents, issues, rendered, locale } = Astro.props;
 
 const t = await getT(locale);
 const td = (key: string, params?: Record<string, unknown>) => t(`documents:${key}`, params);
-const tc = (key: string) => t(`common:${key}`);
-const linkDesc = (key: string, dir: "outgoing" | "incoming") =>
-  t(`documents:linkTypes.${key}.${dir}`);
-const severityLabel = (sev: string) => t(`validation:severity.${sev}`);
-
-const prettyKey = (key: string) =>
-  key.replace(/([A-Z])/g, " $1").replace(/^./, (c) => c.toUpperCase());
-
-// Outgoing internal links, grouped by type (Related, Depends on, …)
-const linkGroups = internalLinkKeys
-  .filter((key) => document.links[key].length > 0)
-  .map((key) => ({ key, ids: document.links[key] }));
-
-// Backlinks flattened into a single list (deduped) for the meta column
-const backlinkIds = hasBacklinks(document)
-  ? [...new Set(internalLinkKeys.flatMap((key) => document.backlinks[key]))]
-  : [];
 
 const references = document.links.references;
 ---
@@ -78,121 +56,79 @@ const references = document.links.references;
 </header>
 
 <div class="document-grid">
-  <aside class="metadata-panel">
-    <dl>
-      <div class="meta-block">
-        <dt>{td("detail.owners")}</dt>
-        <dd>{document.owners.length > 0 ? document.owners.join(", ") : tc("none")}</dd>
-      </div>
-      <div class="meta-block">
-        <dt>{td("detail.tags")}</dt>
-        <dd>{document.tags.length > 0 ? document.tags.join(", ") : tc("none")}</dd>
-      </div>
-      <div class="meta-block">
-        <dt>{td("detail.components")}</dt>
-        <dd>
-          {
-            document.component.length > 0
-              ? document.component.map((component, index) => (
-                  <>
-                    {index > 0 ? ", " : ""}
-                    <code>{component}</code>
-                  </>
-                ))
-              : tc("none")
-          }
-        </dd>
-      </div>
-      <div class="meta-block">
-        <dt>{td("detail.file")}</dt>
-        <dd><code>{document.file.relativePath}</code></dd>
-      </div>
-
-      {
-        linkGroups.map(({ key, ids }) => (
-          <div class="meta-block">
-            <span class="meta-lbl">
-              {prettyKey(key)} <span class="ct">· {ids.length}</span>
-              <Tooltip
-                label={td("linkTypes.tooltipOutgoing", { key })}
-                text={linkDesc(key, "outgoing")}
-              />
-            </span>
-            <div class="meta-links">
-              {ids.map((id) => {
-                const target = getDocumentById(documents, id);
-                return (
-                  <a class="metalink" href={localizedHref(locale, buildDocumentHref(id))}>
-                    <span class="id">{id}</span>
-                    {target && <span class="t">{target.title}</span>}
-                  </a>
-                );
-              })}
-            </div>
-          </div>
-        ))
-      }
-
-      <div class="meta-block">
-        <span class="meta-lbl">
-          {td("detail.backlinks")} <span class="ct">· {backlinkIds.length}</span>
-        </span>
-        <div class="meta-links">
-          {
-            backlinkIds.length > 0 ? (
-              backlinkIds.map((id) => {
-                const source = getDocumentById(documents, id);
-                return (
-                  <a class="metalink" href={localizedHref(locale, buildDocumentHref(id))}>
-                    <span class="id">{id}</span>
-                    {source && <span class="t">{source.title}</span>}
-                  </a>
-                );
-              })
-            ) : (
-              <span class="metalink empty">
-                <span class="t">{td("detail.noBacklinks")}</span>
-              </span>
-            )
-          }
-        </div>
-      </div>
-    </dl>
-
-    {
-      issues.length > 0 && (
-        <section class="issue-list compact">
-          <h2>{td("detail.validation")}</h2>
-          {issues.map((issue) => (
-            <p class={`issue severity-${issue.severity}`}>
-              <strong>{severityLabel(issue.severity)}</strong> {issue.message}
-            </p>
-          ))}
-        </section>
-      )
-    }
-  </aside>
-
+  <DocumentMeta document={document} documents={documents} issues={issues} locale={locale} />
   <article class="markdown" set:html={rendered.html} />
 </div>
 
-{
-  references.length > 0 && (
-    <section class="relations">
-      <div class="relation-group-header">
-        <h2>{td("detail.externalReferences")}</h2>
-        <Tooltip
-          label={td("linkTypes.tooltipOutgoing", { key: "references" })}
-          text={linkDesc("references", "outgoing")}
-        />
-      </div>
-      <div class="chip-list">
-        {references.map((reference) => (
-          <Chip as="a" href={reference} interactive>
-            {reference}
-          </Chip>
-        ))}
-      </div>
-    </section>
-  )
-}
+<DocumentRelations references={references} locale={locale} />
+
+<style>
+  .doc-kicker {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .doc-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    border: 1px solid currentColor;
+    padding: var(--space-1) var(--space-2);
+    font-weight: 500;
+  }
+
+  .doc-byline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4-5);
+    padding: var(--space-3) 0;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--color-text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .doc-byline b {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+
+  .doc-byline code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .doc-standfirst {
+    margin: var(--space-6) 0 0;
+    max-width: 62ch;
+    font-family: var(--font-serif);
+    font-size: 19px;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+  }
+
+  .document-grid {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: var(--space-12);
+    margin-top: var(--space-7);
+    align-items: start;
+  }
+
+  @media (max-width: 960px) {
+    .document-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-7);
+    }
+  }
+</style>
