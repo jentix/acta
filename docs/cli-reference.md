@@ -56,6 +56,7 @@ Flags:
 | `--github-action` | Write a GitHub Actions workflow template. |
 | `--deploy <provider>` | Write a deploy workflow template. Valid providers: `pages`, `cloudflare`, `vercel`, `netlify`. |
 | `--skill` | Compatibility alias that also runs `acta skill --init` after scaffolding. Prefer the dedicated command for skill-only installation. |
+| `--mcp` | Write or update `.mcp.json` with an `acta` MCP server entry. |
 | `--config`, `-c` | Accepted for consistency; init currently writes `acta.config.ts` in the current directory. |
 
 Examples:
@@ -67,6 +68,7 @@ acta init --deploy=pages
 acta init --deploy=cloudflare
 acta init --deploy=vercel
 acta init --deploy=netlify
+acta init --mcp
 acta init --hooks --github-action --yes
 ```
 

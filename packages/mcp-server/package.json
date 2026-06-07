@@ -1,0 +1,59 @@
+{
+  "name": "@acta-dev/mcp-server",
+  "version": "1.0.0",
+  "description": "Acta MCP server — structured tools and resources for Acta docs-as-code projects.",
+  "keywords": [
+    "adr",
+    "spec",
+    "docs-as-code",
+    "mcp",
+    "model-context-protocol"
+  ],
+  "license": "MIT",
+  "author": "jentix",
+  "homepage": "https://github.com/jentix/acta#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jentix/acta.git",
+    "directory": "packages/mcp-server"
+  },
+  "bugs": {
+    "url": "https://github.com/jentix/acta/issues"
+  },
+  "type": "module",
+  "bin": {
+    "acta-mcp": "./dist/index.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22.12 <26"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts",
+    "dev": "tsup src/index.ts --format esm --dts --watch",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@acta-dev/core": "workspace:*",
+    "fastmcp": "^4.0.1",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.5"
+  }
+}

@@ -5,3 +5,4 @@ allowBuilds:
   esbuild: false
   lefthook: false
   sharp: false
+  tldjs: false
